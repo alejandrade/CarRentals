@@ -3,8 +3,10 @@ package com.techisgood.carrentals.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "authorities")
@@ -13,25 +15,26 @@ import java.time.LocalDateTime;
 public class Authority {
 
     @Id
+    @Column(name = "id", updatable = false, nullable = false)
     private String id;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(nullable = false)
+    @Column(name = "authority", nullable = false, length = 50)
     private String authority;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private DbUser dbUser;
-
+    private DbUser user;
 }
+
