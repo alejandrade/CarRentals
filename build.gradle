@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
+    id "org.flywaydb.flyway" version "8.2.0"
+
 }
 
 group = 'com.techisgood'
@@ -29,7 +31,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
-    implementation 'org.flywaydb:flyway-mysql'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -43,3 +44,10 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+flyway {
+    url = 'jdbc:mysql://127.0.0.1:3306/car_rentals'
+    user = 'root'
+    locations = ['filesystem:src/main/resources/db/migration']
+}
+

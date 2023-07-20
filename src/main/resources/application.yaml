@@ -7,5 +7,10 @@ spring:
     hibernate:
       ddl-auto: validate
   flyway:
-    locations: classpath:db/migration
-    enabled: true
+    enabled: false
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
