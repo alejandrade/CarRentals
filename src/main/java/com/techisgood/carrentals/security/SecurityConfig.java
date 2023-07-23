@@ -23,7 +23,7 @@ public class SecurityConfig {
         http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/", "/authenticate").permitAll()
+                        .requestMatchers("/", "/auth").permitAll()
                         .requestMatchers("/user").hasAuthority(Role.USER.name())
                         .requestMatchers("/admin").hasAuthority(Role.ADMIN.name()))
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
