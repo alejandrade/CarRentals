@@ -1,4 +1,4 @@
-package com.techisgood.carrentals.repository;
+package com.techisgood.carrentals.user;
 
 import com.techisgood.carrentals.model.DbUser;
 import org.springframework.data.jpa.repository.JpaRepository;

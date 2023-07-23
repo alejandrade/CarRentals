@@ -1,6 +1,6 @@
 package com.techisgood.carrentals.security;
 
-import com.techisgood.carrentals.service.UserDetailsServiceImpl;
+import com.techisgood.carrentals.user.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

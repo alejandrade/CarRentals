@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableCaching
-@EnableJpaRepositories(basePackages = "com.techisgood.carrentals.repository")
+@EnableJpaRepositories(basePackages = "com.techisgood.carrentals")
 public class CarRentalsApplication {
 
     public static void main(String[] args) {

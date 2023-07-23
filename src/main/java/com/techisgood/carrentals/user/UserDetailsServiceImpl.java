@@ -1,9 +1,9 @@
-package com.techisgood.carrentals.service;
+package com.techisgood.carrentals.user;
 
 import com.techisgood.carrentals.model.Authority;
 import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.repository.AuthorityRepository;
-import com.techisgood.carrentals.repository.UserRepository;
+import com.techisgood.carrentals.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

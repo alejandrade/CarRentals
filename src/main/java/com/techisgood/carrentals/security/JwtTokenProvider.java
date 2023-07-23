@@ -1,7 +1,7 @@
 package com.techisgood.carrentals.security;
 
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.repository.UserRepository;
+import com.techisgood.carrentals.user.UserRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

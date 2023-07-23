@@ -1,6 +1,5 @@
 package com.techisgood.carrentals.security;
 
-import com.techisgood.carrentals.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +33,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**");
+        return (web) -> web.ignoring().requestMatchers("static/**");
     }
 
 }
