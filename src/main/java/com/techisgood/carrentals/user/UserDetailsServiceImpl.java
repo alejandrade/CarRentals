@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String input) throws UsernameNotFoundException {
         Optional<DbUser> optionalDbUser = userRepository.findByEmail(input);
 
-        if (!optionalDbUser.isPresent()) {
+        if (optionalDbUser.isEmpty()) {
             optionalDbUser = userRepository.findByPhoneNumber(input);
         }
 
