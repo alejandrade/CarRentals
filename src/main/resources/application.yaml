@@ -24,9 +24,9 @@ spring:
 
 comms:
   twilio:
-    secret-key: SK6076e811c564814c6dbcfdeef684e939
-    auth-token: 052793f620d4c9ed054edd3b01f91eea
-    sid: ACc962b91c74af32f485613d4628828024
+    auth-token: 4896a602e99673000780ac4d661cbf73
+    sid: ACeeaa2e225cdfedd522e6fe26528a1ee5
+    service: VAebe97b8602e6e97728ea4bccfe2af726
 
 stripe:
   secret-key: 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

@@ -4,10 +4,9 @@ import com.techisgood.carrentals.exception.InvalidPhoneNumberException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,4 +20,9 @@ public class TwilioEndpoints {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/verify")
+    public ResponseEntity<Map<String, Boolean>> verifyTwilioCode(@Valid @RequestBody TwilioVerificationDto dto) {
+        boolean verify = twilioService.verify(dto.getCode(), dto.getPhoneNumber());
+        return ResponseEntity.ok(Map.of("verified", verify));
+    }
 }
