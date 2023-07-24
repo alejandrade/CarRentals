@@ -20,3 +20,7 @@ spring:
       enabled: true
       poll-interval: 5s
       additional-paths: static/stc
+
+stripe:
+  secret-key: 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
+  secret-key-test: sk_test_51NPTGWHa21OTRYKEKdmY1MaHU7Es1Zt6KP3HFuUysNyiRzkYxIWH2cvJlD1X1P78JZBf3YQ0Mn205mHWW38kOZVA00jxVN3SaT

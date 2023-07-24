@@ -38,3 +38,4 @@ out/
 .vscode/
 
 src/main/resources/static
+/.apt_generated_tests/
