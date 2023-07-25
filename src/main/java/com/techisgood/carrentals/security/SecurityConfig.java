@@ -17,13 +17,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    // https://bootify.io/spring-security/rest-api-spring-security-with-jwt.html
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/", "/auth").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/user").hasAuthority(Role.USER.name())
                         .requestMatchers("/admin").hasAuthority(Role.ADMIN.name()))
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
