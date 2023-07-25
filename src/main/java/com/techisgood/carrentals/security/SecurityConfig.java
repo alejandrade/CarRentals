@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.security;
 
+import com.techisgood.carrentals.authorities.UserAuthority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,16 +25,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/user").hasAuthority(Role.USER.name())
-                        .requestMatchers("/admin").hasAuthority(Role.ADMIN.name()))
+                        .requestMatchers("/user/**").hasAuthority(UserAuthority.ROLE_USER.name())
+                        .requestMatchers("/admin/**").hasAuthority(UserAuthority.ROLE_ADMIN.name())
+                        .requestMatchers("/staff/**").hasAuthority(UserAuthority.ROLE_STAFF.name())
+                        .requestMatchers("/patron/**").hasAuthority(UserAuthority.ROLE_PATRON.name())
+                )
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("stc/**");
-    }
-
 }
