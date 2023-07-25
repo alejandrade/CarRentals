@@ -2,13 +2,9 @@ package com.techisgood.carrentals.comms.twilio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techisgood.carrentals.exception.InvalidPhoneNumberException;
-import com.twilio.rest.verify.v2.service.Verification;
-import com.twilio.rest.verify.v2.service.VerificationCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,12 +18,13 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.techisgood.carrentals.user.UserNameValidator.PHONE_PATTERN;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class TwilioService {
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+\\d{1,15}$");
 
     private final TwilioProperties properties;
     private final HttpClient httpClient;
@@ -63,7 +60,7 @@ public class TwilioService {
     }
 
 
-    //todo: hysterix
+    //todo: circuit breaker
     private TwilioVerificationResponse sendHttpVerification(String phoneNumber, TwilioChannels channels) throws IOException, InterruptedException {
         String encodedPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
 

@@ -16,9 +16,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final UserRepository userRepository;
     private final String jwtSecret = "yourSecretKey";  // Replace with your secret key
-    private final long jwtExpirationInMs = 3153600000000L;  // 1 hour for example
+    private final long jwtExpirationInMs = 2629743200L;  // 1 month
 
     public String generateToken(Authentication authentication) {
         DbUser userPrincipal = (DbUser) authentication.getPrincipal();
@@ -43,23 +42,6 @@ public class JwtTokenProvider {
             // ...
         }
         return false;
-    }
-
-    public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        String userId = claims.getSubject();
-
-        // Load user details from the database
-        DbUser dbUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
-
-        UserDetails userDetails = UserPrincipal.create(dbUser);  // Assuming you have a UserPrincipal class that implements UserDetails
-
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     public String getUserIdFromJWT(String token) {

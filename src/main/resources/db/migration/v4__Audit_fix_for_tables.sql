@@ -1,6 +1,7 @@
 ALTER TABLE car_rentals.users
     ADD COLUMN created_by CHAR(36),
     ADD COLUMN updated_by CHAR(36);
+
 ALTER TABLE car_rentals.authorities
     ADD COLUMN created_by CHAR(36),
     ADD COLUMN updated_by CHAR(36);
