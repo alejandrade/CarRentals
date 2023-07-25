@@ -39,6 +39,10 @@ module.exports = {
         })
     ],
     devServer: {
+        hot: true,
+        watchFiles: [path.resolve(__dirname)],
+        liveReload: true,
+        historyApiFallback: true,
         static: './dist',
         port: 3000,
     },
