@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.stripe.model.Event;
 
 @Controller
-public class PaymentsWebhooksController {
+public class RemotePaymentsWebhooksController {
 
 	private void validateWebhook() {
 		

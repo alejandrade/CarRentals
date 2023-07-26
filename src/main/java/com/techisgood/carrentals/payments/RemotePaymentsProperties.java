@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Component
 @Getter
-public class PaymentsProperties {
+public class RemotePaymentsProperties {
 	@Value("${stripe.secret-key}")
 	private String secretKey;
 	

@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class PaymentsConfig {
-	private final PaymentsProperties props;
+public class RemotePaymentsConfig {
+	private final RemotePaymentsProperties props;
 	
 	@PostConstruct
 	public void init() {

@@ -1,15 +1,17 @@
 package com.techisgood.carrentals.user;
 
-import com.techisgood.carrentals.authorities.AuthoritiesCreateService;
-import com.techisgood.carrentals.authorities.UserAuthority;
-import com.techisgood.carrentals.model.DbUser;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.techisgood.carrentals.user.UserNameValidator.isEmail;
 
 import java.util.Optional;
 
-import static com.techisgood.carrentals.user.UserNameValidator.isEmail;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.techisgood.carrentals.authorities.AuthoritiesCreateService;
+import com.techisgood.carrentals.authorities.UserAuthority;
+import com.techisgood.carrentals.model.DbUser;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
