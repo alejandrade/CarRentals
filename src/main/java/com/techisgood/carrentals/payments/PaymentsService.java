@@ -13,6 +13,7 @@ import com.stripe.model.PaymentMethodCollection;
 import com.stripe.model.SetupIntent;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.PaymentIntentCreateParams.ConfirmationMethod;
 import com.techisgood.carrentals.model.DbUserDemographics;
 
 @Component
@@ -34,7 +35,7 @@ public class PaymentsService {
 	
 	public ArrayList<PaymentMethod> getPaymentMethodsForCustomer(String customerId) throws StripeException {
 		HashMap<String, Object> params = new HashMap<>();
-		params.put("customer", "cus_9s6XKzkNRiz8i3");
+		params.put("customer", customerId);
 		
 		PaymentMethodCollection paymentMethods =
 				  PaymentMethod.list(params);
@@ -42,15 +43,33 @@ public class PaymentsService {
 	}
 	
 	
-	public PaymentIntent createPaymentIntentForCustomer(String customerId, Long amount, String rental_id) throws StripeException {
+	public PaymentIntent createFirstPaymentIntentForCustomer(String customerId, Long amount, String rentalId) throws StripeException {
 		PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
 		.setCustomer(customerId)
 	    .setAmount(amount)
 	    .setCurrency("usd")
 	    .addPaymentMethodType("card")
 	    .setStatementDescriptor("CAR_RENTAL")
-	    .putMetadata("rental_id", rental_id)
+	    .putMetadata("rental_id", rentalId)
 	    .build();
+		
+		PaymentIntent paymentIntent = PaymentIntent.create(params);
+		return paymentIntent;
+	}
+	
+	
+	public PaymentIntent createPaymentIntentForCustomerWithExistingPaymentMethod(String customerId, Long amount, String rentalId, String paymentMethodId) throws StripeException {
+		PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+				.setCustomer(customerId)
+			    .setAmount(amount)
+			    .setCurrency("usd")
+			    .setPaymentMethod(paymentMethodId)
+			    .setConfirm(true)
+			    .setConfirmationMethod(ConfirmationMethod.AUTOMATIC)
+			    .setOffSession(true)
+			    .setStatementDescriptor("CAR_RENTAL")
+			    .putMetadata("rental_id", rentalId)
+			    .build();
 		
 		PaymentIntent paymentIntent = PaymentIntent.create(params);
 		return paymentIntent;
