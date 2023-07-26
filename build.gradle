@@ -61,7 +61,7 @@ flyway {
 node {
     version = '18.11.0'
     npmVersion = '9.8.1'
-    download = false
+    download = true
     nodeProjectDir = file('frontend')  // Set your directory path here
 }
 
