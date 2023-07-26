@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "authorities")
+@Table(name = "authorities", catalog = "car_rentals")
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)

@@ -4,9 +4,9 @@ CREATE TABLE car_rentals.users (
                                    phone_number VARCHAR(15) UNIQUE,
                                    is_email_auth BOOLEAN NOT NULL,
                                    enabled BOOLEAN NOT NULL DEFAULT TRUE,
-                                   accountNonExpired BOOLEAN DEFAULT TRUE,
-                                   credentialsNonExpired BOOLEAN DEFAULT TRUE,
-                                   accountNonLocked BOOLEAN DEFAULT TRUE,
+                                   account_non_expired BOOLEAN DEFAULT TRUE,
+                                   credentials_non_expired BOOLEAN DEFAULT TRUE,
+                                   account_non_locked BOOLEAN DEFAULT TRUE,
                                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                    deleted_at TIMESTAMP NULL
