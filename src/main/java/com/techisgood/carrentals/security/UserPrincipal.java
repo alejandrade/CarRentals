@@ -1,14 +1,16 @@
 package com.techisgood.carrentals.security;
 
-import com.techisgood.carrentals.model.DbUser;
-import lombok.RequiredArgsConstructor;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import com.techisgood.carrentals.model.DbUser;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
@@ -25,9 +27,10 @@ public class UserPrincipal implements UserDetails {
 
 
     public static UserPrincipal create(DbUser dbUser) {
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name())); // Default role
-        // You can modify the above line to fetch roles/authorities from the `Authority` model if needed.
-
+    	List<SimpleGrantedAuthority> grantedAuthorities = dbUser.getAuthorities().stream()
+                .map(auth -> new SimpleGrantedAuthority(auth.getAuthority()))
+                .collect(Collectors.toList());
+    	
         return new UserPrincipal(
                 dbUser.getId(),
                 dbUser.getEmail(),
@@ -37,7 +40,7 @@ public class UserPrincipal implements UserDetails {
                 dbUser.getAccountNonExpired(),
                 dbUser.getAccountNonLocked(),
                 dbUser.getCredentialsNonExpired(),
-                authorities
+                grantedAuthorities
         );
     }
 
