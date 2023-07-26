@@ -4,8 +4,13 @@ export interface StartVerificationRequest {
     channel: string;
 }
 
-export interface StartVerificationResponse {
-    // Define the properties of the expected response here
-    message?: string;
-    // ... any other fields
-}
+export type TwilioVerificationDto = {
+    phoneNumber: string;  // This follows the pattern: ^\+\d{1,15}$
+    code: string;         // This should only contain digits based on the pattern.
+};
+
+export type TwilioAuthResponse = {
+    verified: boolean;
+    token: string;
+};
+

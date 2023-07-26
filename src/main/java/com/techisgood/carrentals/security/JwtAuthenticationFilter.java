@@ -6,17 +6,20 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
+import static com.techisgood.carrentals.authorities.UserAuthority.ROLE_ANON;
 import static org.springframework.security.core.context.SecurityContextHolder.*;
 
-@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
@@ -25,6 +28,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            String path = request.getRequestURI();
+            if ("/".equals(path) || path.startsWith("/auth/")) {
+                getContext().setAuthentication(new AnonymousAuthenticationToken("anonymousUser", "anonymousUser",
+                        List.of(new SimpleGrantedAuthority(ROLE_ANON.name()))));
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String jwt = getJwtFromRequest(request);
             if (jwt != null && tokenProvider.validateToken(jwt)) {
                 String userId = tokenProvider.getUserIdFromJWT(jwt);

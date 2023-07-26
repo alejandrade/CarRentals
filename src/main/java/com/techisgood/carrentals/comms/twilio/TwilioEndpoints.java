@@ -26,7 +26,6 @@ public class TwilioEndpoints {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserCreateIfNotExistService userCreateIfNotExistService;
 
-
     @PostMapping("/startVerification")
     public ResponseEntity<?> processTwilioRequest(@Valid @RequestBody TwilioDto twilioRequest) throws InvalidPhoneNumberException {
         twilioService.sendVerification(twilioRequest.getPhoneNumber(), twilioRequest.getChannel());

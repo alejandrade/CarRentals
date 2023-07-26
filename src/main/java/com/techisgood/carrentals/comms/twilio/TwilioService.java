@@ -39,10 +39,6 @@ public class TwilioService {
 
         var verification = sendHttpVerification(phoneNumber, channels);
 
-        if (!verification.isValid()) {
-            throw new InvalidPhoneNumberException(verification.getStatus());
-        }
-
         log.info(verification.getStatus());
     }
 
