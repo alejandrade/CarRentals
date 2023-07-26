@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: latest # Use the desired Node.js version
+  pre_build:
+    commands:
+      - cd frontend # Change directory to 'frontend'
+      - npm install # Install project dependencies
+  build:
+    commands:
+      - npm run build # Run the npm build command (output will go to 'dist' inside 'frontend')
+
+artifacts:
+  files:
+    - frontend/dist/**/* # Specify the files to be included in the build artifact
