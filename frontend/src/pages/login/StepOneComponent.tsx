@@ -4,6 +4,7 @@ import PhoneInputComponent from "../../components/PhoneInputComponent";
 import EmailInputComponent from "../../components/EmailInputComponent";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import LoadingButton from '@mui/lab/LoadingButton';
+import AuthService from "../../services/AuthService";
 
 type StepOneProps = {
     username: string;
@@ -16,7 +17,7 @@ type StepOneProps = {
 const StepOneComponent: React.FC<StepOneProps> = ({ username, remember, setUsername, setRemember, onNext }) => {
     const [inputType, setInputType] = useState<'phone' | 'email'>('phone');
     const [error, setError] = useState<string | null>(null);
-
+    const [loading, setLoading] = useState<boolean>(false);
     const handleInputTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputType(event.target.value as 'phone' | 'email');
         setUsername(''); // Clear the username when switching input type
@@ -32,9 +33,17 @@ const StepOneComponent: React.FC<StepOneProps> = ({ username, remember, setUsern
         }
     };
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (isValidInput()) {
-            onNext();
+            const auth =  await AuthService.startVerification({
+                phoneNumber: username.replace(/\s+/g, ''),
+                channel: "SMS"
+            });
+            if (auth) {
+                onNext();
+            } else {
+                console.log("error")
+            }
         }
     };
 
@@ -79,6 +88,7 @@ const StepOneComponent: React.FC<StepOneProps> = ({ username, remember, setUsern
 
             <Box mt={2}>
                 <LoadingButton
+                    loading={loading}
                     variant="contained"
                     fullWidth
                     color="primary"

@@ -9,10 +9,10 @@ export default createBrowserRouter([
         element: <LoginPage/>,
     },
     {
-        path: "/secured",
+        path: "/dash",
         element: (
             <RedirectToRootIfNotAuthenticated>
-                <div>Hello world test!</div>
+                <div>Logged in!</div>
             </RedirectToRootIfNotAuthenticated>
         ),
     },

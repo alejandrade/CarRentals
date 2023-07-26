@@ -1,8 +1,12 @@
 // authService.ts
-import { StartVerificationRequest, StartVerificationResponse } from './AuthService.types';
+import {
+    StartVerificationRequest,
+    TwilioAuthResponse,
+    TwilioVerificationDto
+} from './AuthService.types';
 
 class AuthService {
-    private readonly BASE_URL = "YOUR_BASE_URL_HERE";  // Replace with your base URL
+    private readonly BASE_URL = process.env.BASE_URL;  // Replace with your base URL
 
     /**
      * Start the verification process with Twilio.
@@ -10,7 +14,7 @@ class AuthService {
      * @param data - The data containing phoneNumber and channel for the verification.
      * @returns - A promise with the response.
      */
-    async startVerification(data: StartVerificationRequest): Promise<StartVerificationResponse> {
+    async startVerification(data: StartVerificationRequest): Promise<boolean> {
         const response = await fetch(`${this.BASE_URL}/auth/v1/twilio/startVerification`, {
             method: 'POST',
             headers: {
@@ -19,9 +23,23 @@ class AuthService {
             body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
-            throw new Error(`Failed to start verification: ${response.statusText}`);
+        if (response.status === 200) {
+            return true;
+        } else {
+            console.error(`Unexpected response from startVerification: ${response.status}`);
+            return false;
         }
+
+    }
+
+    async verify(data: TwilioVerificationDto): Promise<TwilioAuthResponse> {
+        const response = await fetch(`${this.BASE_URL}/auth/v1/twilio/verify`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
 
         return response.json();
     }
