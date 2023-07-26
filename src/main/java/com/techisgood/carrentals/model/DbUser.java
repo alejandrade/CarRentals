@@ -3,6 +3,8 @@ package com.techisgood.carrentals.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -13,13 +15,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", catalog = "car_rentals")
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 public class DbUser {
 
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(columnDefinition = "char(36) default (uuid())", nullable = false)
     private String id;
 
@@ -35,13 +39,13 @@ public class DbUser {
     @Column(nullable = false, columnDefinition = "tinyint(1) default 1")
     private Boolean enabled;
 
-    @Column(name = "accountNonExpired", columnDefinition = "tinyint(1) default 1")
+    @Column(name = "account_non_expired", columnDefinition = "tinyint(1) default 1")
     private Boolean accountNonExpired;
 
-    @Column(name = "credentialsNonExpired", columnDefinition = "tinyint(1) default 1")
+    @Column(name = "credentials_non_expired", columnDefinition = "tinyint(1) default 1")
     private Boolean credentialsNonExpired;
 
-    @Column(name = "accountNonLocked", columnDefinition = "tinyint(1) default 1")
+    @Column(name = "account_non_locked", columnDefinition = "tinyint(1) default 1")
     private Boolean accountNonLocked;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
