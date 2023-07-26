@@ -2,5 +2,8 @@
   "watch": ["src/"],
   "ext": "js,jsx,ts,tsx,html,css,scss,less",
   "ignore": ["node_modules"],
-  "exec": "npm run build"
+  "exec": "npm run build:dev",
+  "execMap": {
+    "js": "node -r source-map-support/register"
+  }
 }

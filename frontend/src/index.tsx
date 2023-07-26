@@ -9,12 +9,23 @@ import {
     RouterProvider,
 } from "react-router-dom";
 import router from "./router"
+import {ThemeProvider} from "./contexts/theme_context";
+import {AuthProvider} from "./contexts/auth_context";
+import { createRoot } from 'react-dom/client';
 
+const App: React.FC = () => {
 
-const App: React.FC = () =>
-    <React.StrictMode>
-        <RouterProvider router={router} />
-    </React.StrictMode>
+     return (
+         <React.StrictMode>
+            <ThemeProvider>
+                <AuthProvider>
+                    <RouterProvider router={router}/>
+                </AuthProvider>
+            </ThemeProvider>
+        </React.StrictMode>
+     )
+    }
 ;
-
-ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container!)
+root.render(<App />);

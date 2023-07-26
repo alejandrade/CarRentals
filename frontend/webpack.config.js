@@ -1,9 +1,11 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+    devtool: 'inline-source-map',
     entry: './src/index.tsx',
     output: {
-        path: path.resolve(__dirname, '../src/main/resources/static/stc'),
+        path: path.resolve(__dirname, './dist'),
         filename: 'bundle.js',
     },
     module: {
@@ -31,8 +33,17 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
     plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html', // Source file
+            filename: 'index.html'        // Destination file name
+        })
     ],
     devServer: {
-        contentBase: './dist',
+        hot: true,
+        watchFiles: [path.resolve(__dirname)],
+        liveReload: true,
+        historyApiFallback: true,
+        static: './dist',
+        port: 3000,
     },
 };
