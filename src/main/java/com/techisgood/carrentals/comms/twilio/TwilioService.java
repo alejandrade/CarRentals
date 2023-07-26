@@ -32,6 +32,10 @@ public class TwilioService {
 
     @SneakyThrows
     public void sendVerification(String phoneNumber, TwilioChannels channels) throws InvalidPhoneNumberException {
+        if(properties.isDebug()) {
+            return;
+        }
+
         Matcher matcher = PHONE_PATTERN.matcher(phoneNumber);
         if (!matcher.matches()) {
             throw new InvalidPhoneNumberException("Invalid phone number format: " + phoneNumber);
@@ -44,6 +48,10 @@ public class TwilioService {
 
     @SneakyThrows
     public boolean verify(String code, String phoneNumber) throws InvalidPhoneNumberException {
+        if (properties.isDebug()) {
+            return true;
+        }
+
         Matcher matcher = PHONE_PATTERN.matcher(phoneNumber);
         if (!matcher.matches()) {
             throw new InvalidPhoneNumberException("Invalid phone number format: " + phoneNumber);

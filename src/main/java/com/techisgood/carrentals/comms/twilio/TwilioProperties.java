@@ -13,4 +13,7 @@ public class TwilioProperties {
     private String sid;
     @Value("${comms.twilio.service}")
     private String service;
+
+    @Value("${comms.twilio.debug}")
+    private boolean debug;
 }
