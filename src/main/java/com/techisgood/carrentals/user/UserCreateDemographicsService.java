@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.techisgood.carrentals.exception.RemoteServiceException;
+import com.techisgood.carrentals.exception.RemoteServiceException.RemoteService;
 import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.DbUserDemographics;
 import com.techisgood.carrentals.model.PaymentsCustomer;
@@ -81,7 +82,7 @@ public class UserCreateDemographicsService {
 					paymentsService.updateCustomer(userId, c.getId());
 				}
 			} catch(StripeException e) {
-				throw new RemoteServiceException("Stripe:" + e.getMessage());
+				throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
 			}
 		}
 		return demo;

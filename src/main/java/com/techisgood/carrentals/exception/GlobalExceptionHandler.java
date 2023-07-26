@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(value = { RemoteServiceException.class })
     protected ResponseEntity<ErrorResponse> handleServerError(RemoteServiceException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse("Remote Service Error: " + ex.getMessage(), 500);
+        ErrorResponse error = new ErrorResponse("Remote Service Error: " + ex.service.getName() + ": " + ex.getMessage(), 500);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
     
