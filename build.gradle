@@ -66,6 +66,10 @@ node {
     nodeProjectDir = file('frontend')  // Set your directory path here
 }
 
+bootBuildImage {
+    imageName = "527582357168.dkr.ecr.us-east-2.amazonaws.com/carrentals:${version}"
+}
+
 task npmBuild(type: NpmTask, dependsOn: 'npmInstall') {
     args = ['run', 'build']
 }

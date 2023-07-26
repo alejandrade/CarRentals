@@ -1,0 +1,36 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: latest
+      docker: 19
+    commands:
+      - echo "Ensure docker is running..."
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 527582357168.dkr.ecr.us-east-2.amazonaws.com
+
+  build:
+    commands:
+      - echo "Building the Docker image..."
+      - ./gradlew bootBuildImage
+
+  post_build:
+    commands:
+      - echo "Pushing Docker image to ECR..."
+      - docker push 527582357168.dkr.ecr.us-east-2.amazonaws.com/carrentals:${CODEBUILD_RESOLVED_SOURCE_VERSION}
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
+
+cache:
+  paths:
+    - '/root/.gradle/caches/**/*'
+    - '/root/.gradle/wrapper/**/*'
