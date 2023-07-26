@@ -6,9 +6,13 @@ import java.util.HashMap;
 import org.springframework.stereotype.Component;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.PaymentMethod;
+import com.stripe.model.PaymentMethodCollection;
 import com.stripe.model.SetupIntent;
 import com.stripe.param.CustomerCreateParams;
-import com.techisgood.carrentals.model.DbUser;
+import com.stripe.param.PaymentIntentCreateParams;
 import com.techisgood.carrentals.model.DbUserDemographics;
 
 @Component
@@ -16,18 +20,66 @@ public class PaymentsService {
 
 	
 	
-	public void CreateCustomer(DbUserDemographics userInfo) {
+	public Customer createCustomer(DbUserDemographics userInfo) throws StripeException {
 		CustomerCreateParams params = CustomerCreateParams.builder()
 				.setName(userInfo.getFullNameFormatted())
 				.putMetadata("user_id", userInfo.getUser_id())
-				.build(); 
+				.build();
+		
+		Customer customer = Customer.create(params);
+		return customer;
 	}
 	
 	
-	public void CreatePaymentMethod(String customerId) throws StripeException {
+	
+	public ArrayList<PaymentMethod> getPaymentMethodsForCustomer(String customerId) throws StripeException {
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("customer", "cus_9s6XKzkNRiz8i3");
+		
+		PaymentMethodCollection paymentMethods =
+				  PaymentMethod.list(params);
+		return (ArrayList<PaymentMethod>) paymentMethods.getData();
+	}
+	
+	
+	public PaymentIntent createPaymentIntentForCustomer(String customerId, Long amount, String rental_id) throws StripeException {
+		PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+		.setCustomer(customerId)
+	    .setAmount(amount)
+	    .setCurrency("usd")
+	    .addPaymentMethodType("card")
+	    .setStatementDescriptor("CAR_RENTAL")
+	    .putMetadata("rental_id", rental_id)
+	    .build();
+		
+		PaymentIntent paymentIntent = PaymentIntent.create(params);
+		return paymentIntent;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public enum PaymentMethodType {
+		CARD("card"),
+		US_BANK("us_bank_account"),
+		;
+		private String name;
+		private PaymentMethodType(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+	}
+	
+	public SetupIntent createPaymentMethod(String customerId, PaymentMethodType type) throws StripeException {
 		ArrayList<Object> paymentMethodTypes =
 				  new ArrayList<>();
-		paymentMethodTypes.add("card");
+		paymentMethodTypes.add(type.getName());
 		HashMap<String, Object> params = new HashMap<>();
 		params.put(
 		  "payment_method_types",
@@ -37,6 +89,23 @@ public class PaymentsService {
 		SetupIntent setupIntent =
 		  SetupIntent.create(params);
 		
+		return setupIntent;
+		
+	}
+	
+	
+	public void verifyMicrodeposits(String setupIntentId, Integer centsA, Integer centsB) throws StripeException {
+		SetupIntent setupIntent =
+		  SetupIntent.retrieve(setupIntentId);
+
+		ArrayList<Object> amounts = new ArrayList<>();
+		amounts.add(centsA);
+		amounts.add(centsB);
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("amounts", amounts);
+
+		SetupIntent updatedSetupIntent =
+		  setupIntent.verifyMicrodeposits(params);
 	}
 	
 }

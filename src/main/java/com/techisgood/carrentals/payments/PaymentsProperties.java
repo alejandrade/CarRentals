@@ -13,4 +13,10 @@ public class PaymentsProperties {
 	
 	@Value("${stripe.secret-key-test}")
 	private String secretKeyTest;
+	
+	@Value("${stripe.checkout-url-success}")
+	private String checkoutUrlSuccess;
+	
+	@Value("${stripe.checkout-url-cancel}")
+	private String checkoutUrlCancel;
 }
