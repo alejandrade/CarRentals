@@ -13,5 +13,7 @@ phases:
       - npm run build # Run the npm build command (output will go to 'dist' inside 'frontend')
 
 artifacts:
+  Name: my-static-website
+  Packaging: Zip
   files:
     - frontend/dist/**/* # Specify the files to be included in the build artifact
