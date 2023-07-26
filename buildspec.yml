@@ -4,7 +4,6 @@ phases:
   install:
     runtime-versions:
       java: latest
-      docker: latest
     commands:
       - echo "Ensure docker is running..."
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
