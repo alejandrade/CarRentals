@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
@@ -25,9 +26,10 @@ public class UserPrincipal implements UserDetails {
 
 
     public static UserPrincipal create(DbUser dbUser) {
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name())); // Default role
-        // You can modify the above line to fetch roles/authorities from the `Authority` model if needed.
-
+    	List<SimpleGrantedAuthority> grantedAuthorities = dbUser.getAuthorities().stream()
+                .map(auth -> new SimpleGrantedAuthority(auth.getAuthority()))
+                .collect(Collectors.toList());
+    	
         return new UserPrincipal(
                 dbUser.getId(),
                 dbUser.getEmail(),
@@ -37,7 +39,7 @@ public class UserPrincipal implements UserDetails {
                 dbUser.getAccountNonExpired(),
                 dbUser.getAccountNonLocked(),
                 dbUser.getCredentialsNonExpired(),
-                authorities
+                grantedAuthorities
         );
     }
 
