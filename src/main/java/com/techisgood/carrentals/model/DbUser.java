@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -37,16 +36,16 @@ public class DbUser {
     private Boolean isEmailAuth;
 
     @Column(nullable = false, columnDefinition = "tinyint(1) default 1")
-    private Boolean enabled;
+    private Boolean enabled = true;
 
     @Column(name = "account_non_expired", columnDefinition = "tinyint(1) default 1")
-    private Boolean accountNonExpired;
+    private Boolean accountNonExpired = true;
 
     @Column(name = "credentials_non_expired", columnDefinition = "tinyint(1) default 1")
-    private Boolean credentialsNonExpired;
+    private Boolean credentialsNonExpired = true;
 
     @Column(name = "account_non_locked", columnDefinition = "tinyint(1) default 1")
-    private Boolean accountNonLocked;
+    private Boolean accountNonLocked = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Authority> authorities;

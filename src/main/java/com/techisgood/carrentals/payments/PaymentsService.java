@@ -25,7 +25,7 @@ public class PaymentsService {
 		}
 		else {
 			PaymentsCustomer pc = new PaymentsCustomer();
-			pc.setUserId(userId);
+			//pc.setUser(userId);
 			pc.setCustomerId(customerId);
 			paymentsCustomerRepository.save(pc);
 			return pc;

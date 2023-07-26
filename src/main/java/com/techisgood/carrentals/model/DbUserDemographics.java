@@ -1,24 +1,17 @@
 package com.techisgood.carrentals.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.Id;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_demographics")
+@Table(name = "user_demographics", catalog = "car_rentals")
 @Getter
 @Setter
 public class DbUserDemographics {
@@ -28,37 +21,59 @@ public class DbUserDemographics {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "id", updatable = false, nullable = false, columnDefinition = "char(36) default (uuid())")
 	private String id;
-	
-	@Column(nullable=false) private String user_id;
-	@Column private String first_name;
-	@Column private String middle_initial;
-	@Column private String last_name;
-	@Column @Temporal(TemporalType.DATE) private Date date_of_birth;
-	@Column(columnDefinition = "ENUM('Male', 'Female', 'Other', 'Prefer Not To Say')") @Enumerated(EnumType.STRING) private String gender;
-	@Column private String address;
-	@Column private String city;
-	@Column private String state;
-	@Column private String postal_code;
-	@Column private String country;
-	@Column private String additional_info;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_USER_DEMOGRAPHICS_USER"))
+	private DbUser user;
+
+	@Column(name = "first_name", length = 100)
+	private String firstName;
+
+	@Column(name = "middle_initial", length = 1, columnDefinition = "CHAR(1)")
+	private String middleInitial;
+
+	@Column(name = "last_name", length = 100)
+	private String lastName;
+
+	@Column(name = "date_of_birth")
+	private LocalDate dateOfBirth;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "gender", columnDefinition = "ENUM('Male', 'Female', 'Other', 'Prefer Not To Say')")
+	private Gender gender;
+
+	@Column(name = "address", length = 255)
+	private String address;
+
+	@Column(name = "city", length = 100)
+	private String city;
+
+	@Column(name = "state", length = 100)
+	private String state;
+
+	@Column(name = "postal_code", length = 20)
+	private String postalCode;
+
+	@Column(name = "country", length = 100)
+	private String country;
+
+	@Column(name = "additional_info", columnDefinition = "TEXT")
+	private String additionalInfo;
 	public enum Gender {
         Male, Female, Other, Prefer_Not_To_Say;
     }
-	
-	private String fullNameFormatted;
-	
-	@PostConstruct
-	public void init() {
-		fullNameFormatted = "";
-		if (first_name != null) {
-			fullNameFormatted += first_name;
+
+	public String getFullNameFormatted() {
+		String fullNameFormatted = "";
+		if (this.firstName != null) {
+			fullNameFormatted += this.firstName;
 		}
-		if (middle_initial != null) { 
-			fullNameFormatted += " " + middle_initial;
+		if (this.middleInitial != null) {
+			fullNameFormatted += " " + this.middleInitial;
 		}
-		if (last_name != null) {
-			fullNameFormatted += " " + last_name;
+		if (this.lastName != null) {
+			fullNameFormatted += " " + this.lastName;
 		}
+		return fullNameFormatted;
 	}
 }

@@ -34,6 +34,7 @@ public class UserCreateIfNotExistServiceImpl implements UserCreateIfNotExistServ
 
             userRepository.save(dbUser);
             authoritiesCreateService.createAuthorityForUser(dbUser, userAuthority);
+            userRepository.flush();
             return dbUser;
         }
 

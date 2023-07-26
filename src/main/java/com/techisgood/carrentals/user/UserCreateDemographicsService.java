@@ -33,7 +33,7 @@ public class UserCreateDemographicsService {
 			String middle, 
 			String last,
 			Date dob,
-			String gender,
+			DbUserDemographics.Gender gender,
 			String address,
 			String city,
 			String state,
@@ -47,18 +47,18 @@ public class UserCreateDemographicsService {
 		if (user.isPresent())  
 		{
 			demo = new DbUserDemographics();
-			demo.setUser_id(userId);
-			demo.setFirst_name(first);
-			demo.setMiddle_initial(middle);
-			demo.setLast_name(last);
-			demo.setDate_of_birth(dob);
-			demo.setGender(gender);
-			demo.setAddress(address);
-			demo.setCity(city);
-			demo.setState(state);
-			demo.setPostal_code(zip);
-			demo.setCountry(country);
-			demo.setAdditional_info(additional);
+//			demo.setUser_id(userId);
+//			demo.setFirst_name(first);
+//			demo.setMiddle_initial(middle);
+//			demo.setLast_name(last);
+//			demo.setDate_of_birth(dob);
+//			demo.setGender(gender);
+//			demo.setAddress(address);
+//			demo.setCity(city);
+//			demo.setState(state);
+//			demo.setPostal_code(zip);
+//			demo.setCountry(country);
+//			demo.setAdditional_info(additional);
 			 
 			userDemographicsRepository.save(demo);
 			 

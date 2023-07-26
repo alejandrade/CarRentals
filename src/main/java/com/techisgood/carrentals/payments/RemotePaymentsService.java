@@ -25,7 +25,7 @@ public class RemotePaymentsService {
 	public Customer createCustomer(DbUserDemographics userInfo) throws StripeException {
 		CustomerCreateParams params = CustomerCreateParams.builder()
 				.setName(userInfo.getFullNameFormatted())
-				.putMetadata("user_id", userInfo.getUser_id())
+				.putMetadata("user_id", userInfo.getUser().getId())
 				.build();
 		
 		Customer customer = Customer.create(params);
@@ -40,7 +40,7 @@ public class RemotePaymentsService {
 		else {
 			CustomerUpdateParams params = CustomerUpdateParams.builder()
 					.setName(userInfo.getFullNameFormatted())
-					.putMetadata("user_id", userInfo.getUser_id())
+					.putMetadata("user_id", userInfo.getUser().getId())
 					.build();
 			
 			Customer updated = customer.update(params);
