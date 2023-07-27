@@ -1,4 +1,11 @@
+aws:
+  region: us-east-2
+  s3:
+    bucket: carrentaluserfiles
+
 spring:
+  profiles:
+    active: dev
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/car_rentals
     username: root
