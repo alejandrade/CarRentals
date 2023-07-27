@@ -1,4 +1,4 @@
-package com.techisgood.carrentals.repository;
+package com.techisgood.carrentals.authorities;
 
 import com.techisgood.carrentals.model.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;

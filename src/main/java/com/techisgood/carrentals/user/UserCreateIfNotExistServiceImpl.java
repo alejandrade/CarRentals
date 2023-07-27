@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.techisgood.carrentals.authorities.AuthoritiesCreateService;
 import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.repository.AuthorityRepository;
+import com.techisgood.carrentals.authorities.AuthorityRepository;
 
 import lombok.RequiredArgsConstructor;
 

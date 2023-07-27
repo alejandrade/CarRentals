@@ -7,8 +7,6 @@ interface Props {
 const AuthorizationWrapper: React.FC<Props> = ({ children }) => {
     const { pathname } = useLocation();
     const { isAuthenticated } = useAuth();
-    console.log(pathname, "test")
-
     if (pathname !== '/' && !isAuthenticated) {
         return <Navigate to="/" />;
     } else if (pathname === '/' && isAuthenticated) {
