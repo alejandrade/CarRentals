@@ -1,13 +1,10 @@
 package com.techisgood.carrentals.model;
 
+import com.techisgood.carrentals.model.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -48,19 +45,6 @@ public class Rental {
     @Column(name = "return_datetime")
     private LocalDateTime returnDatetime;
 
-    @CreatedDate
-    @Column(name = "created_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
-    private LocalDateTime updatedAt;
-
-    @CreatedBy
-    @Column(name = "created_by", columnDefinition = "char(36)")
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name = "updated_by", columnDefinition = "char(36)")
-    private String updatedBy;
+    @Embedded
+    private Auditable auditable;
 }

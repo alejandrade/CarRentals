@@ -28,5 +28,11 @@ public class CarEndpoint {
     public Page<CarDto> findAllCars(Pageable pageable) {
         return carService.findAllCars(pageable);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CarDto> getCarById(@PathVariable String id) {
+        CarDto carDto = carService.get(id);
+        return ResponseEntity.ok(carDto);
+    }
 }
 

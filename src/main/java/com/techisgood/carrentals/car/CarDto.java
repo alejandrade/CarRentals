@@ -42,10 +42,10 @@ public class CarDto {
         dto.setStatus(car.getStatus());
 
         // Setting audit properties
-        dto.setCreatedAt(car.getCreatedAt());
-        dto.setUpdatedAt(car.getUpdatedAt());
-        dto.setCreatedBy(car.getCreatedBy());
-        dto.setUpdatedBy(car.getUpdatedBy());
+        dto.setCreatedAt(car.getAuditable().getCreatedAt());
+        dto.setUpdatedAt(car.getAuditable().getUpdatedAt());
+        dto.setCreatedBy(car.getAuditable().getCreatedBy());
+        dto.setUpdatedBy(car.getAuditable().getUpdatedBy());
 
         return dto;
     }

@@ -1,9 +1,9 @@
 package com.techisgood.carrentals.comms.twilio;
 
+import com.techisgood.carrentals.authorities.AuthorityRepository;
 import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.exception.InvalidPhoneNumberException;
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.authorities.AuthorityRepository;
 import com.techisgood.carrentals.security.JwtTokenProvider;
 import com.techisgood.carrentals.user.UserCreateIfNotExistService;
 import jakarta.validation.Valid;
@@ -15,7 +15,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.List;

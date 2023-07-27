@@ -22,9 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Objects;
-import java.util.regex.Matcher;
-
-import static com.techisgood.carrentals.user.UserNameValidator.PHONE_PATTERN;
 
 @RequiredArgsConstructor
 @Service

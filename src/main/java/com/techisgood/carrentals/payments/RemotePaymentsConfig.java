@@ -1,11 +1,9 @@
 package com.techisgood.carrentals.payments;
 
-import org.springframework.context.annotation.Configuration;
-
 import com.stripe.Stripe;
-
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor

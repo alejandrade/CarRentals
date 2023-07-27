@@ -1,23 +1,16 @@
 package com.techisgood.carrentals.payments;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.google.gson.JsonSyntaxException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("remote-payments/v1")
@@ -35,8 +28,6 @@ public class RemotePaymentsEndpoints {
 		Event event = null;
 		try {
 			event = Webhook.constructEvent(requestBody, sigHeader, props.getWebhookSecret());
-		} catch(JsonSyntaxException e) {
-			return ResponseEntity.badRequest().body("Malofrmed JSON");
 		} catch(SignatureVerificationException e) {
 			return ResponseEntity.status(401).body("Invalid Signature");
 		}

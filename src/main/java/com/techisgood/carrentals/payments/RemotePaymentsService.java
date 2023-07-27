@@ -1,21 +1,16 @@
 package com.techisgood.carrentals.payments;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.springframework.stereotype.Service;
-
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
-import com.stripe.model.PaymentMethodCollection;
-import com.stripe.model.SetupIntent;
+import com.stripe.model.*;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.ConfirmationMethod;
 import com.techisgood.carrentals.model.DbUserDemographics;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @Service
 public class RemotePaymentsService {

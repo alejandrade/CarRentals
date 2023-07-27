@@ -1,11 +1,5 @@
 package com.techisgood.carrentals.user;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.techisgood.carrentals.exception.RemoteServiceException;
@@ -15,8 +9,12 @@ import com.techisgood.carrentals.model.DbUserDemographics;
 import com.techisgood.carrentals.model.PaymentsCustomer;
 import com.techisgood.carrentals.payments.PaymentsService;
 import com.techisgood.carrentals.payments.RemotePaymentsService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

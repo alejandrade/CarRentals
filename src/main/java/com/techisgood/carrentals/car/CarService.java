@@ -41,5 +41,9 @@ public class CarService {
         return cars.map(CarDto::from);
     }
 
-    // Additional methods related to other CRUD operations can be added here as needed.
+    @Transactional(readOnly = true)
+    public CarDto get(String id) {
+        return carRepository.findById(id).map(CarDto::from).orElse(null);
+    }
+
 }

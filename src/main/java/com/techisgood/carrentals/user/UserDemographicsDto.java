@@ -1,13 +1,11 @@
 package com.techisgood.carrentals.user;
 
-import java.time.LocalDate;
-
-import javax.validation.constraints.NotNull;
-
 import com.techisgood.carrentals.model.DbUserDemographics.Gender;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
