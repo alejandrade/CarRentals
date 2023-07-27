@@ -11,7 +11,7 @@ CREATE TABLE car_rentals.payments_invoices (id CHAR(36) NOT NULL PRIMARY KEY DEF
     				created_by CHAR(36),
     				updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     				updated_by char(36),
-					CONSTRAINT fk_payments_invoice_rentals foreign key (rental_id) references car_rentals.rentals(id) on delete cascade, on update cascade
-					CONSTRAINT fk_payments_invoice_users_payer foreign key (payer_id) references car_rentals.users(id) on delete cascade, on update cascade
+					CONSTRAINT fk_payments_invoice_rentals foreign key (rental_id) references car_rentals.rentals(id) on delete cascade, on update cascade,
+					CONSTRAINT fk_payments_invoice_users_payer foreign key (payer_id) references car_rentals.users(id) on delete cascade, on update cascade,
 					CONSTRAINT fk_payments_invoice_users_paid foreign key (paid_by) references car_rentals.users(id) on delete cascade, on update cascade
 );
