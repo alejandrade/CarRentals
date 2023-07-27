@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/staff/**").hasAuthority(UserAuthority.ROLE_STAFF.name())
                         .requestMatchers("/patron/**").hasAuthority(UserAuthority.ROLE_PATRON.name())
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/remote-payments/**").permitAll()
                         .anyRequest().authenticated() // ensuring all other routes require authentication
                 )
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

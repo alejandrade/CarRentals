@@ -19,4 +19,7 @@ public class RemotePaymentsProperties {
 	
 	@Value("${stripe.checkout-url-cancel}")
 	private String checkoutUrlCancel;
+	
+	@Value("${stripe.webhook-secret}")
+	private String webhookSecret;
 }
