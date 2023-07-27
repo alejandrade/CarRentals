@@ -2,8 +2,9 @@ import React from "react";
 import {createBrowserRouter} from "react-router-dom";
 import AuthorizationWrapper from "./components/AuthorizationWrapper";
 import LoginPage from "./pages/login/LoginPage";
-import DashPage from "./pages/dash/DashPage";
 import DemographicsPage from "./pages/demographics/DemographicsPage";
+import AuthoritySelectPage from "./pages/RoleSelect/AuthoritySelectPage";
+import StaffDash from "./pages/staff/StaffDash";
 
 export default createBrowserRouter([
     {
@@ -12,16 +13,49 @@ export default createBrowserRouter([
             <AuthorizationWrapper>
                 <LoginPage/>
             </AuthorizationWrapper>
-        )
-        ,
+        ),
     },
     {
         path: "/dash",
         element: (
             <AuthorizationWrapper>
-                <DashPage/>
+                <AuthoritySelectPage/>
             </AuthorizationWrapper>
         ),
+        children: [
+            {
+                path: "user",
+                element: (
+                    <AuthorizationWrapper>
+                        <StaffDash/>
+                    </AuthorizationWrapper>
+                )
+            },
+            {
+                path: "patron",
+                element: (
+                    <AuthorizationWrapper>
+                        <p>patron</p>
+                    </AuthorizationWrapper>
+                )
+            },
+            {
+                path: "admin",
+                element: (
+                    <AuthorizationWrapper>
+                        <p>admin</p>
+                    </AuthorizationWrapper>
+                )
+            },
+            {
+                path: "staff",
+                element: (
+                    <AuthorizationWrapper>
+                        <p>staff</p>
+                    </AuthorizationWrapper>
+                )
+            }
+        ]
     },
     {
         path: "/demographics",
