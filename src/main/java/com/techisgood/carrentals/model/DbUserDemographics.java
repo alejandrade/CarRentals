@@ -1,14 +1,11 @@
 package com.techisgood.carrentals.model;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
-
-import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "user_demographics", catalog = "car_rentals")

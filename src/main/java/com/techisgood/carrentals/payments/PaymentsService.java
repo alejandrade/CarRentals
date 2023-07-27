@@ -1,9 +1,5 @@
 package com.techisgood.carrentals.payments;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.PaymentsCustomer;
 import com.techisgood.carrentals.model.PaymentsInvoice;
@@ -13,6 +9,9 @@ import com.techisgood.carrentals.user.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

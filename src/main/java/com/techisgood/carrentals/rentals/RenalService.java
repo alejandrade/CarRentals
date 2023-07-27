@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.rentals;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public class RenalService {
 	private final UserRepository userRepository;
 	
 	@Transactional
-	public Rental createRental(String carId, String renterId, Double odometer, LocalDateTime rentalDateTime) throws IllegalArgumentException {
+	public Rental createRental(String carId, String renterId, BigDecimal odometer, LocalDateTime rentalDateTime) throws IllegalArgumentException {
 		Optional<Car> car = carRepository.findById(carId);
 		if (car.isEmpty()) {
 			throw new IllegalArgumentException("car_id");
@@ -37,7 +38,7 @@ public class RenalService {
 		rental.setCar(car.get());
 		rental.setRenter(renter.get());
 		rental.setInitialOdometerReading(odometer);
-		rental.setRentalDateTime(rentalDateTime);
+		rental.setRentalDatetime(rentalDateTime);
 		
 		rentalRepository.save(rental);
 		return rental;

@@ -1,54 +1,59 @@
 package com.techisgood.carrentals.model;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.techisgood.carrentals.model.audit.Auditable;
+import com.techisgood.carrentals.model.audit.Versioned;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.math.BigDecimal;
 
 @Entity
+@Table(name = "cars", catalog = "car_rentals")
 @Getter
 @Setter
-@Table(name="cars", catalog="car_rentals")
-public class Car {
+public class Car extends Versioned {
 
-	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(columnDefinition = "char(36) default (uuid())", nullable = false)
-	private String id;
-	
-	
-	
-	
-	
-	
-	@CreatedDate
-    @Column(name = "created_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-	
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(columnDefinition = "char(36) default (uuid())", nullable = false)
+    private String id;
 
-    @CreatedBy
-    @Column(name = "created_by", columnDefinition = "char(36)")
-    private String createdBy;
+    @Column(nullable = false, length = 255)
+    private String make;
 
-    @LastModifiedDate
-    @Column(name = "updated_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
-    private LocalDateTime updatedAt;
+    @Column(name = "rent_price", precision = 10, scale = 2)
+    private BigDecimal rentPrice;
 
+    @Column(nullable = false, length = 255)
+    private String model;
 
-    @LastModifiedBy
-    @Column(name = "updated_by", columnDefinition = "char(36)")
-    private String updatedBy;
-    
+    @Column(nullable = false)
+    private Integer year;
+
+    @Column(nullable = false, unique = true, length = 17)
+    private String vin;
+
+    @Column(nullable = false, length = 50)
+    private String color;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal mileage;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(nullable = false)
+    private Boolean availability = true;
+
+    @Column(name = "license_plate", nullable = false, length = 50)
+    private String licensePlate;
+
+    @Column(nullable = false, length = 50)
+    private String status;
+
+    @Embedded
+    private Auditable auditable;
 }

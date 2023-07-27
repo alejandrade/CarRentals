@@ -1,15 +1,11 @@
 package com.techisgood.carrentals.security;
 
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.user.UserRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +21,7 @@ public class JwtTokenProvider {
     private final String jwtSecret = "yourSecretKey";  // Replace with your secret key
     private final long jwtExpirationInMs = 2629743200L;  // 1 month
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String generateToken(Authentication authentication) {
         DbUser userPrincipal = (DbUser) authentication.getPrincipal();
 

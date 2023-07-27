@@ -1,11 +1,11 @@
 package com.techisgood.carrentals.security;
 
-import static com.techisgood.carrentals.authorities.UserAuthority.ROLE_ANON;
-import static org.springframework.security.core.context.SecurityContextHolder.getContext;
-
-import java.io.IOException;
-import java.util.List;
-
+import com.techisgood.carrentals.user.UserDetailsServiceImpl;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,13 +13,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.techisgood.carrentals.user.UserDetailsServiceImpl;
+import java.io.IOException;
+import java.util.List;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import static com.techisgood.carrentals.authorities.UserAuthority.ROLE_ANON;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

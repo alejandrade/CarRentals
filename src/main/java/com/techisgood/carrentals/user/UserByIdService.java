@@ -1,12 +1,10 @@
 package com.techisgood.carrentals.user;
 
-import java.util.Optional;
-
+import com.techisgood.carrentals.model.DbUser;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.techisgood.carrentals.model.DbUser;
-
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
