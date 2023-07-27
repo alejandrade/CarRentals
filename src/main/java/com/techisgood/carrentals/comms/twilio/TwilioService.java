@@ -2,7 +2,6 @@ package com.techisgood.carrentals.comms.twilio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techisgood.carrentals.exception.InvalidPhoneNumberException;
-import com.techisgood.carrentals.exception.RemoteServiceException;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -65,10 +64,10 @@ public class TwilioService {
     }
 
 
-    @CircuitBreaker(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback" )
-    @RateLimiter(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback"  )
-    @Retry(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback" )
-    @Bulkhead(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
+    @CircuitBreaker(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback" )
+    @RateLimiter(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback"  )
+    @Retry(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback" )
+    @Bulkhead(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback")
     private TwilioVerifyResponse sendHttpVerification(String phoneNumber, TwilioChannels channels) throws IOException, InterruptedException {
         String encodedPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
 
@@ -97,10 +96,10 @@ public class TwilioService {
     }
 
 
-    @CircuitBreaker(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback" )
-    @RateLimiter(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
-    @Retry(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
-    @Bulkhead(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
+    @CircuitBreaker(name = "twilioVerifyApi", fallbackMethod = "checkVerificationCodeFallback" )
+    @RateLimiter(name = "twilioVerifyApi", fallbackMethod = "checkVerificationCodeFallback")
+    @Retry(name = "twilioVerifyApi", fallbackMethod = "checkVerificationCodeFallback")
+    @Bulkhead(name = "twilioVerifyApi", fallbackMethod = "checkVerificationCodeFallback")
     private TwilioVerifyResponse checkVerificationCode(String phoneNumber, String verificationCode) throws IOException, InterruptedException {
         String encodedPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
 

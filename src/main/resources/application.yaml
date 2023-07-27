@@ -35,6 +35,9 @@ stripe:
   checkout-url-success: http://localhost:3000/checkout-success
   checkout-url-cancel: http://localhost:3000/checkout-cancel
 
+
+## Circuit Breaker
+
 resilience4j:
   circuitbreaker:
     configs:
@@ -44,7 +47,9 @@ resilience4j:
         eventConsumerBufferSize: 10
         registerHealthIndicator: true
     instances:
-      twilioApi:
+      twilioVerifyApi:
+        baseConfig: default
+      twilioStartVerificationApi:
         baseConfig: default
 
   ratelimiter:
@@ -54,7 +59,9 @@ resilience4j:
         limitRefreshPeriod: 1s
         timeoutDuration: 0s
     instances:
-      twilioApi:
+      twilioVerifyApi:
+        baseConfig: default
+      twilioStartVerificationApi:
         baseConfig: default
 
   retry:
@@ -63,7 +70,9 @@ resilience4j:
         max-attempts: 3
         waitDuration: 2s
     instances:
-      twilioApi:
+      twilioVerifyApi:
+        baseConfig: default
+      twilioStartVerificationApi:
         baseConfig: default
 
   bulkhead:
@@ -72,5 +81,8 @@ resilience4j:
         maxConcurrentCalls: 20
         maxWaitDuration: 500ms
     instances:
-      twilioApi:
+      twilioVerifyApi:
         baseConfig: default
+      twilioStartVerificationApi:
+        baseConfig: default
+# ------
