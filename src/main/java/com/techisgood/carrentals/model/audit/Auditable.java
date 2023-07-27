@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Embeddable
-public abstract class Auditable {
+public class Auditable {
 
     @CreatedDate
     @Column(name = "created_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP")

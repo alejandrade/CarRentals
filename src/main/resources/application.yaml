@@ -2,8 +2,11 @@ aws:
   region: us-east-2
   s3:
     bucket: carrentaluserfiles
-
+logging:
+  level:
+    root: DEBUG
 spring:
+
   profiles:
     active: dev
   datasource:
