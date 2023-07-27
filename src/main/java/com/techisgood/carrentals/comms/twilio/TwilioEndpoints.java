@@ -33,7 +33,10 @@ public class TwilioEndpoints {
 
     @PostMapping("/startVerification")
     public ResponseEntity<TwilioVerifyResponse> processTwilioRequest(@Valid @RequestBody TwilioDto twilioRequest) throws InvalidPhoneNumberException {
-        TwilioVerifyResponse twilioVerifyResponse = twilioService.sendVerification(twilioRequest.getPhoneNumber(), twilioRequest.getChannel());
+        String contact = twilioRequest.getChannel().equals(TwilioChannels.SMS)
+                ? twilioRequest.getPhoneNumber()
+                : twilioRequest.getEmail();
+        TwilioVerifyResponse twilioVerifyResponse = twilioService.sendVerification(contact, twilioRequest.getChannel());
         return ResponseEntity.ok(twilioVerifyResponse);
     }
 
@@ -41,7 +44,12 @@ public class TwilioEndpoints {
     public ResponseEntity<TwilioAuthResponse> verifyTwilioCode(@Valid @RequestBody TwilioVerificationDto dto) {
         var resp = twilioService.verify(dto.getCode(), dto.getPhoneNumber());
         if (resp.isVerified()) {
-            DbUser user = userCreateIfNotExistService.createIfNoneExists(dto.getPhoneNumber(), UserAuthority.ROLE_USER);
+            String contact = dto.getPhoneNumber() != null
+                    ? dto.getPhoneNumber()
+                    : dto.getEmail();
+
+
+            DbUser user = userCreateIfNotExistService.createIfNoneExists(contact, UserAuthority.ROLE_USER);
             // Create an authentication token and set it in the security context
             List<GrantedAuthority> authorities = authorityRepository.findByUserId(user.getId()) // hypothetical method to get roles
                     .stream()

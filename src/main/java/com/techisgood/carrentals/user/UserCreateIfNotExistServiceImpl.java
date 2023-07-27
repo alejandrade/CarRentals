@@ -30,6 +30,7 @@ public class UserCreateIfNotExistServiceImpl implements UserCreateIfNotExistServ
             DbUser dbUser = new DbUser();
             if (isEmail(phoneNumberEmail)) {
                 dbUser.setEmail(phoneNumberEmail);
+                dbUser.setIsEmailAuth(true);
             } else {
                 dbUser.setPhoneNumber(phoneNumberEmail);
             }
@@ -38,8 +39,6 @@ public class UserCreateIfNotExistServiceImpl implements UserCreateIfNotExistServ
             authoritiesCreateService.createAuthorityForUser(dbUser, userAuthority);
             authorityRepository.flush();
             userRepository.flush();
-            dbUser.getAuthorities();
-            
             return dbUser;
         }
 

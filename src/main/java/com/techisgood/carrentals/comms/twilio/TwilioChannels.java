@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum TwilioChannels {
-    SMS("sms"), CALL("call"), EMAIL("email");
+    SMS("sms"), EMAIL("email");
 
     private final String channel;
 }
