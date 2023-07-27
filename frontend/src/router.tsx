@@ -5,6 +5,10 @@ import LoginPage from "./pages/login/LoginPage";
 import DemographicsPage from "./pages/demographics/DemographicsPage";
 import AuthoritySelectPage from "./pages/RoleSelect/AuthoritySelectPage";
 import StaffDash from "./pages/staff/StaffDash";
+import StandardLayout from "./components/StandardLayout";
+import UserDash from "./pages/user/UserDash";
+import PatronDash from "./pages/patron/PatronDash";
+import AdminDash from "./pages/admin/AdminDash";
 
 export default createBrowserRouter([
     {
@@ -19,40 +23,34 @@ export default createBrowserRouter([
         path: "/dash",
         element: (
             <AuthorizationWrapper>
-                <AuthoritySelectPage/>
+                <StandardLayout>
+                    <AuthoritySelectPage/>
+                </StandardLayout>
             </AuthorizationWrapper>
         ),
         children: [
             {
                 path: "user",
                 element: (
-                    <AuthorizationWrapper>
-                        <StaffDash/>
-                    </AuthorizationWrapper>
+                    <UserDash/>
                 )
             },
             {
                 path: "patron",
                 element: (
-                    <AuthorizationWrapper>
-                        <p>patron</p>
-                    </AuthorizationWrapper>
+                    <PatronDash/>
                 )
             },
             {
                 path: "admin",
                 element: (
-                    <AuthorizationWrapper>
-                        <p>admin</p>
-                    </AuthorizationWrapper>
+                    <AdminDash/>
                 )
             },
             {
                 path: "staff",
                 element: (
-                    <AuthorizationWrapper>
-                        <p>staff</p>
-                    </AuthorizationWrapper>
+                    <StaffDash/>
                 )
             }
         ]
