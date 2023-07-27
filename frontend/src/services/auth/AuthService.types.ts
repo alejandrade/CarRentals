@@ -13,6 +13,7 @@ export type TwilioAuthResponse = {
     verified: boolean;
     token: string;
     twilioVerifyResponse :TwilioVerifyResponse;
+    authorities: string[];
 };
 
 export type TwilioVerifyResponse = {

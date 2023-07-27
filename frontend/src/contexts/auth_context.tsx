@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {createContext, useContext, useState, ReactNode, useEffect} from "react";
 
 interface AuthContextType {
     token: string | null;
-    login: (token: string) => void;
+    login: (token: string, authorities: string[]) => void;
     logout: () => void;
     isAuthenticated: boolean;
+    authorities: string[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,23 +15,35 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [token, setToken] = useState<string | null>(
-        localStorage.getItem("token"));
+    const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+    const [authorities, setAuthorities] = useState<string[]>([]);
 
-    const login = (newToken: string) => {
+    useEffect(()=>{
+        const auths = localStorage.getItem("authorities");
+        if (auths) {
+            setAuthorities( auths.split(","));
+        }
+
+    }, [])
+
+    const login = (newToken: string, authorities: string[]) => {
         setToken(newToken);
+        setAuthorities(authorities);
         // Optionally, you can store the token in localStorage/sessionStorage
         localStorage.setItem('token', newToken);
+        localStorage.setItem('authorities', authorities.join(","));
     };
 
     const logout = () => {
         setToken(null);
+        setAuthorities([])
         // Optionally, remove the token from localStorage/sessionStorage
         localStorage.removeItem('token');
+        localStorage.removeItem('authorities')
     };
 
     return (
-        <AuthContext.Provider value={{ token, login, logout, isAuthenticated: token !== null }}>
+        <AuthContext.Provider value={{ token, login, logout, isAuthenticated: token !== null, authorities }}>
             {children}
         </AuthContext.Provider>
     );

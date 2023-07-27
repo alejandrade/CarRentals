@@ -1,19 +1,34 @@
 import React from "react";
 import {createBrowserRouter} from "react-router-dom";
-import RedirectToRootIfNotAuthenticated from "./components/RedirectToRootIfNotAuthenticated";
+import AuthorizationWrapper from "./components/AuthorizationWrapper";
 import LoginPage from "./pages/login/LoginPage";
+import DashPage from "./pages/dash/DashPage";
+import DemographicsPage from "./pages/demographics/DemographicsPage";
 
 export default createBrowserRouter([
     {
         path: "/",
-        element: <LoginPage/>,
+        element: (
+            <AuthorizationWrapper>
+                <LoginPage/>
+            </AuthorizationWrapper>
+        )
+        ,
     },
     {
         path: "/dash",
         element: (
-            <RedirectToRootIfNotAuthenticated>
-                <div>Logged in!</div>
-            </RedirectToRootIfNotAuthenticated>
+            <AuthorizationWrapper>
+                <DashPage/>
+            </AuthorizationWrapper>
+        ),
+    },
+    {
+        path: "/demographics",
+        element: (
+            <AuthorizationWrapper>
+                <DemographicsPage/>
+            </AuthorizationWrapper>
         ),
     },
 ]);

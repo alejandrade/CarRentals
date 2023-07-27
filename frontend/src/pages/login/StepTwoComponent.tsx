@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Box, Button, Typography, Alert } from '@mui/material';
-import AuthService from "../../services/AuthService";
+import AuthService from "../../services/auth/AuthService";
 import {useAuth} from "../../contexts/auth_context";
 
 type StepTwoProps = {
@@ -30,7 +30,7 @@ const StepTwoComponent: React.FC<StepTwoProps> = ({
             setErrorMessage("Code Doesn't seem to match");
         } else {
             setErrorMessage(null);
-            login(validated.token);
+            login(validated.token, validated.authorities);
             onLogin();
         }
     }

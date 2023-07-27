@@ -4,7 +4,7 @@ import PhoneInputComponent from "../../components/PhoneInputComponent";
 import EmailInputComponent from "../../components/EmailInputComponent";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import LoadingButton from '@mui/lab/LoadingButton';
-import AuthService from "../../services/AuthService";
+import AuthService from "../../services/auth/AuthService";
 
 type StepOneProps = {
     username: string;
