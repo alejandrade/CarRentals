@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaAuditing
 @SpringBootApplication
-@EnableCaching
 @EnableJpaRepositories(basePackages = "com.techisgood.carrentals")
 public class CarRentalsApplication {
 

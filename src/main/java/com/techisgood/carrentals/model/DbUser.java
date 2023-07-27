@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.model;
 
+import com.techisgood.carrentals.user.UserEntityListener;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,7 @@ import java.util.List;
 @Table(name = "users", catalog = "car_rentals")
 @Getter
 @Setter
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, UserEntityListener.class})
 public class DbUser {
 
     @Id
@@ -47,7 +48,7 @@ public class DbUser {
     @Column(name = "account_non_locked", columnDefinition = "tinyint(1) default 1")
     private Boolean accountNonLocked = true;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Authority> authorities;
 
     @CreatedDate
