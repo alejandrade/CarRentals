@@ -1,12 +1,13 @@
 package com.techisgood.carrentals.comms.twilio;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TwilioAuthResponse {
+public class TwilioVerifyResponse {
     private boolean verified;
-    private String token;
-    private TwilioVerifyResponse twilioVerifyResponse;
+    private String error;
+    private int code;
 }

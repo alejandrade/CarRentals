@@ -27,6 +27,7 @@ class AuthService {
             return true;
         } else {
             console.error(`Unexpected response from startVerification: ${response.status}`);
+            console.error(response.body);
             return false;
         }
 

@@ -2,6 +2,11 @@ package com.techisgood.carrentals.comms.twilio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techisgood.carrentals.exception.InvalidPhoneNumberException;
+import com.techisgood.carrentals.exception.RemoteServiceException;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +36,9 @@ public class TwilioService {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public void sendVerification(String phoneNumber, TwilioChannels channels) throws InvalidPhoneNumberException {
+    public TwilioVerifyResponse sendVerification(String phoneNumber, TwilioChannels channels) throws InvalidPhoneNumberException {
         if(properties.isDebug()) {
-            return;
+            return new TwilioVerifyResponse(true, "", 200);
         }
 
         Matcher matcher = PHONE_PATTERN.matcher(phoneNumber);
@@ -41,31 +46,30 @@ public class TwilioService {
             throw new InvalidPhoneNumberException("Invalid phone number format: " + phoneNumber);
         }
 
-        var verification = sendHttpVerification(phoneNumber, channels);
-
-        log.info(verification.getStatus());
+        return sendHttpVerification(phoneNumber, channels);
     }
 
     @SneakyThrows
-    public boolean verify(String code, String phoneNumber) throws InvalidPhoneNumberException {
+    public TwilioVerifyResponse verify(String code, String phoneNumber) throws InvalidPhoneNumberException {
         if (properties.isDebug()) {
-            return true;
+            return new TwilioVerifyResponse(true, "", 200);
         }
 
         Matcher matcher = PHONE_PATTERN.matcher(phoneNumber);
         if (!matcher.matches()) {
-            throw new InvalidPhoneNumberException("Invalid phone number format: " + phoneNumber);
+            return new TwilioVerifyResponse(false, "invalid phone number", 400);
         }
 
-        TwilioVerificationCheckResponse resp = checkVerificationCode(phoneNumber, code);
-
-
-        return Objects.equals(resp.getStatus(), "approved");
+        var resp = checkVerificationCode(phoneNumber, code);
+        return new TwilioVerifyResponse(resp.isVerified(), "", 200);
     }
 
 
-    //todo: circuit breaker
-    private TwilioVerificationResponse sendHttpVerification(String phoneNumber, TwilioChannels channels) throws IOException, InterruptedException {
+    @CircuitBreaker(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback" )
+    @RateLimiter(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback"  )
+    @Retry(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback" )
+    @Bulkhead(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
+    private TwilioVerifyResponse sendHttpVerification(String phoneNumber, TwilioChannels channels) throws IOException, InterruptedException {
         String encodedPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
 
         String auth = String.format("%s:%s", properties.getSid(), properties.getAuthToken());
@@ -86,13 +90,18 @@ public class TwilioService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() > 300) {
             log.error(response.body());
-            throw new RuntimeException();
+            return new TwilioVerifyResponse(false, response.body(), response.statusCode());
         }
 
-        return objectMapper.readValue(response.body(), TwilioVerificationResponse.class);
+        return new TwilioVerifyResponse(true, "", 200);
     }
 
-    private TwilioVerificationCheckResponse checkVerificationCode(String phoneNumber, String verificationCode) throws IOException, InterruptedException {
+
+    @CircuitBreaker(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback" )
+    @RateLimiter(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
+    @Retry(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
+    @Bulkhead(name = "twilioApi", fallbackMethod = "checkVerificationCodeFallback")
+    private TwilioVerifyResponse checkVerificationCode(String phoneNumber, String verificationCode) throws IOException, InterruptedException {
         String encodedPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
 
         // Build the authentication header using Base64 encoding
@@ -115,13 +124,15 @@ public class TwilioService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() > 300) {
             log.error(response.body());
-            throw new RuntimeException();
+            return new TwilioVerifyResponse(false, response.body(), response.statusCode());
         }
-        return objectMapper.readValue(response.body(), TwilioVerificationCheckResponse.class);
+
+        TwilioVerificationCheckResponse resp = objectMapper.readValue(response.body(), TwilioVerificationCheckResponse.class);
+        return new TwilioVerifyResponse(Objects.equals(resp.getStatus(), "approved"), "", 200);
     }
 
-
-
-
-
+    //Circuit breaker pattern
+    private TwilioVerifyResponse checkVerificationCodeFallback() {
+        return new TwilioVerifyResponse(false, "twilio api down", 500);
+    }
 }

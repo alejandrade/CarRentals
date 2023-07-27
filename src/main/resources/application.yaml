@@ -34,3 +34,43 @@ stripe:
   secret-key-test: sk_test_51NPTGWHa21OTRYKEKdmY1MaHU7Es1Zt6KP3HFuUysNyiRzkYxIWH2cvJlD1X1P78JZBf3YQ0Mn205mHWW38kOZVA00jxVN3SaT
   checkout-url-success: http://localhost:3000/checkout-success
   checkout-url-cancel: http://localhost:3000/checkout-cancel
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        registerHealthIndicator: true
+    instances:
+      twilioApi:
+        baseConfig: default
+
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s
+    instances:
+      twilioApi:
+        baseConfig: default
+
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        waitDuration: 2s
+    instances:
+      twilioApi:
+        baseConfig: default
+
+  bulkhead:
+    configs:
+      default:
+        maxConcurrentCalls: 20
+        maxWaitDuration: 500ms
+    instances:
+      twilioApi:
+        baseConfig: default

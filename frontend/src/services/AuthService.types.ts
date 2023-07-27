@@ -12,5 +12,11 @@ export type TwilioVerificationDto = {
 export type TwilioAuthResponse = {
     verified: boolean;
     token: string;
+    twilioVerifyResponse :TwilioVerifyResponse;
 };
 
+export type TwilioVerifyResponse = {
+    verified: boolean;
+    error?: string;
+    code: number;
+}

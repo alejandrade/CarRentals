@@ -27,15 +27,15 @@ public class TwilioEndpoints {
     private final UserCreateIfNotExistService userCreateIfNotExistService;
 
     @PostMapping("/startVerification")
-    public ResponseEntity<?> processTwilioRequest(@Valid @RequestBody TwilioDto twilioRequest) throws InvalidPhoneNumberException {
+    public ResponseEntity<TwilioVerifyResponse> processTwilioRequest(@Valid @RequestBody TwilioDto twilioRequest) throws InvalidPhoneNumberException {
         twilioService.sendVerification(twilioRequest.getPhoneNumber(), twilioRequest.getChannel());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/verify")
     public ResponseEntity<TwilioAuthResponse> verifyTwilioCode(@Valid @RequestBody TwilioVerificationDto dto) {
-        boolean verify = twilioService.verify(dto.getCode(), dto.getPhoneNumber());
-        if (verify) {
+        var resp = twilioService.verify(dto.getCode(), dto.getPhoneNumber());
+        if (resp.isVerified()) {
             DbUser user = userCreateIfNotExistService.createIfNoneExists(dto.getPhoneNumber(), UserAuthority.ROLE_USER);
             // Create an authentication token and set it in the security context
             List<GrantedAuthority> authorities = user.getAuthorities() // hypothetical method to get roles
@@ -45,9 +45,9 @@ public class TwilioEndpoints {
             Authentication auth = new UsernamePasswordAuthenticationToken(user, null, authorities);
             String jwtToken = jwtTokenProvider.generateToken(auth);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            return ResponseEntity.ok(new TwilioAuthResponse(true, jwtToken));
+            return ResponseEntity.ok(new TwilioAuthResponse(true, jwtToken, resp));
 
         }
-        return ResponseEntity.ok(new TwilioAuthResponse(false, null));
+        return ResponseEntity.ok(new TwilioAuthResponse(false, null, resp));
     }
 }
