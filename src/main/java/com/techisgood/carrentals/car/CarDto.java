@@ -20,6 +20,7 @@ public class CarDto {
     private Boolean availability;
     private String licensePlate;
     private String status;
+    private Integer version;
 
     // Audit properties
     private LocalDateTime createdAt;
@@ -40,7 +41,7 @@ public class CarDto {
         dto.setAvailability(car.getAvailability());
         dto.setLicensePlate(car.getLicensePlate());
         dto.setStatus(car.getStatus());
-
+        dto.setVersion(car.getVersion());
         // Setting audit properties
         dto.setCreatedAt(car.getAuditable().getCreatedAt());
         dto.setUpdatedAt(car.getAuditable().getUpdatedAt());

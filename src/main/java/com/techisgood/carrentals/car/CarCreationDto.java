@@ -53,4 +53,7 @@ public class CarCreationDto {
     @NotBlank(message = "Status is required")
     @Size(max = 50, message = "Status should not exceed 50 characters")
     private String status;
+
+    @PositiveOrZero(message = "Version must be positive or zero")
+    private Integer version;
 }

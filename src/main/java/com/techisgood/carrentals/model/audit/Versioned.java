@@ -13,5 +13,5 @@ public abstract class Versioned {
 
     @Version
     @Column(name = "version", nullable = false, columnDefinition = "int default 0")
-    private int version = 0;
+    private Integer version = 0;
 }

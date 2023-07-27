@@ -18,7 +18,6 @@ public class CarService {
         // Check if a car with the given VIN exists
         Car car = carRepository.findByVin(carCreationDto.getVin()).orElse(new Car());
 
-        // Map DTO to Car
         car.setMake(carCreationDto.getMake());
         car.setModel(carCreationDto.getModel());
         car.setYear(carCreationDto.getYear());
@@ -29,8 +28,7 @@ public class CarService {
         car.setAvailability(carCreationDto.getAvailability());
         car.setLicensePlate(carCreationDto.getLicensePlate());
         car.setStatus(carCreationDto.getStatus());
-
-        // Additional mapping can be added as needed
+        car.setVersion(carCreationDto.getVersion());
 
         return carRepository.save(car);
     }
