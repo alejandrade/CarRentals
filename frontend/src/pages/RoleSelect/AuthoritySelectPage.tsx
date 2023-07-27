@@ -5,26 +5,26 @@ import { useNavigate } from "react-router-dom";
 import { Outlet } from 'react-router-dom';
 
 const AuthoritySelectPage: React.FC = () => {
+    const roles = ["user", "patron", "staff"];
     const { authorities } = useAuth();
     const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = React.useState(0);
-
-    useEffect(() => {
-        console.log(authorities);
-        if (authorities.length === 1) {
-            onSelect(authorities[0].replace("ROLE_", "").toLowerCase());
-        }
-    }, [authorities]);  // added authorities to dependency array
-
     function onSelect(path: string) {
-        console.log(path);
-        navigate(`/dash/${path.replace("ROLE_", "").toLowerCase()}`);
+        navigate(`/dash/${path}`);
     }
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setSelectedTab(newValue);
-        onSelect(authorities[newValue]);
+        onSelect(getAuthorities()[newValue]);
     };
+
+    function getAuthorities() {
+        if (authorities.includes("ROLE_ADMIN")) {
+            return roles;
+        } else {
+            return authorities.map(x => x.replace("ROLE_", "").toLowerCase());
+        }
+    }
 
     return (
         <Grid container direction="column">
@@ -38,8 +38,8 @@ const AuthoritySelectPage: React.FC = () => {
                         indicatorColor="primary"
                         textColor="primary"
                     >
-                        {authorities.map((role, index) => (
-                            <Tab key={index} label={role.replace("ROLE_", "").toLowerCase()} />
+                        {getAuthorities().map((role, index) => (
+                            <Tab key={index} label={role} />
                         ))}
                     </Tabs>
                 </Box>
