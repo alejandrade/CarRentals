@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.techisgood.carrentals.cars.CarRepository;
+import com.techisgood.carrentals.car.CarRepository;
 import com.techisgood.carrentals.model.Car;
 import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.Rental;
