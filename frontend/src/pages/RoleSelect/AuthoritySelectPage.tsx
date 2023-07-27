@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Outlet } from 'react-router-dom';
 
 const AuthoritySelectPage: React.FC = () => {
-    const roles = ["user", "patron", "staff"];
+    const roles = ["user", "staff", "admin"];
     const { authorities } = useAuth();
     const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = React.useState(0);
