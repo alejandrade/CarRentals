@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -25,9 +24,9 @@ public class SecurityConfig {
         http.cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/user/**").hasAuthority(UserAuthority.ROLE_USER.name())
-                        .requestMatchers("/admin/**").hasAuthority(UserAuthority.ROLE_ADMIN.name())
-                        .requestMatchers("/staff/**").hasAuthority(UserAuthority.ROLE_STAFF.name())
-                        .requestMatchers("/patron/**").hasAuthority(UserAuthority.ROLE_PATRON.name())
+                        .requestMatchers("/admin/**").hasAuthority(UserAuthority.ROLE_USER.name())
+                        .requestMatchers("/staff/**").hasAuthority(UserAuthority.ROLE_USER.name())
+                        .requestMatchers("/patron/**").hasAuthority(UserAuthority.ROLE_USER.name())
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/remote-payments/**").permitAll()
                         .anyRequest().authenticated() // ensuring all other routes require authentication
