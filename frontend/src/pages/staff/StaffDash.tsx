@@ -1,7 +1,7 @@
 import * as React from 'react';
 import StandardLayout from "../../components/StandardLayout";
 
-const DashPage: React.FC = () => {
+const StaffDash: React.FC = () => {
 
     return (
         <StandardLayout>
@@ -10,4 +10,4 @@ const DashPage: React.FC = () => {
     );
 }
 
-export default DashPage;
+export default StaffDash;

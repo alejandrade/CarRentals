@@ -2,6 +2,7 @@ package com.techisgood.carrentals.comms.twilio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techisgood.carrentals.exception.InvalidPhoneNumberException;
+import com.techisgood.carrentals.user.UserNameValidator;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -35,31 +36,32 @@ public class TwilioService {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public TwilioVerifyResponse sendVerification(String phoneNumber, TwilioChannels channels) throws InvalidPhoneNumberException {
+    public TwilioVerifyResponse sendVerification(String username, TwilioChannels channels) throws InvalidPhoneNumberException {
         if(properties.isDebug()) {
             return new TwilioVerifyResponse(true, "", 200);
         }
 
-        Matcher matcher = PHONE_PATTERN.matcher(phoneNumber);
-        if (!matcher.matches()) {
-            throw new InvalidPhoneNumberException("Invalid phone number format: " + phoneNumber);
+        boolean isEmailorPhone = UserNameValidator.isEmailOrPhoneNumber(username);
+        if (!isEmailorPhone) {
+            throw new InvalidPhoneNumberException("Invalid phone number or email format: " + username);
         }
 
-        return sendHttpVerification(phoneNumber, channels);
+        return sendHttpVerification(username, channels);
     }
 
     @SneakyThrows
-    public TwilioVerifyResponse verify(String code, String phoneNumber) throws InvalidPhoneNumberException {
+    public TwilioVerifyResponse verify(String code, String username) throws InvalidPhoneNumberException {
         if (properties.isDebug()) {
             return new TwilioVerifyResponse(true, "", 200);
         }
 
-        Matcher matcher = PHONE_PATTERN.matcher(phoneNumber);
-        if (!matcher.matches()) {
+        boolean isEmailorPhone = UserNameValidator.isEmailOrPhoneNumber(username);
+
+        if (!isEmailorPhone) {
             return new TwilioVerifyResponse(false, "invalid phone number", 400);
         }
 
-        var resp = checkVerificationCode(phoneNumber, code);
+        var resp = checkVerificationCode(username, code);
         return new TwilioVerifyResponse(resp.isVerified(), "", 200);
     }
 
@@ -68,8 +70,8 @@ public class TwilioService {
     @RateLimiter(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback"  )
     @Retry(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback" )
     @Bulkhead(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback")
-    private TwilioVerifyResponse sendHttpVerification(String phoneNumber, TwilioChannels channels) throws IOException, InterruptedException {
-        String encodedPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
+    private TwilioVerifyResponse sendHttpVerification(String username, TwilioChannels channels) throws IOException, InterruptedException {
+        String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
 
         String auth = String.format("%s:%s", properties.getSid(), properties.getAuthToken());
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
@@ -83,7 +85,7 @@ public class TwilioService {
                 .header("Authorization", "Basic " + encodedAuth)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .timeout(Duration.ofSeconds(2)) // Set the timeout to 2 seconds
-                .POST(HttpRequest.BodyPublishers.ofString(String.format("To=%s&Channel=%s", encodedPhoneNumber, channels.getChannel())))
+                .POST(HttpRequest.BodyPublishers.ofString(String.format("To=%s&Channel=%s", encodedUsername, channels.getChannel())))
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -100,8 +102,8 @@ public class TwilioService {
     @RateLimiter(name = "twilioVerifyApi", fallbackMethod = "checkVerificationCodeFallback")
     @Retry(name = "twilioVerifyApi", fallbackMethod = "checkVerificationCodeFallback")
     @Bulkhead(name = "twilioVerifyApi", fallbackMethod = "checkVerificationCodeFallback")
-    private TwilioVerifyResponse checkVerificationCode(String phoneNumber, String verificationCode) throws IOException, InterruptedException {
-        String encodedPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
+    private TwilioVerifyResponse checkVerificationCode(String username, String verificationCode) throws IOException, InterruptedException {
+        String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
 
         // Build the authentication header using Base64 encoding
         String auth = String.format("%s:%s", properties.getSid(), properties.getAuthToken());
@@ -116,7 +118,7 @@ public class TwilioService {
                 .header("Authorization", "Basic " + encodedAuth)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .timeout(Duration.ofSeconds(2)) // Set the timeout to 2 seconds
-                .POST(HttpRequest.BodyPublishers.ofString(String.format("Code=%s&To=%s", verificationCode, encodedPhoneNumber)))
+                .POST(HttpRequest.BodyPublishers.ofString(String.format("Code=%s&To=%s", verificationCode, encodedUsername)))
                 .build();
 
         // Send the request and parse the response
