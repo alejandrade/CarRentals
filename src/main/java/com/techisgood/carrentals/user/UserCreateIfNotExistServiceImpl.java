@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.techisgood.carrentals.authorities.AuthoritiesCreateService;
 import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.model.DbUser;
+import com.techisgood.carrentals.repository.AuthorityRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ public class UserCreateIfNotExistServiceImpl implements UserCreateIfNotExistServ
     private final UserByEmailOrPhoneService useByEmailOrPhoneService;
     private final AuthoritiesCreateService authoritiesCreateService;
     private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
     @Override
     @Transactional
     public DbUser createIfNoneExists(String phoneNumberEmail, UserAuthority userAuthority) {
@@ -34,7 +36,9 @@ public class UserCreateIfNotExistServiceImpl implements UserCreateIfNotExistServ
 
             userRepository.save(dbUser);
             authoritiesCreateService.createAuthorityForUser(dbUser, userAuthority);
+            authorityRepository.flush();
             userRepository.flush();
+            
             return dbUser;
         }
 

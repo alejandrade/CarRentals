@@ -33,7 +33,7 @@ public class DbUser {
     private String phoneNumber;
 
     @Column(name = "is_email_auth", nullable = false, columnDefinition = "tinyint(1)")
-    private Boolean isEmailAuth;
+    private Boolean isEmailAuth = false;
 
     @Column(nullable = false, columnDefinition = "tinyint(1) default 1")
     private Boolean enabled = true;

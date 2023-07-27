@@ -50,7 +50,7 @@ public class RemotePaymentsService {
 	
 	public Customer getCustomerById(String customerId) throws StripeException {
 		Customer customer = Customer.retrieve(customerId);
-		if (customer.getDeleted()) return null;
+		if (customer.getDeleted() != null && customer.getDeleted()) return null;
 		return customer;
 	}
 	

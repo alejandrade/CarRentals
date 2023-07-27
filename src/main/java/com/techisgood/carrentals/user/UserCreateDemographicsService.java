@@ -1,6 +1,6 @@
 package com.techisgood.carrentals.user;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class UserCreateDemographicsService {
 			String first, 
 			String middle, 
 			String last,
-			Date dob,
+			LocalDate dob,
 			DbUserDemographics.Gender gender,
 			String address,
 			String city,
@@ -47,29 +47,30 @@ public class UserCreateDemographicsService {
 		if (user.isPresent())  
 		{
 			demo = new DbUserDemographics();
-//			demo.setUser_id(userId);
-//			demo.setFirst_name(first);
-//			demo.setMiddle_initial(middle);
-//			demo.setLast_name(last);
-//			demo.setDate_of_birth(dob);
-//			demo.setGender(gender);
-//			demo.setAddress(address);
-//			demo.setCity(city);
-//			demo.setState(state);
-//			demo.setPostal_code(zip);
-//			demo.setCountry(country);
-//			demo.setAdditional_info(additional);
+			demo.setUser(user.get());
+			demo.setFirstName(first);
+			demo.setMiddleInitial(middle);
+			demo.setLastName(last);
+			demo.setDateOfBirth(dob);
+			demo.setGender(gender);
+			demo.setAddress(address);
+			demo.setCity(city);
+			demo.setState(state);
+			demo.setPostalCode(zip);
+			demo.setCountry(country);
+			demo.setAdditionalInfo(additional);
 			 
 			userDemographicsRepository.save(demo);
 			 
 			//TODO(justin): There may be rollback issues here if later transactions cause demographics save to be rolled back, stripe will not rollback.
 			PaymentsCustomer customer = paymentsService.getCustomerByUserId(userId);
+			Customer createdCustomer = null;
 			try {
 				if (customer != null) {
 					// we have a customer .. but no remote match, so needs to be created in remote, and customer needs to be updated.
 					if (remotePaymentsService.getCustomerById(customer.getCustomerId()) == null) {
-						Customer c = remotePaymentsService.createCustomer(demo);
-						paymentsService.updateCustomer(userId, c.getId());
+						createdCustomer = remotePaymentsService.createCustomer(demo);
+						paymentsService.updateCustomer(userId, createdCustomer.getId());
 					}
 					//we have a customer, and the remote match is found, so update remote to match potentially new demographics info
 					else {
@@ -78,11 +79,20 @@ public class UserCreateDemographicsService {
 				}
 				else {
 					//no customer. just create fresh in both our copy and the remote copy.
-					Customer c = remotePaymentsService.createCustomer(demo);
-					paymentsService.updateCustomer(userId, c.getId());
+					createdCustomer = remotePaymentsService.createCustomer(demo);
+					paymentsService.createCustomer(user.get(), createdCustomer.getId());
 				}
 			} catch(StripeException e) {
 				throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
+			} catch(Exception e) {
+				if (createdCustomer != null) {
+					try {
+						createdCustomer.delete();
+					} catch (StripeException e1) {
+						throw new RemoteServiceException(RemoteService.STRIPE, e1.getMessage());
+					}
+					throw e;
+				}
 			}
 		}
 		return demo;

@@ -3,7 +3,7 @@ services:
     image: 'mysql:8.0'
     environment:
       - MYSQL_ROOT_HOSTS=%
-      - MYSQL_DATABASE=spring_boot_mysql
+      - MYSQL_DATABASE=car_rentals
       - MYSQL_ALLOW_EMPTY_PASSWORD=1
     ports:
       - "3306:3306"

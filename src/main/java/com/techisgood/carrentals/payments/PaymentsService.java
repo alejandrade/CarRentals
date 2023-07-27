@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.PaymentsCustomer;
 
 import lombok.RequiredArgsConstructor;
@@ -15,17 +16,17 @@ public class PaymentsService {
 	
 	public PaymentsCustomer getCustomerByUserId(String userId) {
 		Optional<PaymentsCustomer> pc = paymentsCustomerRepository.findByUserId(userId);
-		return pc.get();
+		return pc.orElse(null);
 	}
 	
-	public PaymentsCustomer createCustomer(String userId, String customerId) {
-		Optional<PaymentsCustomer> opc = paymentsCustomerRepository.findByUserId(userId);
+	public PaymentsCustomer createCustomer(DbUser user, String customerId) {
+		Optional<PaymentsCustomer> opc = paymentsCustomerRepository.findByUserId(user.getId());
 		if (opc.isPresent()) {
 			return opc.get();
 		}
 		else {
 			PaymentsCustomer pc = new PaymentsCustomer();
-			//pc.setUser(userId);
+			pc.setUser(user);
 			pc.setCustomerId(customerId);
 			paymentsCustomerRepository.save(pc);
 			return pc;

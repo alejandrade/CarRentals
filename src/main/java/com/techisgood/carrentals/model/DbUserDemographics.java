@@ -59,10 +59,12 @@ public class DbUserDemographics {
 
 	@Column(name = "additional_info", columnDefinition = "TEXT")
 	private String additionalInfo;
+	
 	public enum Gender {
         Male, Female, Other, Prefer_Not_To_Say;
     }
-
+	
+	
 	public String getFullNameFormatted() {
 		String fullNameFormatted = "";
 		if (this.firstName != null) {
