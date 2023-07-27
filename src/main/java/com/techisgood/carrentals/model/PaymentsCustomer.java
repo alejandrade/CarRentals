@@ -10,7 +10,7 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,7 @@ public class PaymentsCustomer {
 	@Column(columnDefinition = "char(36) default (uuid())", nullable = false)
 	private String id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_PAYMENTS_USER"))
 	private DbUser user;
 

@@ -1,0 +1,1 @@
+ALTER TABLE car_rentals.payments_invoice ADD COLUMN active tinyint default 1;

@@ -1,4 +1,4 @@
-CREATE TABLE car_rentals.payments_invoices (id CHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
+CREATE TABLE car_rentals.payments_invoice (id CHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
 					rental_id char(36) not null,
 					payer_id char(36) not null,
 					day_price int not null,
