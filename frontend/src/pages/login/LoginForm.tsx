@@ -13,7 +13,6 @@ const LoginForm: React.FC = () => {
     const [remember, setRemember] = useState<boolean>(false);
     const navigate = useNavigate();
 
-
     const handleNextClick = () => {
         setStep(1);
     };

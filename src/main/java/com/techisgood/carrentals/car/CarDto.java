@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class CarDto {
     private String id;
+    private String shortId;
     private String make;
     private BigDecimal rentPrice;
     private String model;
@@ -30,8 +31,10 @@ public class CarDto {
 
     public static CarDto from(Car car) {
         CarDto dto = new CarDto();
+        dto.setShortId(car.getShortId());
         dto.setId(car.getId());
         dto.setMake(car.getMake());
+        dto.setRentPrice(car.getRentPrice());
         dto.setModel(car.getModel());
         dto.setYear(car.getYear());
         dto.setVin(car.getVin());
@@ -43,10 +46,10 @@ public class CarDto {
         dto.setStatus(car.getStatus());
         dto.setVersion(car.getVersion());
         // Setting audit properties
-        dto.setCreatedAt(car.getAuditable().getCreatedAt());
-        dto.setUpdatedAt(car.getAuditable().getUpdatedAt());
-        dto.setCreatedBy(car.getAuditable().getCreatedBy());
-        dto.setUpdatedBy(car.getAuditable().getUpdatedBy());
+        dto.setCreatedAt(car.getCreatedAt());
+        dto.setUpdatedAt(car.getUpdatedAt());
+        dto.setCreatedBy(car.getCreatedBy());
+        dto.setUpdatedBy(car.getUpdatedBy());
 
         return dto;
     }

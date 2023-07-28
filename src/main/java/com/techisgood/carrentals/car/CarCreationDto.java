@@ -44,7 +44,7 @@ public class CarCreationDto {
     private BigDecimal price;
 
     @NotNull(message = "Availability is required")
-    private Boolean availability;
+    private Boolean availability = true;
 
     @NotBlank(message = "License Plate is required")
     @Size(max = 50, message = "License Plate should not exceed 50 characters")
@@ -55,5 +55,5 @@ public class CarCreationDto {
     private String status;
 
     @PositiveOrZero(message = "Version must be positive or zero")
-    private Integer version;
+    private Integer version = 0;
 }

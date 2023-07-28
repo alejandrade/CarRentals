@@ -7,7 +7,7 @@ import AuthoritySelectPage from "./pages/RoleSelect/AuthoritySelectPage";
 import StaffDash from "./pages/staff/StaffDash";
 import StandardLayout from "./components/StandardLayout";
 import UserDash from "./pages/user/UserDash";
-import PatronDash from "./pages/patron/PatronDash";
+import ClerkDash from "./pages/clerk/ClerkDash";
 import AdminDash from "./pages/admin/AdminDash";
 
 export default createBrowserRouter([
@@ -36,9 +36,9 @@ export default createBrowserRouter([
                 )
             },
             {
-                path: "patron",
+                path: "clerk",
                 element: (
-                    <PatronDash/>
+                    <ClerkDash/>
                 )
             },
             {

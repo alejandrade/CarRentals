@@ -19,6 +19,7 @@ public class CarService {
         Car car = carRepository.findByVin(carCreationDto.getVin()).orElse(new Car());
 
         car.setMake(carCreationDto.getMake());
+        car.setRentPrice(carCreationDto.getRentPrice());
         car.setModel(carCreationDto.getModel());
         car.setYear(carCreationDto.getYear());
         car.setVin(carCreationDto.getVin());

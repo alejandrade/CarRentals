@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "rental_pictures", catalog = "car_rentals")
 @Getter
 @Setter
-public class RentalPicture {
+public class RentalPicture extends Auditable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -39,7 +39,4 @@ public class RentalPicture {
 
     @Column(name = "taken_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
     private LocalDateTime takenAt;
-
-    @Embedded
-    private Auditable auditable;
 }

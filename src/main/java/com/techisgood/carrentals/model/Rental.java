@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "rentals", catalog = "car_rentals")
 @Getter
 @Setter
-public class Rental {
+public class Rental extends Auditable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -44,6 +44,4 @@ public class Rental {
     @Column(name = "return_datetime")
     private LocalDateTime returnDatetime;
 
-    @Embedded
-    private Auditable auditable;
 }

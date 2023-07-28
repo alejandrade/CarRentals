@@ -1,11 +1,11 @@
 package com.techisgood.carrentals.model;
 
-import com.techisgood.carrentals.model.audit.Auditable;
-import com.techisgood.carrentals.model.audit.Versioned;
+import com.techisgood.carrentals.model.audit.VersionedAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 
@@ -13,7 +13,8 @@ import java.math.BigDecimal;
 @Table(name = "cars", catalog = "car_rentals")
 @Getter
 @Setter
-public class Car extends Versioned {
+@EntityListeners(AuditingEntityListener.class)
+public class Car extends VersionedAuditable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -54,6 +55,7 @@ public class Car extends Versioned {
     @Column(nullable = false, length = 50)
     private String status;
 
-    @Embedded
-    private Auditable auditable;
+    @Column(name = "short_id", length = 8, insertable = false, updatable = false) // Added generated column mapping
+    private String shortId;
+
 }
