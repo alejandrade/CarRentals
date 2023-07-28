@@ -1,7 +1,5 @@
 package com.techisgood.carrentals.exception;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -18,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-public class CustomErrorController implements ErrorController {
+public class CustomErrorEndpoint implements ErrorController {
 
     private final ErrorAttributes errorAttributes;
 
