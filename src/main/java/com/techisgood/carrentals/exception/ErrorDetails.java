@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ErrorDetails {
     private String timestamp;
-    private int status;
+    private Integer status;
     private String error;
     private String message;
     private String path;
