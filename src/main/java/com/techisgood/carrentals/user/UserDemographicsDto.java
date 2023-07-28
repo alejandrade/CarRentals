@@ -4,7 +4,7 @@ import com.techisgood.carrentals.model.DbUserDemographics.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data

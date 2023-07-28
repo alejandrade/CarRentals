@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.validation.Valid;
+
 @Service
 @RequiredArgsConstructor
 public class CarService {
@@ -14,7 +16,7 @@ public class CarService {
     private final CarRepository carRepository;
 
     @Transactional
-    public Car createOrUpdateCar(CarCreationDto carCreationDto) {
+    public Car createOrUpdateCar(@Valid CarCreationDto carCreationDto) {
         // Check if a car with the given VIN exists
         Car car = carRepository.findByVin(carCreationDto.getVin()).orElse(new Car());
 

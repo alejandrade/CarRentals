@@ -2,9 +2,6 @@ aws:
   region: us-east-2
   s3:
     bucket: carrentaluserfiles
-logging:
-  level:
-    root: DEBUG
 spring:
 
   profiles:
@@ -30,7 +27,14 @@ spring:
       enabled: true
       poll-interval: 5s
       additional-paths: static/stc
-
+server:
+  error:
+    whitelabel:
+      enabled: false
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: true
 
 comms:
   twilio:
@@ -97,3 +101,4 @@ resilience4j:
       twilioStartVerificationApi:
         baseConfig: default
 # ------
+

@@ -1,16 +1,17 @@
 package com.techisgood.carrentals.car;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CarCreationDto {
 
     @NotBlank(message = "Make is required")
@@ -32,6 +33,7 @@ public class CarCreationDto {
     @Size(min = 17, max = 17, message = "VIN should be 17 characters long")
     private String vin;
 
+    @NotNull(message = "color is required")
     @NotBlank(message = "Color is required")
     @Size(max = 50, message = "Color should not exceed 50 characters")
     private String color;
