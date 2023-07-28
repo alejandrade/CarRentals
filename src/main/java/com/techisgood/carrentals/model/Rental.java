@@ -1,5 +1,7 @@
 package com.techisgood.carrentals.model;
 import com.techisgood.carrentals.model.audit.Auditable;
+import com.techisgood.carrentals.model.audit.VersionedAuditable;
+import com.techisgood.carrentals.rentals.RentalStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "rentals", catalog = "car_rentals")
 @Getter
 @Setter
-public class Rental extends Auditable {
+public class Rental extends VersionedAuditable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -31,6 +33,10 @@ public class Rental extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "renter_id", nullable = false, foreignKey = @ForeignKey(name = "fk_rentals_users"))
     private DbUser renter;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "ENUM('DATA_ENTRY', 'RENTED', 'RETURNED', 'CANCELED')")
+    private RentalStatus status;
 
     @Column(name = "initial_odometer_reading", precision = 10, scale = 2, nullable = false)
     private BigDecimal initialOdometerReading;

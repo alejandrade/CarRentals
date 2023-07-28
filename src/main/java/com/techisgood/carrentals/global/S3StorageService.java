@@ -7,7 +7,9 @@ import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 @Service
@@ -19,10 +21,19 @@ public class S3StorageService implements StorageService {
     private String bucketName;
 
     @Override
-    public void upload(String key, InputStream inputStream) {
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName,
-                key, inputStream, new ObjectMetadata());
-        amazonS3.putObject(putObjectRequest);
+    public String upload(String key, MultipartFile file) {
+        try (InputStream inputStream = file.getInputStream()) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream, metadata);
+            amazonS3.putObject(putObjectRequest);
+            return amazonS3.getUrl(bucketName, key).toString();
+        } catch (IOException e) {
+            // Handle any exceptions that might occur during the upload
+            e.printStackTrace();
+            return null; // Return null to indicate failure
+        }
     }
 
     @Override

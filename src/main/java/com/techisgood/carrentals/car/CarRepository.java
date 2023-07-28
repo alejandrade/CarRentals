@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface CarRepository extends PagingAndSortingRepository<Car, String>, JpaRepository<Car, String> {
     Optional<Car> findByVin(String vin);
+    Optional<Car> findByShortId(String shortId);
 }

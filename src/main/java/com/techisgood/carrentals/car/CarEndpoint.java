@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/staff/v1/car")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ROLE_STAFF') || hasAuthority('ROLE_ADMIN') || hasAnyAuthority('ROLE_USER')")
+@PreAuthorize("hasAuthority('ROLE_STAFF') || hasAuthority('ROLE_ADMIN')")
 public class CarEndpoint {
 
     private final CarService carService;

@@ -1,9 +1,11 @@
 package com.techisgood.carrentals.global;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.InputStream;
 
 public interface StorageService {
-    void upload(String key, InputStream inputStream);
+    String upload(String key, MultipartFile inputStream);
 
     InputStream download(String key);
 }
