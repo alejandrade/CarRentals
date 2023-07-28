@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @EntityListeners({AuditingEntityListener.class, UserEntityListener.class})
-public class DbUser {
+public class DbUser extends Auditable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -46,7 +46,4 @@ public class DbUser {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Authority> authorities;
-
-    @Embedded
-    private Auditable auditable;
 }

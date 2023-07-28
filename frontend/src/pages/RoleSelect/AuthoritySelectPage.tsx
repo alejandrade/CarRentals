@@ -1,14 +1,25 @@
 import React, { useEffect } from 'react';
 import { Typography, Tabs, Tab, Box, Grid } from '@mui/material';
 import { useAuth } from "../../contexts/auth_context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet } from 'react-router-dom';
 
 const AuthoritySelectPage: React.FC = () => {
-    const roles = ["user", "staff", "admin"];
+
+    //roles to show for admin
+    const roles = ["user", "staff", "clerk", "admin"];
+
     const { authorities } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedTab, setSelectedTab] = React.useState(0);
+
+
+    useEffect(() => {
+        const tab = roles.filter(x=> location.pathname.includes(x))[0];
+        setSelectedTab(roles.indexOf(tab));
+    }, [])
+
     function onSelect(path: string) {
         navigate(`/dash/${path}`);
     }

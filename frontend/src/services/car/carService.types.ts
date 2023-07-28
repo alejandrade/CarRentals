@@ -16,6 +16,7 @@ export interface CarCreationDto {
 
 export interface CarResponseDto extends CarCreationDto {
     id: string;
+    shortId: string;
     createdAt: Date;
     updatedAt: Date;
     createdBy: string;

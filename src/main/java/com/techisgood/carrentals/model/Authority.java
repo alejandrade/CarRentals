@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class Authority {
+public class Authority extends Auditable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -29,7 +29,4 @@ public class Authority {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private DbUser user;
-
-    @Embedded
-    private Auditable auditable;
 }
