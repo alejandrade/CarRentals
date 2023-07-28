@@ -1,7 +1,8 @@
 import React from 'react';
+import CarRentalStart from "./CarRentalStart";
 
 const ClerkDash: React.FC = () => {
-    return <p>Clerk</p>;
+    return <CarRentalStart/>;
 }
 
 export default ClerkDash;

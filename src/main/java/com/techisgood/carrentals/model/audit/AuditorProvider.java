@@ -21,7 +21,7 @@ public class AuditorProvider implements AuditorAware<String> {
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return Optional.empty();
+            return Optional.of("ANON");
         }
         String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
         return Optional.ofNullable(userIdFromJWT);

@@ -9,6 +9,46 @@ import StandardLayout from "./components/StandardLayout";
 import UserDash from "./pages/user/UserDash";
 import ClerkDash from "./pages/clerk/ClerkDash";
 import AdminDash from "./pages/admin/AdminDash";
+import * as path from "path";
+import CarRentalForm from "./pages/clerk/CarRentalForm";
+
+
+function clerkChildren() {
+    return [{
+        path: "rent/:shortId",
+        element: <CarRentalForm/>
+    }];
+}
+
+function dashTabs() {
+    return [
+        {
+            path: "user",
+            element: (
+                <UserDash/>
+            )
+        },
+        {
+            path: "clerk",
+            children: clerkChildren(),
+            element: (
+                <ClerkDash/>
+            )
+        },
+        {
+            path: "admin",
+            element: (
+                <AdminDash/>
+            )
+        },
+        {
+            path: "staff",
+            element: (
+                <StaffDash/>
+            )
+        }
+    ];
+}
 
 export default createBrowserRouter([
     {
@@ -28,32 +68,7 @@ export default createBrowserRouter([
                 </StandardLayout>
             </AuthorizationWrapper>
         ),
-        children: [
-            {
-                path: "user",
-                element: (
-                    <UserDash/>
-                )
-            },
-            {
-                path: "clerk",
-                element: (
-                    <ClerkDash/>
-                )
-            },
-            {
-                path: "admin",
-                element: (
-                    <AdminDash/>
-                )
-            },
-            {
-                path: "staff",
-                element: (
-                    <StaffDash/>
-                )
-            }
-        ]
+        children: dashTabs()
     },
     {
         path: "/demographics",

@@ -1,6 +1,7 @@
 package com.techisgood.carrentals.model;
 
 import com.techisgood.carrentals.model.audit.Auditable;
+import com.techisgood.carrentals.rentals.RentalPictureAngle;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +26,8 @@ public class RentalPicture extends Auditable {
     private Rental rental;
 
     @Column(length = 50)
-    private String angle;
+    @Enumerated(EnumType.STRING)
+    private RentalPictureAngle angle;
 
     @Column(name = "s3_url", length = 500, nullable = false)
     private String s3Url;
