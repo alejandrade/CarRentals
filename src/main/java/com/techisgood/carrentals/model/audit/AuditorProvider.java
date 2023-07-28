@@ -1,15 +1,15 @@
-package com.techisgood.carrentals.model.audit;
+ package com.techisgood.carrentals.model.audit;
 
-import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.security.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import com.techisgood.carrentals.security.JwtTokenProvider;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
@@ -20,8 +20,7 @@ public class AuditorProvider implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof AnonymousAuthenticationToken  ||
-                authentication.getPrincipal().equals("anonymousUser")) {
+        if (authentication == null) {
             return Optional.empty();
         }
         String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());

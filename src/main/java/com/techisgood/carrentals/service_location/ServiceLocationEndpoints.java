@@ -18,7 +18,7 @@ public class ServiceLocationEndpoints {
 
 	private final ServiceLocationService serviceLocationService;
 	
-	@GetMapping("/")
+	@GetMapping()
 	public ResponseEntity<?> getAllServiceLocations() {
 		ArrayList<ServiceLocation> locations = serviceLocationService.getServiceLocations(null, null);
 		return ResponseEntity.ok().body(locations);
