@@ -17,7 +17,14 @@ const AuthoritySelectPage: React.FC = () => {
 
     useEffect(() => {
         const tab = roles.filter(x=> location.pathname.includes(x))[0];
-        setSelectedTab(roles.indexOf(tab));
+        if (tab) {
+            setSelectedTab(roles.indexOf(tab));
+        } else {
+            if (authorities[0]) {
+                const newTab = authorities[0].replace("ROLE_", "").toLowerCase();
+                onSelect(newTab);
+            }
+        }
     }, [])
 
     function onSelect(path: string) {
