@@ -1,15 +1,11 @@
 import * as React from 'react';
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-import StandardLayout from "../../components/StandardLayout";
 import CarTable from "./CarTable";
 
 const StaffDash: React.FC = () => {
     return (
-        <StandardLayout>
-            <p>Dash</p>
-
+        <div>
             <Accordion>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -23,7 +19,7 @@ const StaffDash: React.FC = () => {
                 </AccordionDetails>
             </Accordion>
 
-        </StandardLayout>
+        </div>
     );
 }
 

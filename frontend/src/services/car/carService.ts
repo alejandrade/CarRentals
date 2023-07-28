@@ -1,5 +1,6 @@
 // carService.ts
 import { CarCreationDto, CarResponseDto, PaginatedCarResponse } from './carService.types';
+import {authFetch} from "../../util/FetchFunctions";
 
 class CarService {
     private readonly BASE_URL = process.env.BASE_URL;
@@ -35,7 +36,7 @@ class CarService {
      * @returns - A promise with the paginated response of cars.
      */
     async fetchAllCars(page: number = 0, size: number = 10): Promise<PaginatedCarResponse> {
-        const response = await fetch(`${this.BASE_URL}/staff/v1/car?page=${page}&size=${size}`, {
+        const response = await authFetch(`${this.BASE_URL}/staff/v1/car?page=${page}&size=${size}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ class CarService {
      * @returns - A promise with the response containing the car data.
      */
     async getCarById(id: string): Promise<CarResponseDto> {
-        const response = await fetch(`${this.BASE_URL}/staff/v1/car/${id}`, {
+        const response = await authFetch(`${this.BASE_URL}/staff/v1/car/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
