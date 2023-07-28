@@ -1,17 +1,21 @@
 package com.techisgood.carrentals.model;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.techisgood.carrentals.model.audit.VersionedAuditable;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,5 +53,13 @@ public class ServiceLocation extends VersionedAuditable {
 
 	@Column(name = "additional_info", columnDefinition = "TEXT")
 	private String additionalInfo;
+	
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinTable(
+			name="car_service_location",
+			joinColumns = @JoinColumn(name="car_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name="location_id", referencedColumnName = "id")
+	)
+	private List<Car> cars;
 	
 }

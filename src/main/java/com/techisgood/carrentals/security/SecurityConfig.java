@@ -39,6 +39,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAuthority(UserAuthority.ROLE_USER.name())
                         .requestMatchers("/staff/**").hasAuthority(UserAuthority.ROLE_USER.name())
                         .requestMatchers("/patron/**").hasAuthority(UserAuthority.ROLE_USER.name())
+                        .requestMatchers("/serviceLocations/**").hasAuthority(UserAuthority.ROLE_USER.name())
+                        .requestMatchers("/payments/**").hasAuthority(UserAuthority.ROLE_USER.name())
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/remote-payments/**").permitAll()
                         .anyRequest().authenticated() // ensuring all other routes require authentication
