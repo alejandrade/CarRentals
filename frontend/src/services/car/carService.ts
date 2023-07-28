@@ -12,7 +12,6 @@ class CarService {
      * @returns - A promise with the response containing the created or updated car.
      */
     async createOrUpdateCar(data: CarCreationDto): Promise<CarResponseDto> {
-        delete data.color;
         const response = await authFetch(`${this.BASE_URL}/staff/v1/car`, {
             method: 'POST',
             headers: {
