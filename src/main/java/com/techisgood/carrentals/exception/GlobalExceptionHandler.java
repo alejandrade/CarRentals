@@ -45,7 +45,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ResponseEntity<ErrorDetails> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest webRequest) {
-        Map<String, Object> errorMap = errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.defaults());
+        ErrorAttributeOptions options = ErrorAttributeOptions.defaults()
+                .including(ErrorAttributeOptions.Include.STACK_TRACE)
+                .including(ErrorAttributeOptions.Include.EXCEPTION)
+                .including(ErrorAttributeOptions.Include.BINDING_ERRORS);
+
+        Map<String, Object> errorMap = errorAttributes.getErrorAttributes(webRequest, options);
         ErrorDetails errorDetails = new ErrorDetails();
         if (errorMap.get("timestamp") != null) {
             errorDetails.setTimestamp(errorMap.get("timestamp").toString());
