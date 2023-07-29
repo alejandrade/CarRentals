@@ -47,11 +47,32 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest webRequest) {
         Map<String, Object> errorMap = errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.defaults());
         ErrorDetails errorDetails = new ErrorDetails();
-        errorDetails.setTimestamp(errorMap.get("timestamp").toString());
-        errorDetails.setStatus((int) errorMap.get("status"));
-        errorDetails.setError(errorMap.get("error").toString());
-        errorDetails.setMessage(composeValidationErrorMessage(ex)); // Create a method to compose a message
-        errorDetails.setPath(errorMap.get("path").toString());
+        if (errorMap.get("timestamp") != null) {
+            errorDetails.setTimestamp(errorMap.get("timestamp").toString());
+        } else {
+            errorDetails.setTimestamp(null); // or some default value if you wish
+        }
+
+        if (errorMap.get("status") != null) {
+            errorDetails.setStatus((int) errorMap.get("status"));
+        } else {
+            errorDetails.setStatus(0); // some default value
+        }
+
+        if (errorMap.get("error") != null) {
+            errorDetails.setError(errorMap.get("error").toString());
+        } else {
+            errorDetails.setError("Unknown Error"); // or some other default value
+        }
+
+        errorDetails.setMessage(composeValidationErrorMessage(ex));
+
+        if (errorMap.get("path") != null) {
+            errorDetails.setPath(errorMap.get("path").toString());
+        } else {
+            errorDetails.setPath("Unknown Path"); // or some other default value
+        }
+;
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 

@@ -27,6 +27,7 @@ public class CustomErrorEndpoint implements ErrorController {
                 .including(ErrorAttributeOptions.Include.STACK_TRACE)
                 .including(ErrorAttributeOptions.Include.EXCEPTION)
                 .including(ErrorAttributeOptions.Include.BINDING_ERRORS);
+
         // Fetch all error attributes
         Map<String, Object> errorDetailsMap = errorAttributes.getErrorAttributes(webRequest, options);
 
@@ -34,10 +35,24 @@ public class CustomErrorEndpoint implements ErrorController {
         ErrorDetails errorDetails = new ErrorDetails();
 
         errorDetails.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        errorDetails.setStatus((Integer) errorDetailsMap.get("status"));
-        errorDetails.setError((String) errorDetailsMap.get("error"));
-        errorDetails.setMessage((String) errorDetailsMap.get("message"));
-        errorDetails.setPath((String) errorDetailsMap.get("path"));
+
+        if (errorDetailsMap.get("status") != null) {
+            errorDetails.setStatus((Integer) errorDetailsMap.get("status"));
+        } else {
+            errorDetails.setStatus(0); // default value or you can omit this line if you want to keep it null
+        }
+
+        if (errorDetailsMap.get("error") != null) {
+            errorDetails.setError((String) errorDetailsMap.get("error"));
+        }
+
+        if (errorDetailsMap.get("message") != null) {
+            errorDetails.setMessage((String) errorDetailsMap.get("message"));
+        }
+
+        if (errorDetailsMap.get("path") != null) {
+            errorDetails.setPath((String) errorDetailsMap.get("path"));
+        }
 
         if (errorDetails.getStatus() != null) {
             return new ResponseEntity<>(errorDetails, HttpStatus.valueOf(errorDetails.getStatus()));
@@ -45,5 +60,6 @@ public class CustomErrorEndpoint implements ErrorController {
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 
 }
