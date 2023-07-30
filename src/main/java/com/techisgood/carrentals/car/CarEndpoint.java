@@ -2,6 +2,7 @@ package com.techisgood.carrentals.car;
 
 import com.techisgood.carrentals.model.Car;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
