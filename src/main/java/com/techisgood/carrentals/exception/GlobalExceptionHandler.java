@@ -18,31 +18,22 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {NotFoundException.class})
-    protected ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse("Not Found: " + ex.getMessage(), 404);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-
-
     @ExceptionHandler(value = {RemoteServiceException.class})
-    protected ResponseEntity<ErrorResponse> handleServerError(RemoteServiceException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse("Remote Service Error: " + ex.service.getName() + ": " + ex.getMessage(), 500);
+    protected ResponseEntity<ErrorDetails> handleServerError(RemoteServiceException ex, WebRequest request) {
+        ErrorDetails error = new ErrorDetails();
+        error.setMessage("Remote Service Error: " + ex.service.getName() + ": " + ex.getMessage());
+        error.setStatus(500);
+        error.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
-
-    @ExceptionHandler(value = {ServerErrorException.class})
-    protected ResponseEntity<ErrorResponse> handleServerError(ServerErrorException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse("Server Error: " + ex.getMessage(), 500);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-    }
 
 
 

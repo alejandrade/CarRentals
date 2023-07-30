@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class CustomErrorEndpoint implements ErrorController {
             // Populate ErrorDetails object
             ErrorDetails errorDetails = new ErrorDetails();
 
-            errorDetails.setTimestamp(convertToString(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+            errorDetails.setTimestamp(LocalDateTime.now());
             errorDetails.setStatus(convertToInteger(errorDetailsMap.getOrDefault("status", HttpStatus.INTERNAL_SERVER_ERROR.value())));
             errorDetails.setError(convertToString(errorDetailsMap.getOrDefault("error", "Unknown Error")));
             errorDetails.setMessage(convertToString(errorDetailsMap.getOrDefault("message", "No message available")));
@@ -62,13 +63,17 @@ public class CustomErrorEndpoint implements ErrorController {
                         })
                         .collect(Collectors.toList());
                 errorDetails.setBindingErrors(bindingErrors);
+            } else if (errorDetailsMap.containsKey("errors")) {
+                log.warn("error not properly being parsed in CustomErrorEndpoint");
+                errorDetails
+                        .setBindingErrors(Collections.singletonList(errorDetailsMap.get("errors").toString()));
             }
 
             return new ResponseEntity<>(errorDetails, HttpStatus.valueOf(errorDetails.getStatus()));
         } catch (Exception ex) {
             // In case of any unexpected exception, create an ErrorDetails object representing a 500 Internal Server Error
             ErrorDetails errorDetails = new ErrorDetails();
-            errorDetails.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            errorDetails.setTimestamp(LocalDateTime.now());
             errorDetails.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             errorDetails.setError("Internal Server Error");
             errorDetails.setMessage("An unexpected error occurred while processing the request." + ex.getMessage());
