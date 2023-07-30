@@ -26,4 +26,9 @@ public class RemoteServiceException extends Exception {
 		super(message);
 		this.service = service;
     }
+
+	@Override
+	public String getMessage() {
+		return service.getName() + " : " + super.getMessage();
+	}
 }
