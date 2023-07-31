@@ -59,21 +59,23 @@ public class RentalEndpoint {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Page<RentalDto>> getAllRentals(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Page<RentalDto> rentalDtos = rentalService.getPage(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required=false)String clerkId,
+            @RequestParam(required=false)String serviceLocationId) {
+    	Page<RentalDto> rentalDtos = null;
+    	if (clerkId != null) {
+            rentalDtos = rentalService.getRentalsByClerkId(clerkId, page, size);
+    	}
+    	else if (serviceLocationId != null) {
+    		rentalDtos = rentalService.getRentalsByServiceLocationId(serviceLocationId, page, size);
+    	}
+    	else {
+    		rentalDtos = rentalService.getPage(page, size);
+    	}
         return ResponseEntity.ok(rentalDtos);
     }
 
-    @GetMapping("/byClerk/{clerkId}")
-    public ResponseEntity<Page<RentalDto>> getRentalsByClerkId(
-            @PathVariable String clerkId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
 
-        Page<RentalDto> rentalDtos = rentalService.getRentalsByClerkId(clerkId, page, size);
-        return ResponseEntity.ok(rentalDtos);
-    }
 
     @PostMapping("/pictures")
     public ResponseEntity<RentalPictureDto> createRentalPicture(

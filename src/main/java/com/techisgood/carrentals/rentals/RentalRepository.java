@@ -15,4 +15,7 @@ public interface RentalRepository extends JpaRepository<Rental, String>, PagingA
     List<Rental> findByCar_ShortId(String shortId);
     @Query("SELECT r FROM Rental r WHERE r.clerk.id = :clerkId")
     Page<Rental> findAllByClerkId(@Param("clerkId") String clerkId, Pageable pageable);
+    
+    @Query("SELECT r FROM Rental r WHERE r.serviceLocation.id = :serviceLocationId")
+    Page<Rental> findAllByServiceLocationId(@Param("serviceLocationId") String serviceLocaitonId, Pageable pageable);
 }
