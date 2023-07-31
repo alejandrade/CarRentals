@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/users/v1")
+@RequestMapping("/users/v1/demographics")
 public class UserEndpoints {
 
 	private final UserCreateDemographicsService userCreateDemographicsService;
 	
-	@PostMapping("/demographics")
+	@PostMapping()
 	public ResponseEntity<?> createUserDemographics(@Valid @RequestBody UserDemographicsDto requestBody) throws RemoteServiceException {
 		userCreateDemographicsService.createUserDemographics(
 				requestBody.getUserId(), 

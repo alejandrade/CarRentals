@@ -25,11 +25,6 @@ class RentalService {
             body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
-            console.error(`Unexpected response from createRental: ${response.status}`);
-            throw new Error('Failed to create the rental.');
-        }
-
         return response.json();
     }
 
@@ -48,11 +43,6 @@ class RentalService {
             },
             body: JSON.stringify(rentalActionDto),
         });
-
-        if (!response.ok) {
-            console.error(`Unexpected response from startRental: ${response.status}`);
-            throw new Error('Failed to start the rental.');
-        }
 
         return response.json();
     }
@@ -73,11 +63,6 @@ class RentalService {
             body: JSON.stringify(rentalActionDto),
         });
 
-        if (!response.ok) {
-            console.error(`Unexpected response from endRental: ${response.status}`);
-            throw new Error('Failed to end the rental.');
-        }
-
         return response.json();
     }
 
@@ -95,11 +80,6 @@ class RentalService {
                 'Content-Type': 'application/json',
             },
         });
-
-        if (!response.ok) {
-            console.error(`Unexpected response from fetchAllRentals: ${response.status}`);
-            throw new Error('Failed to fetch rentals.');
-        }
 
         return response.json();
     }
@@ -120,11 +100,6 @@ class RentalService {
             },
         });
 
-        if (!response.ok) {
-            console.error(`Unexpected response from fetchRentalsByClerkId: ${response.status}`);
-            throw new Error('Failed to fetch rentals for the specified clerk.');
-        }
-
         return response.json();
     }
 
@@ -144,11 +119,6 @@ class RentalService {
             method: 'POST',
             body: formData,
         });
-
-        if (!response.ok) {
-            console.error(`Unexpected response from createRentalPicture: ${response.status}`);
-            throw new Error('Failed to create the rental picture.');
-        }
 
         return response.json();
     }

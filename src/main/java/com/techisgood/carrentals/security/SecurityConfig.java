@@ -35,12 +35,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permit all OPTIONS requests
-                        .requestMatchers("/user/**").hasAuthority(UserAuthority.ROLE_USER.name())
-                        .requestMatchers("/admin/**").hasAuthority(UserAuthority.ROLE_USER.name())
-                        .requestMatchers("/staff/**").hasAuthority(UserAuthority.ROLE_USER.name())
-                        .requestMatchers("/patron/**").hasAuthority(UserAuthority.ROLE_USER.name())
-                        .requestMatchers("/serviceLocations/**").hasAuthority(UserAuthority.ROLE_USER.name())
-                        .requestMatchers("/payments/**").hasAuthority(UserAuthority.ROLE_USER.name())
+                        .requestMatchers("/user/**").hasAnyAuthority(UserAuthority.ROLE_USER.name(), UserAuthority.ROLE_ADMIN.name())
+                        .requestMatchers("/admin/**").hasAnyAuthority(UserAuthority.ROLE_ADMIN.name())
+                        .requestMatchers("/staff/**").hasAnyAuthority(UserAuthority.ROLE_STAFF.name(), UserAuthority.ROLE_ADMIN.name())
+                        .requestMatchers("/clerk/**").hasAnyAuthority(UserAuthority.ROLE_CLERK.name(), UserAuthority.ROLE_ADMIN.name())
+                        .requestMatchers("/serviceLocations/**").hasAnyAuthority(UserAuthority.ROLE_USER.name(), UserAuthority.ROLE_ADMIN.name())
+                        .requestMatchers("/payments/**").hasAnyAuthority(UserAuthority.ROLE_USER.name(), UserAuthority.ROLE_ADMIN.name())
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/remote-payments/**").permitAll()
                         .anyRequest().authenticated() // ensuring all other routes require authentication

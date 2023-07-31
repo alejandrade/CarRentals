@@ -13,7 +13,7 @@ public class RentalDto {
     private String carId;  // Assuming you want to represent the car with its id
     private String shortId;
     private String clerkId; // Assuming you want to represent the clerk with its id
-    private String renterId; // Assuming you want to represent the renter with its id
+    private String renterPhoneNumber; // Assuming you want to represent the renter with its id
     private RentalStatus status;
     private BigDecimal initialOdometerReading;
     private BigDecimal endingOdometerReading;
@@ -37,7 +37,7 @@ public class RentalDto {
             dto.setClerkId(rental.getClerk().getId());
         }
         if (rental.getRenter() != null) {
-            dto.setRenterId(rental.getRenter().getId());
+            dto.setRenterPhoneNumber(rental.getRenter().getPhoneNumber());
         }
 
 

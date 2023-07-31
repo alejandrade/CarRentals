@@ -1,5 +1,23 @@
+type ErrorDetails = {
+    timestamp: string;
+    status: number;
+    error: string;
+    message: string;
+    path: string;
+    bindingErrors: string[];
+};
+
+export class APIError extends Error {
+    details: ErrorDetails;
+
+    constructor(message: string, details: ErrorDetails) {
+        super(message);
+        this.details = details;
+    }
+}
+
 export async function authFetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
-    const token = localStorage.getItem('token'); // Adjust this according to where you store the JWT
+    const token = localStorage.getItem('token');
 
     if (token) {
         init = {
@@ -11,5 +29,13 @@ export async function authFetch(input: RequestInfo, init?: RequestInit): Promise
         };
     }
 
-    return fetch(input, init);
+    const response = await fetch(input, init);
+
+    // Checking for non-successful HTTP responses.
+    if (!response.ok) {
+        const errorDetails: ErrorDetails = await response.json();
+        throw new APIError('API Request failed', errorDetails);
+    }
+
+    return response;
 }

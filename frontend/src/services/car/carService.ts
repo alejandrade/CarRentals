@@ -20,11 +20,6 @@ class CarService {
             body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
-            console.error(`Unexpected response from createOrUpdateCar: ${response.status}`);
-            throw new Error('Failed to create or update the car.');
-        }
-
         return response.json();
     }
 
@@ -43,11 +38,6 @@ class CarService {
             },
         });
 
-        if (!response.ok) {
-            console.error(`Unexpected response from fetchAllCars: ${response.status}`);
-            throw new Error('Failed to fetch cars.');
-        }
-
         return response.json();
     }
 
@@ -64,11 +54,6 @@ class CarService {
                 'Content-Type': 'application/json',
             },
         });
-
-        if (!response.ok) {
-            console.error(`Unexpected response from getCarById: ${response.status}`);
-            throw new Error('Failed to fetch the car by ID.');
-        }
 
         return response.json();
     }

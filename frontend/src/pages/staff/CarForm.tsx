@@ -7,6 +7,7 @@ import ColorTextField from '../../components/ColorTextField';
 import YearTextField from "../../components/YearTextField";
 import MakeAutocomplete from "../../components/MakeAutocomplete";
 import StatusAutocomplete from "../../components/StatusAutocomplete";
+import {ErrorModalContext} from "../../contexts/ErrorModalContext";
 
 interface CarFormProps {
     id?: string;
@@ -16,6 +17,10 @@ interface CarFormProps {
 interface CarFormState extends CarCreationDto {}
 
 class CarForm extends React.Component<CarFormProps, CarFormState> {
+
+    static contextType = ErrorModalContext;
+    context!: React.ContextType<typeof ErrorModalContext>;
+
     constructor(props: CarFormProps) {
         super(props);
         this.state = {
@@ -41,14 +46,15 @@ class CarForm extends React.Component<CarFormProps, CarFormState> {
 
     async loadCarData() {
         // Assuming CarService has a method to fetch individual car details by ID
-        const car: CarCreationDto = await CarService.getCarById(this.props.id!);
+        const car = await CarService.getCarById(this.props.id!).catch(this.context.handleAPIError);
+        if (car)
         this.setState(car);
     }
 
     handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await CarService.createOrUpdateCar(this.state);
-        if (response.id) {
+        const response = await CarService.createOrUpdateCar(this.state).catch(this.context.handleAPIError);
+        if (response && response.id) {
             this.props.refreshTable();
             console.log('Operation successful:', response);
         } else {

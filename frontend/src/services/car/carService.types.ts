@@ -11,7 +11,6 @@ export interface CarCreationDto {
     rentPrice?: number;
     licensePlate?: string;
     status?: string;
-    // ... any other fields you might have in the DTO.
 }
 
 export interface CarResponseDto extends CarCreationDto {

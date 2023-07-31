@@ -1,86 +1,146 @@
 import React, { useState } from 'react';
-import { Button, Container, CssBaseline, Typography, IconButton } from '@mui/material';
-import { PhotoCamera } from '@mui/icons-material';
+import { Button, Container, CssBaseline, Typography, IconButton, Grid, TextField, InputAdornment } from '@mui/material';
+import { PhotoCamera, CheckCircle } from '@mui/icons-material';
 import { useParams } from 'react-router-dom';
-import {compressImage} from "../../util/ImageFunctions";
-
-type ImageType = 'front' | 'leftSide' | 'rightSide' | 'backSide' | 'odometer';
-
-type ImagesState = {
-    [key in ImageType]: File | null;
+import { compressImage } from "../../util/ImageFunctions";
+import PhoneInputComponent from "../../components/PhoneInputComponent";
+type ValidatedFieldsType = {
+    renterPhoneNumber: boolean;
+    initialOdometerReading: boolean;
+    front: boolean;
+    left: boolean;
+    right: boolean;
+    back: boolean;
+    odometer: boolean;
 };
 
 const CarRentalForm: React.FC = () => {
     const { shortId } = useParams();
 
-    const [images, setImages] = useState<ImagesState>({
+    const [renterPhoneNumber, setRenterPhoneNumber] = useState('');
+    const [initialOdometerReading, setInitialOdometerReading] = useState('');
+
+    const [pictures, setPictures] = useState({
         front: null,
-        leftSide: null,
-        rightSide: null,
-        backSide: null,
+        left: null,
+        right: null,
+        back: null,
         odometer: null
     });
 
-    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, type: ImageType) => {
-        if (e.target.files) {
-            const originalFile = e.target.files[0];
+    const [validatedFields, setValidatedFields] = useState<ValidatedFieldsType>({
+        renterPhoneNumber: false,
+        initialOdometerReading: false,
+        front: false,
+        left: false,
+        right: false,
+        back: false,
+        odometer: false
+    });
+
+
+    const isAllFieldsValidated = Object.values(validatedFields).every(Boolean);
+
+    const handleFieldValidation = (name: string, value: any) => {
+        if (value) {
+            setValidatedFields(prev => ({ ...prev, [name]: true }));
+        } else {
+            setValidatedFields(prev => ({ ...prev, [name]: false }));
+        }
+    };
+
+    const handlePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, files } = e.target;
+        if (files && files.length > 0) {
             try {
-                const compressedBlob = await compressImage(originalFile, { maxWidth: 1024, quality: 0.8 });
-                const compressedFile = new File([compressedBlob], originalFile.name, {
-                    type: 'image/jpeg',
-                });
-                setImages(prev => ({ ...prev, [type]: compressedFile }));
+                const compressed = await compressImage(files[0], { maxWidth: 1024, quality: 0.8 });
+                setPictures(prev => ({ ...prev, [name]: compressed }));
+                handleFieldValidation(name, compressed);
             } catch (error) {
-                console.error('Failed to compress the image.', error);
+                console.error("Error while compressing image", error);
             }
         }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log(images);
-        // Further processing like sending to server, etc.
-    };
-
+    // @ts-ignore
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div>
-                <Typography component="h1" variant="h5">
-                    Car Rental Form
-                </Typography>
-                <form noValidate onSubmit={handleSubmit}>
-                    {(['front', 'leftSide', 'rightSide', 'backSide', 'odometer'] as ImageType[]).map((type) => (
-                        <div key={type} style={{ marginBottom: '16px' }}>
-                            <input
-                                accept="image/*"
-                                style={{ display: 'none' }}
-                                id={`icon-button-file-${type}`}
+        <Container maxWidth="sm">
+            <form onSubmit={e => e.preventDefault()}>
+                <Grid container spacing={3} direction="column">
+
+                    <Grid item>
+                        <TextField
+                            label="Short ID"
+                            variant="outlined"
+                            fullWidth
+                            value={shortId}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <PhoneInputComponent
+                            value={renterPhoneNumber}
+                            onChange={(v) => {
+                                setRenterPhoneNumber(v);
+                                handleFieldValidation('renterPhoneNumber', v);
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <TextField
+                            label="Initial Odometer Reading"
+                            variant="outlined"
+                            fullWidth
+                            type="number"
+                            value={initialOdometerReading}
+                            onChange={(e) => {
+                                setInitialOdometerReading(e.target.value);
+                                handleFieldValidation('initialOdometerReading', e.target.value);
+                            }}
+                            InputProps={{
+                                endAdornment: validatedFields.initialOdometerReading && (
+                                    <InputAdornment position="end">
+                                        <CheckCircle color="success" />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Grid>
+
+                    {["front", "left", "back", "right", "odometer"].map((angle) => (
+                        <Grid item key={angle}>
+                            <TextField
+                                variant="outlined"
+                                label={angle}
+                                fullWidth
                                 type="file"
-                                onChange={(e) => handleImageChange(e, type)}
+                                name={angle}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <PhotoCamera />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (validatedFields as any)[angle] && <InputAdornment position="end">
+                                            <CheckCircle color="success" />
+                                        </InputAdornment>,
+                                }}
+                                onChange={handlePictureChange}
                             />
-                            <label htmlFor={`icon-button-file-${type}`}>
-                                <IconButton
-                                    color="primary"
-                                    aria-label={`upload picture for ${type}`}
-                                    component="span"
-                                >
-                                    <PhotoCamera />
-                                </IconButton>
-                                Upload {type} image
-                            </label>
-                        </div>
+                        </Grid>
                     ))}
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                    >
-                        Rent Car
-                    </Button>
-                </form>
-            </div>
+
+                    <Grid item>
+                        <Button variant="contained" color="primary" type="submit" disabled={!isAllFieldsValidated}>
+                            Submit
+                        </Button>
+                    </Grid>
+                </Grid>
+            </form>
         </Container>
     );
 };
