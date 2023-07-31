@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
@@ -26,14 +27,15 @@ public class PaymentsEndpoints {
 	
 	
 	@GetMapping("/test-tax")
-	public ResponseEntity<?> testTax() {
+	public ResponseEntity<?> testTax(@RequestParam String address, @RequestParam String city, @RequestParam String state, @RequestParam String postalCode, @RequestParam Integer total) {
 		try {
-			remotePaymentsService.calculateTaxRate("113 Claymore Dr.", "Huntsville", "AL", "35811", 1502);
+			PaymentsTaxInfo taxInfo = remotePaymentsService.calculateTaxRate(address, city, state, postalCode, total);
+			return ResponseEntity.ok().body("Tax Info: subTotal: " + taxInfo.subTotal + ", taxRate: " + taxInfo.taxRatePercentage + ", taxTotal:" + taxInfo.taxTotal + ", total: " + taxInfo.total);
+			
 		} catch (StripeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return ResponseEntity.internalServerError().body(e.getMessage());
 		}
-		return ResponseEntity.ok().body("");
 	}
 	
 }
