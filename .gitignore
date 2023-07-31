@@ -1,5 +1,6 @@
 HELP.md
 .gradle
+.DS_STORE
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -41,3 +42,5 @@ src/main/resources/static
 /.apt_generated_tests/
 
 **/dist
+.DS_Store
+stripe.exe

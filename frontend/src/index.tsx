@@ -11,6 +11,7 @@ import router from "./router"
 import {ThemeProvider} from "./contexts/theme_context";
 import {AuthProvider} from "./contexts/auth_context";
 import { createRoot } from 'react-dom/client';
+import {ErrorModalProvider} from "./contexts/ErrorModalContext";
 
 const App: React.FC = () => {
 
@@ -18,7 +19,9 @@ const App: React.FC = () => {
          <React.StrictMode>
             <ThemeProvider>
                 <AuthProvider>
-                    <RouterProvider router={router}/>
+                    <ErrorModalProvider>
+                        <RouterProvider router={router}/>
+                    </ErrorModalProvider>
                 </AuthProvider>
             </ThemeProvider>
         </React.StrictMode>

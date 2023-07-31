@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { MuiTelInput } from 'mui-tel-input';
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useTheme } from '@mui/material/styles';
+import {InputBaseComponentProps} from "@mui/material";
 
 interface Props {
     value: string;
     onChange: (value: string) => void;
     isValid?: boolean;  // The parent can use this prop to check if the phone number is valid.
+    props?: InputBaseComponentProps
 }
 
-const PhoneInputComponent: React.FC<Props> = ({ value, onChange, isValid }) => {
+const PhoneInputComponent: React.FC<Props> = ({ value, onChange, isValid,props }) => {
     const [error, setError] = useState<string | null>(null);
     const theme = useTheme();
 
@@ -38,6 +40,7 @@ const PhoneInputComponent: React.FC<Props> = ({ value, onChange, isValid }) => {
             value={value}
             fullWidth
             onChange={handlePhoneChange}
+            inputProps={props}
         />
     );
 };

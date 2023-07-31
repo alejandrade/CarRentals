@@ -22,7 +22,7 @@ const CarRentalStart: React.FC = () => {
         e.preventDefault();
         if (!error) {
             console.log(carCode); // Or handle the validated data as required.
-            navigate(`/dash/clerk/rent/${carCode.toLowerCase()}`);
+            navigate(`/rent/${carCode.toLowerCase()}`);
         }
     };
 

@@ -19,7 +19,7 @@ public class DbUserDemographics {
 	@Column(name = "id", updatable = false, nullable = false, columnDefinition = "char(36) default (uuid())")
 	private String id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_USER_DEMOGRAPHICS_USER"))
 	private DbUser user;
 

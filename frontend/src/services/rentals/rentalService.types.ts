@@ -6,10 +6,9 @@ export interface RentalActionDto {
 }
 export interface RentalDto {
     id: string;
-    carId: string;
     shortId: string;
     clerkId: string;
-    renterId: string;
+    renterPhoneNumber: string;
     status: string;
     initialOdometerReading: number;
     endingOdometerReading: number;

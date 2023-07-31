@@ -51,7 +51,8 @@ public class RentalService {
 
 	@Transactional
 	public RentalDto createRentalUsingDto(RentalDto dto) throws IllegalArgumentException {
-		Rental rental = createRental(dto.getCarId(), dto.getRenterId(), dto.getEndingOdometerReading(), dto.getRentalDatetime());
+		DbUser dbUser = userRepository.findByPhoneNumber(dto.getRenterPhoneNumber()).orElseThrow();
+		Rental rental = createRental(dto.getCarId(), dbUser.getId(), dto.getEndingOdometerReading(), dto.getRentalDatetime());
 		return RentalDto.from(rental);
 	}
 
