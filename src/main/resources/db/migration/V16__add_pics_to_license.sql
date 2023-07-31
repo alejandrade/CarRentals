@@ -1,13 +1,9 @@
 ALTER TABLE car_rentals.user_licenses
-    ADD version INT NOT NULL DEFAULT 1,
     ADD active BOOLEAN DEFAULT TRUE,
     ADD back_card_picture VARCHAR(255) NULL,
-    ADD front_card_picture VARCHAR(255) NULL,
-    ADD created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ADD updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    ADD deleted_at TIMESTAMP NULL,
-    ADD created_by CHAR(36) not null,
-    ADD updated_by CHAR(36) null;
+    ADD front_card_picture VARCHAR(255) NULL
+;
+
 CREATE TABLE user_insurance (
                                 id CHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
                                 user_id CHAR(36) NOT NULL,

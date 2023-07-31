@@ -2,12 +2,15 @@ package com.techisgood.carrentals.payments;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
+import com.techisgood.carrentals.exception.RemoteServiceException;
+import com.techisgood.carrentals.exception.RemoteServiceException.RemoteService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +21,15 @@ import lombok.RequiredArgsConstructor;
 public class PaymentsEndpoints {
 
 	private final RemotePaymentsService remotePaymentsService;
+	private final PaymentsService paymentsService;
 	
-	
-	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentsInvoiceCreateDto requestBody) {
-		
+	@PostMapping("/invoices")
+	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentsInvoiceCreateDto requestBody) throws RemoteServiceException {
+		try {
+			paymentsService.createInvoice(requestBody.getRentalId(), requestBody.getPayerId(), requestBody.getDayPrice(), requestBody.getDays());
+		} catch (StripeException e) {
+			throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
+		}
 		return ResponseEntity.ok().body("");
 	}
 	

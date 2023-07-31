@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -47,6 +48,14 @@ public class PaymentsInvoice {
 	@Column(name="days")
 	private Integer days;
 	
+	@Column(name="sub_total")
+	private Integer subTotal;
+	
+	@Column(name="tax_rate", precision=5, scale=4)
+	private BigDecimal taxRate;
+	
+	@Column(name="tax_total")
+	private Integer taxTotal;
 
 	@Column(name="total")
 	private Integer total;
