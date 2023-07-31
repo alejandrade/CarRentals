@@ -1,18 +1,27 @@
 package com.techisgood.carrentals.payments;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.springframework.stereotype.Service;
+
 import com.stripe.exception.StripeException;
-import com.stripe.model.*;
+import com.stripe.model.Customer;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.PaymentMethod;
+import com.stripe.model.PaymentMethodCollection;
+import com.stripe.model.SetupIntent;
+import com.stripe.model.tax.Calculation;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.ConfirmationMethod;
 import com.techisgood.carrentals.model.DbUserDemographics;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class RemotePaymentsService {
 
 	
@@ -94,7 +103,49 @@ public class RemotePaymentsService {
 	}
 	
 	
-	
+	public PaymentsTaxInfo calculateTaxRate(String addressLine, String city, String state, String postalCode, Integer total) throws StripeException {
+		PaymentsTaxInfo taxInfo = new PaymentsTaxInfo();
+
+		
+		
+		HashMap<String, Object> address = new HashMap<>();
+		address.put("line1", addressLine);
+		address.put("line2", "");
+		address.put("postal_code", postalCode);
+		address.put("state", state);
+		address.put("country", "US");
+		HashMap<String, Object> customerDetails =
+		  new HashMap<>();
+		customerDetails.put("address", address);
+		customerDetails.put("address_source", "billing");
+		
+		ArrayList<Object> lineItems = new ArrayList<>();
+		HashMap<String, Object> lineItem1 = new HashMap<>();
+		lineItem1.put("amount", total);
+		lineItem1.put("reference", "Tax Rate Calculation");
+		lineItems.add(lineItem1);
+		
+		
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("currency", "usd");
+		params.put("customer_details", customerDetails);
+		params.put("line_items", lineItems);
+		
+		ArrayList<Object> expand = new ArrayList<>();
+		expand.add("line_items");
+		expand.add("line_items");
+		params.put("expand", expand);
+		
+		Calculation calculation = Calculation.create(params);
+		String taxDecimalString = calculation.getTaxBreakdown().get(0).getTaxRateDetails().getPercentageDecimal();
+		
+		taxInfo.subTotal          = total;
+		taxInfo.taxRatePercentage = Double.parseDouble(taxDecimalString) / 100.0;
+		taxInfo.taxTotal          = (int) Math.round(total * taxInfo.taxRatePercentage);
+		taxInfo.total             = taxInfo.subTotal + taxInfo.taxTotal;
+		
+		return taxInfo;
+	}
 	
 	
 	
