@@ -7,7 +7,8 @@ import {
     Select,
     MenuItem, SelectChangeEvent, Grid
 } from '@mui/material';
-import {Gender, UserDemographicsDto} from "../../services/user/UserDemographicsService.types";
+import {Gender, UserDemographicsDto} from "../../services/user/UserService.types";
+import Typography from "@mui/material/Typography";
 type FormErrors = {
     firstName?: string;
     middleInitial?: string;
@@ -81,6 +82,8 @@ const UserDemographicsForm: React.FC = () => {
 
     return (
         <form onSubmit={handleSubmit}>
+            <Typography variant="h3">User</Typography>
+
             <Grid container direction="column" spacing={3}>
                 <Grid item>
                     <TextField

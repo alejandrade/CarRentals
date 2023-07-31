@@ -2,7 +2,6 @@ import React from "react";
 import {createBrowserRouter} from "react-router-dom";
 import AuthorizationWrapper from "./components/AuthorizationWrapper";
 import LoginPage from "./pages/login/LoginPage";
-import DemographicsPage from "./pages/demographics/DemographicsPage";
 import AuthoritySelectPage from "./pages/RoleSelect/AuthoritySelectPage";
 import StaffDash from "./pages/staff/StaffDash";
 import StandardLayout from "./components/StandardLayout";
@@ -61,14 +60,6 @@ export default createBrowserRouter([
             </AuthorizationWrapper>
         ),
         children: dashTabs()
-    },
-    {
-        path: "/demographics",
-        element: (
-            <AuthorizationWrapper>
-                <DemographicsPage/>
-            </AuthorizationWrapper>
-        ),
     },
     {
         path: "rent/:shortId",

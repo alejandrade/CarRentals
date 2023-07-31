@@ -1,8 +1,18 @@
-import { UserDemographicsDto } from './UserDemographicsService.types';  // Adjust the path accordingly
 import { authFetch } from "../../util/FetchFunctions";
+import {UserDemographicsDto, UserDto} from "./UserService.types";
 
-class UserDemographicsService {
+class UserService {
     private readonly BASE_URL = process.env.BASE_URL;
+
+    async getLoggedInUser(): Promise<UserDto> {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/current`);
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch logged-in user');
+        }
+
+        return response.json();
+    }
 
     /**
      * Create a user's demographic data.
@@ -23,4 +33,4 @@ class UserDemographicsService {
     }
 }
 
-export default new UserDemographicsService();
+export default new UserService();

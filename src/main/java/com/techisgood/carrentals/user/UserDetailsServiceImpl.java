@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(auth -> new SimpleGrantedAuthority(auth.getAuthority()))
                 .collect(Collectors.toList());
 
-        String identifier = dbUser.getIsEmailAuth() ? dbUser.getEmail() : dbUser.getPhoneNumber();
+        String identifier = dbUser.getId();
 
         return new User(identifier,
                 Strings.EMPTY, // No password here as per your earlier decision
