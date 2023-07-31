@@ -3,6 +3,9 @@ package com.techisgood.carrentals.service_location;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.techisgood.carrentals.model.ServiceLocation;
@@ -16,19 +19,19 @@ public class ServiceLocationService {
 	
 	private final ServiceLocationRepository serviceLocationRepository;
 	
-	public ArrayList<ServiceLocation> getServiceLocations(String id, String state) {
-		ArrayList<ServiceLocation> list = new ArrayList<ServiceLocation>();
+	public Page<ServiceLocation> getServiceLocations(String id, String state, Integer page, Integer size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ServiceLocation> result = null;
 		if (id != null) {
-			Optional<ServiceLocation> osl = serviceLocationRepository.findById(id);
-			if (osl.isPresent()) list.add(osl.get());
+			result = serviceLocationRepository.findAllById(id, pageable);
 		}
 		else if (state != null) {
-			list = (ArrayList<ServiceLocation>)serviceLocationRepository.findAllByState(state);
+			result = serviceLocationRepository.findAllByState(state, pageable);
 		}
 		else {
-			list = (ArrayList<ServiceLocation>)serviceLocationRepository.findAll();
+			result = serviceLocationRepository.findAll(pageable);
 		}
-		return list;
+		return result;
 	}
 	
 	@Transactional

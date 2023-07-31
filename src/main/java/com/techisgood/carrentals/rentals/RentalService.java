@@ -97,4 +97,11 @@ public class RentalService {
 		Page<Rental> rentalsByClerk = rentalRepository.findAllByClerkId(clerkId, pageable);
 		return rentalsByClerk.map(RentalDto::from);
 	}
+	
+	@Transactional(readOnly = true)
+	public Page<RentalDto> getRentalsByServiceLocationId(String serviceLocationId, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Rental> rentalsByClerk = rentalRepository.findAllByServiceLocationId(serviceLocationId, pageable);
+		return rentalsByClerk.map(RentalDto::from);
+	}
 }
