@@ -20,7 +20,7 @@ class UserService {
      * @returns - A promise with the response containing the created demographic data.
      */
     async createUserDemographics(data: UserDemographicsDto): Promise<UserDemographicsDto> {
-        const response = await authFetch(`${this.BASE_URL}/users/v1/demographics`, {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/demographic`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

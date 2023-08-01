@@ -6,6 +6,7 @@ import InsuranceForm from "./InsuranceForm";
 import LicenseForm from "./LicenseForm";
 import ContactInformationForm from "./ContactInformationForm";
 import LoadingOverlay from "../../components/LoadingOverlay";
+import UserDemographicsCard from "./UserDemographicsCard";
 
 const UserDash: React.FC = () => {
     const [user, setUser] = useState<UserDto>()
@@ -25,7 +26,7 @@ const UserDash: React.FC = () => {
     return(<>
         {user ? <>
         <ContactInformationForm onSubmit={onContactInformationSubmit} phoneNumber={user?.phoneNumber} email={user?.email}/>
-        <UserDemographicsForm dto={user?.userDemographics}></UserDemographicsForm>
+        <UserDemographicsCard userId={user.id} data={user?.userDemographics}></UserDemographicsCard>
         <InsuranceForm/>
         <LicenseForm/>
         </> : <LoadingOverlay/>
