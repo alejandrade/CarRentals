@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import { keys } from 'ts-transformer-keys';
+
 import {
-    TextField,
     Button,
-    FormControl,
+    Card,
+    CardContent,
+    CardHeader, Container,
+    FormControl, FormHelperText,
+    Grid,
     InputLabel,
+    MenuItem,
     Select,
-    MenuItem, SelectChangeEvent, Grid
+    SelectChangeEvent,
+    TextField
 } from '@mui/material';
-import {Gender, UserDemographicsDto} from "../../services/user/UserService.types";
-import Typography from "@mui/material/Typography";
+import { Gender, UserDemographicsDto } from "../../services/user/UserService.types";
+import USStatesDropdown from "../../components/USStatesDropdown";
+
 type FormErrors = {
     firstName?: string;
     middleInitial?: string;
@@ -27,9 +35,15 @@ type param = {
     dto: Partial<UserDemographicsDto> | undefined;
 }
 
-const UserDemographicsForm: React.FC<param> = ({dto}) => {
+const UserDemographicsForm: React.FC<param> = ({ dto }) => {
     const [formData, setFormData] = useState<Partial<UserDemographicsDto>>(dto || {});
     const [errors, setErrors] = useState<Partial<FormErrors>>({});
+    const [lastChanged, setLastChanged] = useState<keyof UserDemographicsDto>();
+    useEffect(() => {
+        if (lastChanged) {
+            validateForm(lastChanged);
+        }
+    }, [formData])
 
     const handleChange = (name: keyof UserDemographicsDto) => (
         event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: unknown }>
@@ -38,181 +52,225 @@ const UserDemographicsForm: React.FC<param> = ({dto}) => {
             ...formData,
             [name]: event.target.value
         });
+        setLastChanged(name);
     };
 
-    const handleChangeGender = () => (
-        event: SelectChangeEvent<Gender>
+    const handleSelect = (name: keyof UserDemographicsDto) => (
+        event: SelectChangeEvent
     ) => {
         setFormData({
-            gender: event.target.value as Gender
+            ...formData,
+            [name]: event.target.value as Gender
         });
+        validateForm(name);  // Real-time validation for this field
     };
 
-    const validateForm = (): boolean => {
+    const validateForm = (field?: keyof UserDemographicsDto): boolean => {
         let valid = true;
         let tempErrors: Partial<FormErrors> = {};
 
-        if (!formData.firstName) {
-            tempErrors.firstName = "First name is required";
-            valid = false;
+        if (!field || field === 'firstName') {
+            tempErrors.firstName = !formData.firstName ? "First name is required" : undefined;
         }
 
-        if (!formData.lastName) {
-            tempErrors.lastName = "Last name is required";
-            valid = false;
+        if (!field || field === 'lastName') {
+            tempErrors.lastName = !formData.lastName ? "Last name is required" : undefined;
         }
 
-        if (!formData.gender) {
-            tempErrors.gender = "Gender is required";
-            valid = false;
+        if (!field || field === 'gender') {
+            tempErrors.gender = !formData.gender ? "Gender is required" : undefined;
         }
 
-        if (!formData.dateOfBirth) {
-            tempErrors.dateOfBirth = "Date of Birth is required";
-            valid = false;
+        if (!field || field === 'dateOfBirth') {
+            tempErrors.dateOfBirth = !formData.dateOfBirth ? "Date of Birth is required" : undefined;
         }
 
-        setErrors(tempErrors);
+        if (!field || field === 'address') {
+            tempErrors.address = !formData.address ? "Address is required" : undefined;
+        }
+
+        if (!field || field === 'city') {
+            tempErrors.city = !formData.city ? "City is required" : undefined;
+        }
+
+        if (!field || field === 'state') {
+            tempErrors.state = !formData.state ? "State is required" : undefined;
+        }
+
+        if (!field || field === 'postalCode') {
+            if (!formData.postalCode) {
+                tempErrors.postalCode = "Postal Code is required";
+            } else if (!/^\d{5}$/.test(formData.postalCode)) {
+                tempErrors.postalCode = "Invalid US ZIP code format";
+            } else {
+                tempErrors.postalCode = undefined;  // Ensure error is cleared if format is correct
+            }
+        }
+
+        if (!field || field === 'additionalInfo') {
+            if (formData.additionalInfo && !/^[a-zA-Z0-9\s.,!?]*$/.test(formData.additionalInfo)) {
+                tempErrors.additionalInfo = "Notes can't have special characters";
+            }
+        }
+
+        if (!field || field === 'middleInitial') {
+            if (formData.middleInitial && formData.middleInitial.length > 1) {
+                tempErrors.middleInitial = "Middle Initial can only be 1 character";
+            }
+        }
+
+        setErrors({
+            ...errors,
+            ...tempErrors
+        });
+
+        valid = !Object.values(tempErrors).some(val => val !== undefined);
         return valid;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (validateForm()) {
-            // Process formData
-            console.log('Valid Form Data:', formData);
-        }
+        validateForm();
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <Typography variant="h3">User</Typography>
+        <Card>
+            <CardHeader title={"Personal Information"}/>
+            <CardContent>
+                <Container>
 
-            <Grid container direction="column" spacing={3}>
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="First Name"
-                        value={formData.firstName || ''}
-                        onChange={handleChange('firstName')}
-                        error={!!errors.firstName}
-                        helperText={errors.firstName}
-                    />
-                </Grid>
+                <form onSubmit={handleSubmit}>
+                    <Grid container direction="column" spacing={3}>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="First Name"
+                                value={formData.firstName || ''}
+                                onChange={handleChange('firstName')}
+                                error={!!errors.firstName}
+                                helperText={errors.firstName}
+                            />
+                        </Grid>
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="Middle Initial"
-                        value={formData.middleInitial || ''}
-                        onChange={handleChange('middleInitial')}
-                    />
-                </Grid>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="Middle Initial"
+                                value={formData.middleInitial || ''}
+                                onChange={handleChange('middleInitial')}
+                                inputProps={{ maxLength: 1 }}
+                            />
+                        </Grid>
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="Last Name"
-                        value={formData.lastName || ''}
-                        onChange={handleChange('lastName')}
-                        error={!!errors.lastName}
-                        helperText={errors.lastName}
-                    />
-                </Grid>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="Last Name"
+                                value={formData.lastName || ''}
+                                onChange={handleChange('lastName')}
+                                error={!!errors.lastName}
+                                helperText={errors.lastName}
+                            />
+                        </Grid>
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="Date of Birth"
-                        type="date"
-                        value={formData.dateOfBirth?.toISOString().split('T')[0] || ''}
-                        onChange={handleChange('dateOfBirth')}
-                        error={!!errors.dateOfBirth}
-                        helperText={errors.dateOfBirth}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </Grid>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="Date of Birth"
+                                type="date"
+                                value={formData.dateOfBirth?.toISOString().split('T')[0] || ''}
+                                onChange={handleChange('dateOfBirth')}
+                                error={!!errors.dateOfBirth}
+                                helperText={errors.dateOfBirth}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </Grid>
 
-                <Grid item>
-                    <FormControl fullWidth error={!!errors.gender}>
-                        <InputLabel>Gender</InputLabel>
-                        <Select
-                            value={formData.gender || ''}
-                            onChange={handleChangeGender()}
-                        >
-                            <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
-                            <MenuItem value="Other">Other</MenuItem>
-                            <MenuItem value="Prefer_Not_To_Say">Prefer Not To Say</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
+                        <Grid item>
+                            <FormControl fullWidth error={!!errors.gender}>
+                                <InputLabel>Gender</InputLabel>
+                                <Select
+                                    value={formData.gender || ''}
+                                    onChange={handleSelect("gender")}
+                                >
+                                    <MenuItem value="Male">Male</MenuItem>
+                                    <MenuItem value="Female">Female</MenuItem>
+                                    <MenuItem value="Other">Other</MenuItem>
+                                    <MenuItem value="Prefer_Not_To_Say">Prefer Not To Say</MenuItem>
+                                </Select>
+                                {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="Street Address"
-                        value={formData.address || ''}
-                        onChange={handleChange('address')}
-                    />
-                </Grid>
+                            </FormControl>
+                        </Grid>
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="City"
-                        value={formData.city || ''}
-                        onChange={handleChange('city')}
-                    />
-                </Grid>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="Street Address"
+                                value={formData.address || ''}
+                                onChange={handleChange('address')}
+                                error={!!errors.address}
+                                helperText={errors.address}
+                            />
+                        </Grid>
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="State"
-                        value={formData.state || ''}
-                        onChange={handleChange('state')}
-                    />
-                </Grid>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="City"
+                                value={formData.city || ''}
+                                onChange={handleChange('city')}
+                                error={!!errors.city}
+                                helperText={errors.city}
+                            />
+                        </Grid>
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="Postal Code"
-                        value={formData.postalCode || ''}
-                        onChange={handleChange('postalCode')}
-                    />
-                </Grid>
+                        <Grid item>
+                            <USStatesDropdown
+                                value={formData.state || ''}
+                                onChange={handleSelect('state')}
+                                error={!!errors.state}
+                                helperText={errors.state}
+                            />
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="Country"
-                        value={formData.country || ''}
-                        onChange={handleChange('country')}
-                    />
-                </Grid>
+                        </Grid>
 
-                <Grid item>
-                    <TextField
-                        fullWidth
-                        label="Additional Info"
-                        multiline
-                        rows={4}
-                        value={formData.additionalInfo || ''}
-                        onChange={handleChange('additionalInfo')}
-                    />
-                </Grid>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="Postal Code"
+                                value={formData.postalCode || ''}
+                                onChange={handleChange('postalCode')}
+                                error={!!errors.postalCode}
+                                helperText={errors.postalCode}
+                            />
+                        </Grid>
 
-                <Grid item>
-                    <Button type="submit" variant="contained" color="primary">
-                        Submit
-                    </Button>
-                </Grid>
-            </Grid>
-        </form>
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="Notes"
+                                multiline
+                                rows={4}
+                                value={formData.additionalInfo || ''}
+                                onChange={handleChange('additionalInfo')}
+                                error={!!errors.additionalInfo}
+                                helperText={errors.additionalInfo}
+                            />
+                        </Grid>
+
+                        <Grid item>
+                            <Button fullWidth type="submit" variant="contained" color="primary">
+                                Submit
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </form>
+                </Container>
+            </CardContent>
+        </Card>
     );
 
 };

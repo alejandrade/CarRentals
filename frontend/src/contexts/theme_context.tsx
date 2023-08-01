@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import {getThemeByName} from "../Theme";
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 
 interface ThemeContextType {
     theme: string;
@@ -13,6 +15,7 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const [theme, setTheme] = useState<string>("light");
+    const muiTheme = getThemeByName(theme);  // get MUI theme based on your theme
 
     const toggleTheme = () => {
         setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
@@ -20,7 +23,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
     return (
         <Theme_context.Provider value={{ theme, toggleTheme }}>
-            {children}
+            <MuiThemeProvider theme={muiTheme}>
+                {children}
+            </MuiThemeProvider>
         </Theme_context.Provider>
     );
 };

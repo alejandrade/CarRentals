@@ -16,7 +16,6 @@ import {ErrorModalProvider} from "./contexts/ErrorModalContext";
 const App: React.FC = () => {
 
      return (
-         <React.StrictMode>
             <ThemeProvider>
                 <AuthProvider>
                     <ErrorModalProvider>
@@ -24,7 +23,6 @@ const App: React.FC = () => {
                     </ErrorModalProvider>
                 </AuthProvider>
             </ThemeProvider>
-        </React.StrictMode>
      )
     }
 ;

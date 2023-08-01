@@ -63,3 +63,5 @@ export interface UserDemographicsDto {
     country?: string;
     additionalInfo?: string;
 }
+
+export const userDemographicKeys = ["userId", "firstName", "middleInitial", "lastName", "dateOfBirth", "gender", "address", "city", "state", "postalCode", "country", "additionalInfo"];

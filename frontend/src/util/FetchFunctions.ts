@@ -12,7 +12,7 @@ type ErrorDetails = {
 
 export type WrappedResponse<T = any> = {
     ok: boolean;
-    json: T;
+    json: Promise<T>;
 };
 
 export class APIError extends Error {
@@ -24,21 +24,21 @@ export class APIError extends Error {
     }
 }
 
-async function _authFetch(input: RequestInfo, init?: RequestInit): Promise<WrappedResponse> {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-        init = {
-            ...init,
-            headers: {
-                ...init?.headers,
-                'Authorization': `Bearer ${token}`,
-            },
-        };
+async function _fetch(input: RequestInfo, init?: RequestInit, withAuth: boolean = true): Promise<WrappedResponse> {
+    if (withAuth) {
+        const token = localStorage.getItem('token');
+        if (token) {
+            init = {
+                ...init,
+                headers: {
+                    ...init?.headers,
+                    'Authorization': `Bearer ${token}`,
+                },
+            };
+        }
     }
 
     const response = await fetch(input, init);
-
     if (!response.ok) {
         const errorDetails: ErrorDetails = await response.json();
         throw new APIError('API Request failed', errorDetails);
@@ -46,24 +46,35 @@ async function _authFetch(input: RequestInfo, init?: RequestInit): Promise<Wrapp
 
     return {
         ok: response.ok,
-        json: response.json()
+        json: response.json()  // Note: This is a promise!
     };
 }
 
 // Create a cache key resolver
-const resolver = (input: RequestInfo, init?: RequestInit) => {
-    return JSON.stringify({ input, init });
+const resolver = (input: RequestInfo, init?: RequestInit, withAuth?: boolean) => {
+    return JSON.stringify({ input, init, withAuth });
 };
 
 // Memoize the function
-const memoizedAuthFetch = memoize(_authFetch, resolver);
+const memoizedFetch = memoize(_fetch, resolver);
 
 export async function authFetch(input: RequestInfo, init?: RequestInit): Promise<WrappedResponse> {
-    const result = await memoizedAuthFetch(input, init);
+    const result = await memoizedFetch(input, init, true); // withAuth is true
 
     // Set a timeout to clear the specific cache entry after 500ms
     setTimeout(() => {
-        memoizedAuthFetch.cache.delete(resolver(input, init));
+        memoizedFetch.cache.delete(resolver(input, init, true));
+    }, 500);
+
+    return result;
+}
+
+export async function memFetch(input: RequestInfo, init?: RequestInit): Promise<WrappedResponse> {
+    const result = await memoizedFetch(input, init, false); // withAuth is false
+
+    // Set a timeout to clear the specific cache entry after 500ms
+    setTimeout(() => {
+        memoizedFetch.cache.delete(resolver(input, init, false));
     }, 500);
 
     return result;
