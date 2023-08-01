@@ -14,6 +14,8 @@ import com.techisgood.carrentals.exception.RemoteServiceException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users/v1/user")

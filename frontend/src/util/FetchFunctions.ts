@@ -38,15 +38,43 @@ async function _fetch(input: RequestInfo, init?: RequestInit, withAuth: boolean 
         }
     }
 
+    const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+
+    // Recursive function to convert ISO date strings to Date objects
+    const convertDatesToObjects = (data: any): any => {
+        if (Array.isArray(data)) {
+            return data.map(convertDatesToObjects);
+        } else if (data !== null && typeof data === 'object') {
+            for (const key in data) {
+                if (Object.prototype.hasOwnProperty.call(data, key)) {
+                    data[key] = convertDatesToObjects(data[key]);
+                    if (typeof data[key] === 'string' && isoDateTimeRegex.test(data[key])) {
+                        // Check if the string matches the stricter ISO date format and convert it to a Date object
+                        const date = new Date(data[key]);
+                        if (!isNaN(date.getTime())) {
+                            data[key] = date;
+                        }
+                    }
+                }
+            }
+            return data;
+        } else {
+            return data;
+        }
+    };
+
     const response = await fetch(input, init);
     if (!response.ok) {
         const errorDetails: ErrorDetails = await response.json();
         throw new APIError('API Request failed', errorDetails);
     }
 
+    const jsonData = await response.json();
+    const dataWithDatesConverted = convertDatesToObjects(jsonData);
+
     return {
         ok: response.ok,
-        json: response.json()  // Note: This is a promise!
+        json: Promise.resolve(dataWithDatesConverted) // Resolve with the updated JSON object
     };
 }
 
@@ -79,3 +107,4 @@ export async function memFetch(input: RequestInfo, init?: RequestInit): Promise<
 
     return result;
 }
+

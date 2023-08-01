@@ -16,6 +16,8 @@ import {
 } from '@mui/material';
 import { Gender, UserDemographicsDto } from "../../services/user/UserService.types";
 import USStatesDropdown from "../../components/USStatesDropdown";
+import userService from "../../services/user/UserService";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 type FormErrors = {
     firstName?: string;
@@ -33,12 +35,17 @@ type FormErrors = {
 
 type param = {
     dto: Partial<UserDemographicsDto> | undefined;
+    userId: string;
+    onSave: (data: UserDemographicsDto) => void;
 }
 
-const UserDemographicsForm: React.FC<param> = ({ dto }) => {
+const UserDemographicsForm: React.FC<param> = ({ dto, userId, onSave }) => {
     const [formData, setFormData] = useState<Partial<UserDemographicsDto>>(dto || {});
     const [errors, setErrors] = useState<Partial<FormErrors>>({});
     const [lastChanged, setLastChanged] = useState<keyof UserDemographicsDto>();
+    const [loading, setLoading] = useState<boolean>(false);
+
+
     useEffect(() => {
         if (lastChanged) {
             validateForm(lastChanged);
@@ -48,12 +55,23 @@ const UserDemographicsForm: React.FC<param> = ({ dto }) => {
     const handleChange = (name: keyof UserDemographicsDto) => (
         event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: unknown }>
     ) => {
-        setFormData({
-            ...formData,
-            [name]: event.target.value
-        });
+        const value = event.target.value;
+        if (name === 'dateOfBirth') {
+            // Parse the input value to a Date object
+            const dateOfBirth = new Date(value as string);
+            setFormData({
+                ...formData,
+                [name]: dateOfBirth,
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
         setLastChanged(name);
     };
+
 
     const handleSelect = (name: keyof UserDemographicsDto) => (
         event: SelectChangeEvent
@@ -128,15 +146,19 @@ const UserDemographicsForm: React.FC<param> = ({ dto }) => {
         return valid;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        validateForm();
+        setLoading(true);
+        if (validateForm()) {
+            formData.country = "USA";
+            formData.userId = userId;
+            await userService.createUserDemographics(formData as UserDemographicsDto);
+            onSave(formData as UserDemographicsDto);
+            setLoading(false);
+        }
     };
 
     return (
-        <Card>
-            <CardHeader title={"Personal Information"}/>
-            <CardContent>
                 <Container>
 
                 <form onSubmit={handleSubmit}>
@@ -178,7 +200,7 @@ const UserDemographicsForm: React.FC<param> = ({ dto }) => {
                                 fullWidth
                                 label="Date of Birth"
                                 type="date"
-                                value={formData.dateOfBirth?.toISOString().split('T')[0] || ''}
+                                value={formData.dateOfBirth ? formData.dateOfBirth.toISOString().split('T')[0] : ''}
                                 onChange={handleChange('dateOfBirth')}
                                 error={!!errors.dateOfBirth}
                                 helperText={errors.dateOfBirth}
@@ -262,15 +284,13 @@ const UserDemographicsForm: React.FC<param> = ({ dto }) => {
                         </Grid>
 
                         <Grid item>
-                            <Button fullWidth type="submit" variant="contained" color="primary">
-                                Submit
-                            </Button>
+                            <LoadingButton loading={loading} fullWidth type="submit" variant="contained" color="primary">
+                                Save
+                            </LoadingButton>
                         </Grid>
                     </Grid>
                 </form>
                 </Container>
-            </CardContent>
-        </Card>
     );
 
 };
