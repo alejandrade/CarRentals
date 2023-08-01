@@ -25,7 +25,7 @@ class RentalService {
             body: JSON.stringify(data),
         });
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -44,7 +44,7 @@ class RentalService {
             body: JSON.stringify(rentalActionDto),
         });
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -63,7 +63,7 @@ class RentalService {
             body: JSON.stringify(rentalActionDto),
         });
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -81,7 +81,7 @@ class RentalService {
             },
         });
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -100,7 +100,7 @@ class RentalService {
             },
         });
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -120,7 +120,7 @@ class RentalService {
             body: formData,
         });
 
-        return response.json();
+        return response.json;
     }
 
 

@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserEndpoints {
 
 	private final UserCreateDemographicsService userCreateDemographicsService;
-	private final UserRepository userRepository;
+	private final ActiveUserDataService activeUserDataService;
 
 	@GetMapping("/current")
-	public ResponseEntity<UserDto> getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
-		DbUser dbUser = userRepository.findUserWithActiveInsurancesAndLicenses(userDetails.getUsername()).orElseThrow();
-		return ResponseEntity.ok(UserDto.from(dbUser));
+	public UserDto getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
+		return activeUserDataService.getCurrentUser(userDetails.getUsername());
 	}
 	
 	@PostMapping("/demographic")

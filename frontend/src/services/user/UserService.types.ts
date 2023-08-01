@@ -1,7 +1,6 @@
-export type Gender = 'Male' | 'Female' | 'Other' | 'Prefer_Not_To_Say';
+// UserDto.ts
 
-
-export type  UserDto = {
+export interface UserDto {
     id: string;
     email: string;
     phoneNumber: string;
@@ -10,15 +9,52 @@ export type  UserDto = {
     accountNonExpired: boolean;
     credentialsNonExpired: boolean;
     accountNonLocked: boolean;
-    authorities?: string[];  // It's optional because it's a List which can be null
-    userDemographics?: UserDemographicsDto;  // Assuming you've a similar type for UserDemographicsDto
+    authorities: string[];
+    userLicenses: UserLicenseDto[];
+    userInsurances: UserInsuranceDto[];
+    userDemographics: UserDemographicsDto;
 }
-export type  UserDemographicsDto = {
+
+// UserLicenseDto.ts
+
+export interface UserLicenseDto {
+    userId: string;
+    licenseNumber: string;
+    issuingState: string;
+    dateOfIssue: Date;
+    expirationDate: Date;
+    licenseClass: string;
+    backCardPicture: string;
+    frontCardPicture: string;
+    active: boolean;
+}
+
+// UserInsuranceDto.ts
+
+export interface UserInsuranceDto {
+    userId: string;
+    policyNumber: string;
+    provider: string;
+    frontCardPicture: string;
+    backCardPicture: string;
+    endDate: Date;
+    active: boolean;
+}
+
+// UserDemographicsDto.ts
+
+export enum Gender {
+    MALE = 'MALE',
+    FEMALE = 'FEMALE',
+    OTHER = 'OTHER',
+}
+
+export interface UserDemographicsDto {
     userId: string;
     firstName: string;
-    middleInitial?: string;  // fields that can be null or not set should be optional
-    lastName?: string;
-    dateOfBirth?: Date;  // Using JavaScript's Date type to represent LocalDate
+    middleInitial?: string;
+    lastName: string;
+    dateOfBirth?: Date;
     gender?: Gender;
     address?: string;
     city?: string;

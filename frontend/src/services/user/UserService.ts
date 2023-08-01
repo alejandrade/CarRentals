@@ -5,13 +5,12 @@ class UserService {
     private readonly BASE_URL = process.env.BASE_URL;
 
     async getLoggedInUser(): Promise<UserDto> {
-        const response = await authFetch(`${this.BASE_URL}/users/v1/current`);
-
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/current`);
         if (!response.ok) {
             throw new Error('Failed to fetch logged-in user');
         }
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -29,7 +28,7 @@ class UserService {
             body: JSON.stringify(data),
         });
 
-        return response.json();
+        return response.json;
     }
 }
 

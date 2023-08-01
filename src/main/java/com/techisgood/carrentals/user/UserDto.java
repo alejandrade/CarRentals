@@ -74,14 +74,6 @@ public class UserDto {
             userDto.setUserDemographics(UserDemographicsDto.from(dbUser.getUserDemographics()));
         }
 
-        if (dbUser.getUserLicenses() != null && !dbUser.getUserLicenses().isEmpty()) {
-            userDto.setUserLicenses(dbUser.getUserLicenses().stream().map(UserLicenseDto::from).toList());
-        }
-
-        if (dbUser.getUserInsurances() != null && !dbUser.getUserInsurances().isEmpty()) {
-            userDto.setUserInsurances(dbUser.getUserInsurances().stream().map(UserInsuranceDto::from).toList());
-        }
-
         return userDto;
     }
 }

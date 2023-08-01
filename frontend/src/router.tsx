@@ -10,8 +10,6 @@ import ClerkDash from "./pages/clerk/ClerkDash";
 import AdminDash from "./pages/admin/AdminDash";
 import CarRentalForm from "./pages/clerk/CarRentalForm";
 
-
-
 function dashTabs() {
     return [
         {

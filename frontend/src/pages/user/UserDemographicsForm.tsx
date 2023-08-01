@@ -23,8 +23,12 @@ type FormErrors = {
     additionalInfo?: string;
 };
 
-const UserDemographicsForm: React.FC = () => {
-    const [formData, setFormData] = useState<Partial<UserDemographicsDto>>({});
+type param = {
+    dto: Partial<UserDemographicsDto> | undefined;
+}
+
+const UserDemographicsForm: React.FC<param> = ({dto}) => {
+    const [formData, setFormData] = useState<Partial<UserDemographicsDto>>(dto || {});
     const [errors, setErrors] = useState<Partial<FormErrors>>({});
 
     const handleChange = (name: keyof UserDemographicsDto) => (

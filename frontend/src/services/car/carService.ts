@@ -20,7 +20,7 @@ class CarService {
             body: JSON.stringify(data),
         });
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -38,7 +38,7 @@ class CarService {
             },
         });
 
-        return response.json();
+        return response.json;
     }
 
     /**
@@ -55,7 +55,7 @@ class CarService {
             },
         });
 
-        return response.json();
+        return response.json;
     }
 }
 

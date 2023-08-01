@@ -44,7 +44,7 @@ public class DbUser extends Auditable {
     @Column(name = "account_non_locked", columnDefinition = "tinyint(1) default 1")
     private Boolean accountNonLocked = true;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Authority> authorities;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
