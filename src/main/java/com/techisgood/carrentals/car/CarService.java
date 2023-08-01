@@ -1,13 +1,15 @@
 package com.techisgood.carrentals.car;
 
-import com.techisgood.carrentals.model.Car;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.techisgood.carrentals.model.Car;
+import com.techisgood.carrentals.model.ServiceLocation;
+
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -47,4 +49,14 @@ public class CarService {
         return carRepository.findById(id).map(CarDto::from).orElse(null);
     }
 
+    
+    
+    @Transactional
+    public Car updateServiceLocation(Car car, ServiceLocation newLocation) {
+    	//TODO: This should move the car from one service location to the other. (table= car_service_location)
+    	//the service end date should update where the columns match car and a null service end date.
+    	//a new entry should be added for car and new service location.
+    	return car;
+    }
+    
 }

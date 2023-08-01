@@ -33,7 +33,7 @@ public class UserCreateIfNotExistServiceImpl implements UserCreateIfNotExistServ
                 dbUser.setPhoneNumber(phoneNumberEmail);
             }
 
-            userRepository.save(dbUser);
+            dbUser = userRepository.save(dbUser);
             authoritiesCreateService.createAuthorityForUser(dbUser, userAuthority);
             authorityRepository.flush();
             userRepository.flush();

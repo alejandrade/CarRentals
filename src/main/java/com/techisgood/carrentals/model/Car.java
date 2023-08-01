@@ -1,13 +1,23 @@
 package com.techisgood.carrentals.model;
 
-import com.techisgood.carrentals.model.audit.VersionedAuditable;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
+import com.techisgood.carrentals.model.audit.VersionedAuditable;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "cars", catalog = "car_rentals")
@@ -57,5 +67,9 @@ public class Car extends VersionedAuditable {
 
     @Column(name = "short_id", length = 8, insertable = false, updatable = false) // Added generated column mapping
     private String shortId;
+    
+    @ElementCollection
+    @JoinColumn(name="car_id", referencedColumnName = "id")
+    private List<CarServiceLocation> locations;
 
 }

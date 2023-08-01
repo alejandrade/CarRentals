@@ -10,15 +10,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.techisgood.carrentals.car.CarRepository;
 import com.techisgood.carrentals.model.Car;
 import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.Rental;
+import com.techisgood.carrentals.model.ServiceLocation;
+import com.techisgood.carrentals.service_location.ServiceLocationRepository;
 import com.techisgood.carrentals.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class RentalService {
 	private final RentalRepository rentalRepository;
 	private final CarRepository carRepository;
 	private final UserRepository userRepository;
-
+	private final ServiceLocationRepository serviceLocationRepository;
 
 	@Transactional
 	public RentalDto startRental(BigDecimal odometer, String rentalId, Integer version) {
@@ -50,14 +52,28 @@ public class RentalService {
 	}
 
 	@Transactional
-	public RentalDto createRentalUsingDto(RentalDto dto) throws IllegalArgumentException {
+	public RentalDto createRentalUsingDto(String carId, RentalCreateDto dto) throws IllegalArgumentException {
 		DbUser dbUser = userRepository.findByPhoneNumber(dto.getRenterPhoneNumber()).orElseThrow();
-		Rental rental = createRental(dto.getCarId(), dbUser.getId(), dto.getEndingOdometerReading(), dto.getRentalDatetime());
+		Rental rental = createRental(
+				carId, 
+				dbUser.getId(),
+				dto.getClerkId(),
+				dto.getServiceLocationId(),
+				dto.getInitialOdometerReading(), 
+				dto.getRentalDatetime(),
+				dto.getStatus());
 		return RentalDto.from(rental);
 	}
 
 	@Transactional
-	public Rental createRental(String carId, String renterId, BigDecimal odometer, LocalDateTime rentalDateTime) throws IllegalArgumentException {
+	public Rental createRental(
+			String carId, 
+			String renterId, 
+			String clerkId,
+			String serviceLocationId,
+			BigDecimal odometer, 
+			LocalDateTime rentalDateTime,
+			RentalStatus status) throws IllegalArgumentException {
 		Optional<Car> car = carRepository.findById(carId);
 		if (car.isEmpty()) {
 			throw new IllegalArgumentException("car_id");
@@ -66,12 +82,23 @@ public class RentalService {
 		if (renter.isEmpty()) {
 			throw new IllegalArgumentException("renter_id");
 		}
+		Optional<DbUser> clerk = userRepository.findById(clerkId);
+		if (clerk.isEmpty()) {
+			throw new IllegalArgumentException("clerk_id");
+		}
+		Optional<ServiceLocation> serviceLocation = serviceLocationRepository.findById(serviceLocationId);
+		if (serviceLocation.isEmpty()) {
+			throw new IllegalArgumentException("service_location_id");
+		}
 		
 		Rental rental = new Rental();
 		rental.setCar(car.get());
+		rental.setClerk(clerk.get());
 		rental.setRenter(renter.get());
+		rental.setServiceLocation(serviceLocation.get());
 		rental.setInitialOdometerReading(odometer);
 		rental.setRentalDatetime(rentalDateTime);
+		rental.setStatus(status);
 		
 		rentalRepository.save(rental);
 		return rental;
