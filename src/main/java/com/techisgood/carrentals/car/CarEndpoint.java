@@ -27,9 +27,9 @@ public class CarEndpoint {
     private final CarService carService;
 
     @PostMapping
-    public ResponseEntity<Car> createOrUpdateCar(@Valid @RequestBody CarCreationDto carCreationDto) {
+    public ResponseEntity<CarDto> createOrUpdateCar(@Valid @RequestBody CarCreationDto carCreationDto) {
         Car car = carService.createOrUpdateCar(carCreationDto);
-        return new ResponseEntity<>(car, HttpStatus.CREATED);
+        return new ResponseEntity<>(CarDto.from(car), HttpStatus.CREATED);
     }
 
     @GetMapping

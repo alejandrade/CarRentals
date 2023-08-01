@@ -1,6 +1,7 @@
 // types.ts
 export interface StartVerificationRequest {
-    phoneNumber: string;
+    phoneNumber?: string;
+    email?: string;
     channel: string;
 }
 

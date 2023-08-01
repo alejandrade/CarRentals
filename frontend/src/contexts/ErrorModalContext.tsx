@@ -72,7 +72,7 @@ export const ErrorModalProvider: React.FC<MyComponentProps> = ({ children }) => 
                         <Typography>Message: {errorDetails.message}</Typography>
                         <Typography>Path: {errorDetails.path}</Typography>
                         <ul>
-                            {errorDetails.bindingErrors.map(error => <li key={error}>{error}</li>)}
+                            {errorDetails?.bindingErrors?.map(error => <li key={error}>{error}</li>)}
                         </ul>
                         <Button variant="contained" color="primary" onClick={hideError}>Close</Button>
                     </Box>

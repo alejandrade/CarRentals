@@ -32,6 +32,7 @@ export interface UserLicenseDto {
 // UserInsuranceDto.ts
 
 export interface UserInsuranceDto {
+    id: string;
     userId: string;
     policyNumber: string;
     provider: string;
@@ -63,5 +64,11 @@ export interface UserDemographicsDto {
     country?: string;
     additionalInfo?: string;
 }
+
+export interface UpdateContactInformation {
+    username: string;
+    code: string;
+}
+
 
 export const userDemographicKeys = ["userId", "firstName", "middleInitial", "lastName", "dateOfBirth", "gender", "address", "city", "state", "postalCode", "country", "additionalInfo"];
