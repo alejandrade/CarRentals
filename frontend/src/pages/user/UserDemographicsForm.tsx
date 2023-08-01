@@ -150,7 +150,7 @@ const UserDemographicsForm: React.FC<param> = ({ dto, userId, onSave }) => {
         e.preventDefault();
         setLoading(true);
         if (validateForm()) {
-            formData.country = "USA";
+            formData.country = "US";
             formData.userId = userId;
             await userService.createUserDemographics(formData as UserDemographicsDto);
             onSave(formData as UserDemographicsDto);

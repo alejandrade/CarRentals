@@ -38,7 +38,7 @@ async function _fetch(input: RequestInfo, init?: RequestInit, withAuth: boolean 
         }
     }
 
-    const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+    const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?$/;
 
     // Recursive function to convert ISO date strings to Date objects
     const convertDatesToObjects = (data: any): any => {
@@ -66,6 +66,7 @@ async function _fetch(input: RequestInfo, init?: RequestInit, withAuth: boolean 
     const response = await fetch(input, init);
     if (!response.ok) {
         const errorDetails: ErrorDetails = await response.json();
+        console.error(JSON.stringify(errorDetails));
         throw new APIError('API Request failed', errorDetails);
     }
 

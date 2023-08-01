@@ -1,8 +1,66 @@
 import { authFetch } from "../../util/FetchFunctions";
-import {UserDemographicsDto, UserDto} from "./UserService.types";
+import {UpdateContactInformation, UserDemographicsDto, UserDto, UserInsuranceDto} from "./UserService.types";
 
 class UserService {
     private readonly BASE_URL = process.env.BASE_URL;
+
+    /**
+     * Save user insurance information.
+     *
+     * @param data - The insurance data for the user.
+     * @returns - A promise with the response containing the saved insurance data.
+     */
+    async saveInsurance(data: UserInsuranceDto): Promise<UserInsuranceDto> {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/insurance`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save insurance information');
+        }
+
+        return response.json;
+    }
+
+    /**
+     * Upload an insurance image.
+     *
+     * @param insuranceId - The ID of the insurance.
+     * @param imageAngle - The angle of the image (FRONT/BACK).
+     * @param imageFile - The image file to upload.
+     * @returns - A promise with the server response.
+     */
+    async uploadInsuranceImage(insuranceId: string, imageAngle: "FRONT" | "BACK", imageFile: File): Promise<Response> {
+        const formData = new FormData();
+        formData.append('insuranceId', insuranceId);
+        formData.append('imageAngle', imageAngle);
+        formData.append('image', imageFile);
+
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/insurance/upload`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to upload insurance image');
+        }
+
+        return response.json;  // Or simply return response if you don't need the JSON data
+    }
+    async updateContactInformation(data: UpdateContactInformation): Promise<UserDto>  {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/contactInformation`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json;
+    }
 
     async getLoggedInUser(): Promise<UserDto> {
         const response = await authFetch(`${this.BASE_URL}/users/v1/user/current`);

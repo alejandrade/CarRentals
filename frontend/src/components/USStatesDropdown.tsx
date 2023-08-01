@@ -8,15 +8,58 @@ interface Props {
 }
 
 const US_STATES = [
-    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
-    "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
-    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
-    "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-    "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
-    "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-    "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
-    "Wisconsin", "Wyoming"
+    { State: "Alabama", abrv: "AL" },
+    { State: "Alaska", abrv: "AK" },
+    { State: "Arizona", abrv: "AZ" },
+    { State: "Arkansas", abrv: "AR" },
+    { State: "California", abrv: "CA" },
+    { State: "Colorado", abrv: "CO" },
+    { State: "Connecticut", abrv: "CT" },
+    { State: "Delaware", abrv: "DE" },
+    { State: "Florida", abrv: "FL" },
+    { State: "Georgia", abrv: "GA" },
+    { State: "Hawaii", abrv: "HI" },
+    { State: "Idaho", abrv: "ID" },
+    { State: "Illinois", abrv: "IL" },
+    { State: "Indiana", abrv: "IN" },
+    { State: "Iowa", abrv: "IA" },
+    { State: "Kansas", abrv: "KS" },
+    { State: "Kentucky", abrv: "KY" },
+    { State: "Louisiana", abrv: "LA" },
+    { State: "Maine", abrv: "ME" },
+    { State: "Maryland", abrv: "MD" },
+    { State: "Massachusetts", abrv: "MA" },
+    { State: "Michigan", abrv: "MI" },
+    { State: "Minnesota", abrv: "MN" },
+    { State: "Mississippi", abrv: "MS" },
+    { State: "Missouri", abrv: "MO" },
+    { State: "Montana", abrv: "MT" },
+    { State: "Nebraska", abrv: "NE" },
+    { State: "Nevada", abrv: "NV" },
+    { State: "New Hampshire", abrv: "NH" },
+    { State: "New Jersey", abrv: "NJ" },
+    { State: "New Mexico", abrv: "NM" },
+    { State: "New York", abrv: "NY" },
+    { State: "North Carolina", abrv: "NC" },
+    { State: "North Dakota", abrv: "ND" },
+    { State: "Ohio", abrv: "OH" },
+    { State: "Oklahoma", abrv: "OK" },
+    { State: "Oregon", abrv: "OR" },
+    { State: "Pennsylvania", abrv: "PA" },
+    { State: "Rhode Island", abrv: "RI" },
+    { State: "South Carolina", abrv: "SC" },
+    { State: "South Dakota", abrv: "SD" },
+    { State: "Tennessee", abrv: "TN" },
+    { State: "Texas", abrv: "TX" },
+    { State: "Utah", abrv: "UT" },
+    { State: "Vermont", abrv: "VT" },
+    { State: "Virginia", abrv: "VA" },
+    { State: "Washington", abrv: "WA" },
+    { State: "West Virginia", abrv: "WV" },
+    { State: "Wisconsin", abrv: "WI" },
+    { State: "Wyoming", abrv: "WY" },
 ];
+
 
 const USStatesDropdown: React.FC<Props> = ({ onChange, value, error, helperText }) => {
     return (
@@ -24,8 +67,8 @@ const USStatesDropdown: React.FC<Props> = ({ onChange, value, error, helperText 
             <InputLabel>State</InputLabel>
             <Select value={value} onChange={onChange} label="State">
                 {US_STATES.map((state) => (
-                    <MenuItem key={state} value={state}>
-                        {state}
+                    <MenuItem key={state.State} value={state.abrv}>
+                        {state.State}
                     </MenuItem>
                 ))}
             </Select>

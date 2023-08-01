@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserInsuranceDto {
 
-    @NotNull(message = "userId is required")
+    private String id;
+
     private String userId;
 
     @NotNull(message = "policyNumber is required")
@@ -32,7 +33,7 @@ public class UserInsuranceDto {
 
     public static UserInsuranceDto from(UserInsurance userInsurance) {
         UserInsuranceDto userInsuranceDto = new UserInsuranceDto();
-
+        userInsuranceDto.setId(userInsurance.getId());
         userInsuranceDto.setUserId(userInsurance.getUser().getId());
         userInsuranceDto.setPolicyNumber(userInsurance.getPolicyNumber());
         userInsuranceDto.setProvider(userInsurance.getProvider());

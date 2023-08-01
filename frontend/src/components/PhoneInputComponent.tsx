@@ -9,9 +9,10 @@ interface Props {
     onChange: (value: string) => void;
     isValid?: boolean;  // The parent can use this prop to check if the phone number is valid.
     props?: InputBaseComponentProps
+    disabled?: boolean
 }
 
-const PhoneInputComponent: React.FC<Props> = ({ value, onChange, isValid,props }) => {
+const PhoneInputComponent: React.FC<Props> = ({ value, onChange, isValid,props, disabled }) => {
     const [error, setError] = useState<string | null>(null);
     const theme = useTheme();
 
@@ -40,6 +41,7 @@ const PhoneInputComponent: React.FC<Props> = ({ value, onChange, isValid,props }
             defaultCountry={"US"}
             value={value}
             fullWidth
+            disabled={disabled}
             onChange={handlePhoneChange}
             inputProps={props}
         />

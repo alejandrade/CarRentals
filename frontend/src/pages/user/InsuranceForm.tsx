@@ -1,18 +1,62 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, CardHeader, CardContent, TextField, Button, Grid, Container} from '@mui/material';
+import {compressImage} from "../../util/ImageFunctions";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {UserInsuranceDto} from "../../services/user/UserService.types";
+import userService from "../../services/user/UserService";
+import {useErrorModal} from "../../contexts/ErrorModalContext";
 
-export interface UserInsuranceDto {
+
+export interface keyHolder {
     policyNumber: string;
     provider: string;
     endDate: Date;
     active: boolean;
+    frontImage?: string;  // Added these fields
+    backImage?: string;
 }
 
-const InsuranceForm: React.FC = () => {
-    const [formData, setFormData] = useState<Partial<UserInsuranceDto>>({ active: false });
-    const [errors, setErrors] = useState<{ [key in keyof UserInsuranceDto]?: string }>({});
+type ContactInformationProps = {
+    dto: UserInsuranceDto,
+    onSave: (dto: UserInsuranceDto) => void;
+    userId: string;
+};
 
-    const validateInput = (name: keyof UserInsuranceDto, value: any) => {
+const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave, userId}) => {
+    const [formData, setFormData] = useState<Partial<UserInsuranceDto>>(dto);
+    const [errors, setErrors] = useState<{ [key in keyof keyHolder]?: string }>({});
+    const [frontImage, setFrontImage] = useState<File | null>(null);  // New state for compressed front image
+    const [backImage, setBackImage] = useState<File | null>(null);   // New state for compressed back image
+    const [loading, setLoading] = useState<boolean>(false);
+    const [disabled, setDisabled] = useState<boolean>(true);
+    const { showError, handleAPIError } = useErrorModal();
+
+    const isFormValid = () => {
+        const requiredFields: (keyof keyHolder)[] = ['policyNumber', 'provider', 'endDate', 'frontImage', 'backImage'];
+
+        // Check if any error exists
+        for (let key in errors) {
+            // @ts-ignore
+            if (errors[key]) return false;
+        }
+
+        // Check if all required fields are present
+        for (let field of requiredFields) {
+            // @ts-ignore
+            if (!formData[field] && field !== 'frontImage' && field !== 'backImage') return false;
+            if ((field === 'frontImage' && !frontImage) || (field === 'backImage' && !backImage)) return false;
+        }
+
+        return true;
+    };
+
+    useEffect(() => {
+        setDisabled(!isFormValid());
+    }, [formData, errors, frontImage, backImage]);
+
+
+
+    const validateInput = (name: string, value: any) => {
         switch (name) {
             case 'policyNumber':
                 return !value.trim() ? 'Policy number is required' : undefined;
@@ -20,8 +64,30 @@ const InsuranceForm: React.FC = () => {
                 return !value.trim() ? 'Provider is required' : undefined;
             case 'endDate':
                 return !value ? 'End date is required' : undefined;
+            case 'frontImage':
+            case 'backImage':
+                return !value ? 'Image is required' : undefined;
             default:
                 return undefined;
+        }
+    };
+
+
+    const handleImageChange = (setImage: React.Dispatch<React.SetStateAction<File | null>>) => async (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            try {
+                const compressedBlob = await compressImage(file);
+                const compressedFile = new File([compressedBlob], file.name, {
+                    type: compressedBlob.type, // This ensures the file type (MIME) remains the same
+                    lastModified: new Date().getTime() // Optionally set the last modified date
+                });
+                setImage(compressedFile);
+            } catch (err) {
+                console.error('Failed to compress image:', err);
+            }
         }
     };
 
@@ -52,10 +118,16 @@ const InsuranceForm: React.FC = () => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Process formData
-        console.log('Insurance Data:', formData);
+        setLoading(true);
+        const userInsuranceDto = await userService.saveInsurance(formData as UserInsuranceDto).catch(handleAPIError);
+        if (userInsuranceDto && frontImage && backImage) {
+            await userService.uploadInsuranceImage(userInsuranceDto.id, "FRONT", frontImage).catch(handleAPIError);
+            await userService.uploadInsuranceImage(userInsuranceDto.id, "BACK", backImage).catch(handleAPIError);
+        }
+        setLoading(false);
+        onSave(formData as UserInsuranceDto);
     };
 
     return (
@@ -104,9 +176,39 @@ const InsuranceForm: React.FC = () => {
                         </Grid>
 
                         <Grid item>
-                            <Button type="submit" variant="contained" fullWidth color="primary">
-                                Submit
-                            </Button>
+                            <TextField
+                                fullWidth
+                                label="Front of Card"
+                                type="file"
+                                onChange={handleImageChange(setFrontImage)}
+                                error={Boolean(errors.frontImage)}
+                                helperText={errors.frontImage}
+                                InputProps={{ inputProps: { accept: 'image/*' } }}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item>
+                            <TextField
+                                fullWidth
+                                label="Back of Card"
+                                type="file"
+                                onChange={handleImageChange(setBackImage)}
+                                error={Boolean(errors.backImage)}
+                                helperText={errors.backImage}
+                                InputProps={{ inputProps: { accept: 'image/*' } }}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item>
+                            <LoadingButton disabled={disabled} loading={loading} type="submit" variant="contained" fullWidth color="primary">
+                                Save
+                            </LoadingButton>
                         </Grid>
                     </Grid>
                 </form>
