@@ -1,17 +1,39 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, TextField, Button, Grid, SelectChangeEvent, Container } from '@mui/material';
 import USStatesDropdown from "../../components/USStatesDropdown";
+import {compressImage} from "../../util/ImageFunctions";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {Gender, UserDemographicsDto, UserInsuranceDto, UserLicenseDto} from "../../services/user/UserService.types";
 
-export interface UserLicenseDto {
-    licenseNumber: string;
-    issuingState: string;
-    expirationDate: Date;
-}
 
-const LicenseForm: React.FC = () => {
-    const [formData, setFormData] = useState<Partial<UserLicenseDto>>({});
+type Props = {
+    dto: Partial<UserLicenseDto>,
+    onSave: (dto: UserLicenseDto) => void;
+};
+const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
+    const [formData, setFormData] = useState<Partial<UserLicenseDto>>(dto);
     const [errors, setErrors] = useState<{ [key in keyof UserLicenseDto]?: string }>({});
+    const [frontImage, setFrontImage] = useState<File | null>(null);
+    const [backImage, setBackImage] = useState<File | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
+    const handleImageChange = (setImage: React.Dispatch<React.SetStateAction<File | null>>) => async (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            try {
+                const compressedBlob = await compressImage(file);
+                const compressedFile = new File([compressedBlob], file.name, {
+                    type: compressedBlob.type,
+                    lastModified: new Date().getTime()
+                });
+                setImage(compressedFile);
+            } catch (err) {
+                console.error('Failed to compress image:', err);
+            }
+        }
+    };
     const validateInput = (name: keyof UserLicenseDto, value: any) => {
         switch (name) {
             case 'licenseNumber':
@@ -24,6 +46,16 @@ const LicenseForm: React.FC = () => {
                 return undefined;
         }
     };
+
+    const handleSelect = (name: keyof UserLicenseDto) => (
+        event: SelectChangeEvent
+    ) => {
+        setFormData({
+            ...formData,
+            [name]: event.target.value as Gender
+        });
+    };
+
 
     const handleChange = (name: keyof UserLicenseDto) => (
         event: React.ChangeEvent<HTMLInputElement>
@@ -63,15 +95,15 @@ const LicenseForm: React.FC = () => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('License Data:', formData);
+        setLoading(true);
+        onSave(formData as UserLicenseDto);
+        setLoading(false);
     };
 
     return (
-        <Card>
-            <CardHeader title="License" />
-            <CardContent>
+
                 <Container>
                     <form onSubmit={handleSubmit}>
                         <Grid container direction="column" spacing={2}>
@@ -85,16 +117,14 @@ const LicenseForm: React.FC = () => {
                                     helperText={errors.licenseNumber}
                                 />
                             </Grid>
-
                             <Grid item>
                                 <USStatesDropdown
                                     value={formData.issuingState || ''}
-                                    onChange={handleChangeSelect()}
+                                    onChange={handleSelect('issuingState')}
                                     error={Boolean(errors.issuingState)}
                                     helperText={errors.issuingState}
                                 />
                             </Grid>
-
                             <Grid item>
                                 <TextField
                                     fullWidth
@@ -109,18 +139,40 @@ const LicenseForm: React.FC = () => {
                                     helperText={errors.expirationDate}
                                 />
                             </Grid>
-
                             <Grid item>
-                                <Button fullWidth type="submit" variant="contained" color="primary">
+                                <TextField
+                                    fullWidth
+                                    label="Front of License"
+                                    type="file"
+                                    onChange={handleImageChange(setFrontImage)}
+                                    InputProps={{ inputProps: { accept: 'image/*' } }}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    fullWidth
+                                    label="Back of License"
+                                    type="file"
+                                    onChange={handleImageChange(setBackImage)}
+                                    InputProps={{ inputProps: { accept: 'image/*' } }}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <LoadingButton loading={loading} type="submit" variant="contained" fullWidth color="primary">
                                     Submit
-                                </Button>
+                                </LoadingButton>
                             </Grid>
                         </Grid>
                     </form>
                 </Container>
-            </CardContent>
-        </Card>
     );
 };
+
 
 export default LicenseForm;

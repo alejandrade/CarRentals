@@ -4,12 +4,12 @@ import {UserInsuranceDto} from "../../services/user/UserService.types";
 import InsuranceForm from "./InsuranceForm";
 
 interface UserInsuranceCardProps {
-    dto: UserInsuranceDto;
+    dto: Partial<UserInsuranceDto>;
 }
 
 const UserInsuranceCard: React.FC<UserInsuranceCardProps> = ({ dto }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [data, setData] = useState<UserInsuranceDto>(dto);
+    const [data, setData] = useState<Partial<UserInsuranceDto>>(dto);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -39,7 +39,7 @@ const UserInsuranceCard: React.FC<UserInsuranceCardProps> = ({ dto }) => {
                         </Grid>
                     </Container>
                 ) : (
-                    <InsuranceForm onSave={handleSaveClick} userId={dto.userId} dto={data} />
+                    <InsuranceForm onSave={handleSaveClick} dto={data} />
                 )}
             </CardContent>
         </Card>

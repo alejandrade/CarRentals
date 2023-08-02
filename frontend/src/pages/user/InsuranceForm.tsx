@@ -17,12 +17,11 @@ export interface keyHolder {
 }
 
 type ContactInformationProps = {
-    dto: UserInsuranceDto,
+    dto: Partial<UserInsuranceDto>,
     onSave: (dto: UserInsuranceDto) => void;
-    userId: string;
 };
 
-const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave, userId}) => {
+const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave}) => {
     const [formData, setFormData] = useState<Partial<UserInsuranceDto>>(dto);
     const [errors, setErrors] = useState<{ [key in keyof keyHolder]?: string }>({});
     const [frontImage, setFrontImage] = useState<File | null>(null);  // New state for compressed front image
