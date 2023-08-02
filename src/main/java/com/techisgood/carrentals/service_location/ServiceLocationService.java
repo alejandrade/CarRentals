@@ -20,18 +20,21 @@ import lombok.RequiredArgsConstructor;
 public class ServiceLocationService {
 	
 	private final ServiceLocationRepository serviceLocationRepository;
+
+	public Page<ServiceLocation> getServiceLocationByStateAndName(String name, String state, Pageable page) {
+		return serviceLocationRepository.findAllByNameStartsWithAndStateEquals(name, state, page);
+	}
 	
-	public Page<ServiceLocation> getServiceLocations(String id, String state, Integer page, Integer size) {
-		Pageable pageable = PageRequest.of(page, size);
+	public Page<ServiceLocation> getServiceLocations(String id, String state, Pageable page) {
 		Page<ServiceLocation> result = null;
 		if (id != null) {
-			result = serviceLocationRepository.findAllById(id, pageable);
+			result = serviceLocationRepository.findAllById(id, page);
 		}
 		else if (state != null) {
-			result = serviceLocationRepository.findAllByState(state, pageable);
+			result = serviceLocationRepository.findAllByState(state, page);
 		}
 		else {
-			result = serviceLocationRepository.findAll(pageable);
+			result = serviceLocationRepository.findAll(page);
 		}
 		return result;
 	}

@@ -1,6 +1,8 @@
 package com.techisgood.carrentals.user;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,19 @@ public class UserEndpoints {
 	private final UserUpdateContactInformationService userUpdateContactInformationService;
 	private final CreateUserInsuranceService createUserInsuranceService;
 	private final CreateUserLicenseService createUserLicenseService;
+	private final UserService userService;
+
+	@PostMapping("/admin/{userId}")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	public UserDto modifyUser(@PathVariable String userId, @Valid @RequestBody UserDto userDto) {
+		return userService.modifyUser(userId, userDto);
+	}
+
+	@GetMapping("/admin/{userId}")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	public UserDto getUser(@PathVariable String userId) {
+		return userService.getUser(userId);
+	}
 
 	@GetMapping("/current")
 	public UserDto getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
@@ -91,4 +106,10 @@ public class UserEndpoints {
 				);
         return ResponseEntity.ok(requestBody);
 	}
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@GetMapping
+	public ResponseEntity<?> getUserWithDetails(Pageable pageable) {
+		return ResponseEntity.ok(userService.findAllUsersWithDetails(pageable));
+	}
+
 }

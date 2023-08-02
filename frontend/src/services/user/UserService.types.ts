@@ -1,5 +1,7 @@
 // UserDto.ts
 
+import {ServiceLocationDto} from "../service_location/ServiceLocationService.types";
+
 export interface UserDto {
     id: string;
     email: string;
@@ -9,10 +11,12 @@ export interface UserDto {
     accountNonExpired: boolean;
     credentialsNonExpired: boolean;
     accountNonLocked: boolean;
-    authorities: string[];
-    userLicenses: UserLicenseDto[];
-    userInsurances: UserInsuranceDto[];
-    userDemographics: UserDemographicsDto;
+    version?: number;
+    serviceLocations?: ServiceLocationDto[];
+    authorities?: string[];
+    userLicenses?: UserLicenseDto[];
+    userInsurances?: UserInsuranceDto[];
+    userDemographics?: UserDemographicsDto;
 }
 
 // UserLicenseDto.ts
@@ -69,6 +73,45 @@ export interface UserDemographicsDto {
 export interface UpdateContactInformation {
     username: string;
     code: string;
+}
+
+export type UserWithDetailsDto = {
+    id: string;
+    email: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    authorities: string[];
+    serviceLocationIds: string[];
+};
+
+export interface Page<T> {
+    content: T[];
+    pageable: {
+        sort: {
+            sorted: boolean;
+            unsorted: boolean;
+            empty: boolean;
+        };
+        offset: number;
+        pageNumber: number;
+        pageSize: number;
+        paged: boolean;
+        unpaged: boolean;
+    };
+    totalPages: number;
+    totalElements: number;
+    last: boolean;
+    numberOfElements: number;
+    first: boolean;
+    size: number;
+    number: number;
+    sort: {
+        sorted: boolean;
+        unsorted: boolean;
+        empty: boolean;
+    };
+    empty: boolean;
 }
 
 
