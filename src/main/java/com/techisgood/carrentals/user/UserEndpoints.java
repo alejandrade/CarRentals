@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,6 +22,8 @@ public class UserEndpoints {
 	private final ActiveUserDataService activeUserDataService;
 	private final UserUpdateContactInformationService userUpdateContactInformationService;
 	private final CreateUserInsuranceService createUserInsuranceService;
+	private final CreateUserLicenseService createUserLicenseService;
+
 	@GetMapping("/current")
 	public UserDto getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
 		return activeUserDataService.getCurrentUser(userDetails.getUsername());
@@ -38,6 +39,7 @@ public class UserEndpoints {
 		return UserInsuranceDto.from(createUserInsuranceService.save(userInsuranceDto));
 	}
 
+
 	@PostMapping("/insurance/upload")
 	public ResponseEntity<?> uploadInsuranceImage(
 			@RequestParam("insuranceId") String insuranceId,
@@ -49,6 +51,25 @@ public class UserEndpoints {
 		}
 		// Assuming you have a service to handle this upload.
 		createUserInsuranceService.uploadInsuranceImage(insuranceId, imageFile, imageAngle);
+		return ResponseEntity.ok(Collections.singletonMap("image", "success"));
+	}
+
+	@PostMapping("/license")
+	public UserLicenseDto createLicense(@Valid @RequestBody UserLicenseDto userInsuranceDto) {
+		return UserLicenseDto.from(createUserLicenseService.save(userInsuranceDto));
+	}
+
+	@PostMapping("/license/upload")
+	public ResponseEntity<?> uploadLicenseImage(
+			@RequestParam("licenseId") String licenseId,
+			@RequestParam("imageAngle") ImageAngle imageAngle,
+			@RequestParam("image") MultipartFile imageFile) throws Exception {
+
+		if (imageFile.isEmpty()) {
+			return ResponseEntity.badRequest().body(Collections.singletonMap("image", "failed"));
+		}
+		// Assuming you have a service to handle this upload.
+		createUserLicenseService.uploadLicenseImage(licenseId, imageFile, imageAngle);
 		return ResponseEntity.ok(Collections.singletonMap("image", "success"));
 	}
 	

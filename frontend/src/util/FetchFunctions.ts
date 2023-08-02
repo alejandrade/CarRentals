@@ -81,8 +81,36 @@ async function _fetch(input: RequestInfo, init?: RequestInit, withAuth: boolean 
 
 // Create a cache key resolver
 const resolver = (input: RequestInfo, init?: RequestInit, withAuth?: boolean) => {
-    return JSON.stringify({ input, init, withAuth });
+    let keyParts = [];
+
+    // Use the input URL as part of the key
+    if (typeof input === "string") {
+        keyParts.push(input);
+    } else if (input instanceof Request) {
+        keyParts.push(input.url);
+    }
+
+    // Handle FormData for caching
+    if (init && init.body instanceof FormData) {
+        const formDataEntries: any[] = [];
+        for (let pair of init.body.entries()) {
+            formDataEntries.push(pair);
+        }
+        // Sorting to ensure order consistency
+        formDataEntries.sort((a, b) => a[0].localeCompare(b[0]));
+        keyParts.push(JSON.stringify(formDataEntries));
+    } else if (init && init.body) {
+        keyParts.push(JSON.stringify(init.body));
+    }
+
+    // If withAuth matters for your caching, include it
+    if (withAuth !== undefined) {
+        keyParts.push(String(withAuth));
+    }
+
+    return keyParts.join("::");
 };
+
 
 // Memoize the function
 const memoizedFetch = memoize(_fetch, resolver);

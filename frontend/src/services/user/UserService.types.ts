@@ -18,6 +18,7 @@ export interface UserDto {
 // UserLicenseDto.ts
 
 export interface UserLicenseDto {
+    id: string;
     userId: string;
     licenseNumber: string;
     issuingState: string;

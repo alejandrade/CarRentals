@@ -11,7 +11,8 @@ import java.sql.Date;
 @NoArgsConstructor
 public class UserLicenseDto {
 
-    @NotNull(message = "userId is required")
+    private String id;
+
     private String userId;
 
     @NotNull(message = "licenseNumber is required")
@@ -36,7 +37,7 @@ public class UserLicenseDto {
 
     public static UserLicenseDto from(UserLicense userLicense) {
         UserLicenseDto userLicenseDto = new UserLicenseDto();
-
+        userLicenseDto.setId(userLicense.getId());
         userLicenseDto.setUserId(userLicense.getUser().getId());
         userLicenseDto.setLicenseNumber(userLicense.getLicenseNumber());
         userLicenseDto.setIssuingState(userLicense.getIssuingState());

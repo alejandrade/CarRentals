@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Card, CardContent, CardHeader, TextField, Button, Grid, SelectChangeEvent, Container } from '@mui/material';
 import USStatesDropdown from "../../components/USStatesDropdown";
 import {compressImage} from "../../util/ImageFunctions";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {Gender, UserDemographicsDto, UserInsuranceDto, UserLicenseDto} from "../../services/user/UserService.types";
 import ImageUpload from "../../components/ImageUpload";
+import userService from "../../services/user/UserService";
+import {useErrorModal} from "../../contexts/ErrorModalContext";
 
 
 type Props = {
@@ -17,6 +19,7 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
     const [frontImage, setFrontImage] = useState<File | null>(null);
     const [backImage, setBackImage] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const { showError, handleAPIError } = useErrorModal();
 
     const validateInput = (name: keyof UserLicenseDto, value: any) => {
         switch (name) {
@@ -26,6 +29,8 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
                 return !value.trim() ? 'Issuing state is required' : undefined;
             case 'expirationDate':
                 return !value ? 'Expiration date is required' : undefined;
+            case 'dateOfIssue':
+                return !value ? "Issued date is required" : undefined;
             default:
                 return undefined;
         }
@@ -36,7 +41,7 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
     ) => {
         setFormData({
             ...formData,
-            [name]: event.target.value as Gender
+            [name]: event.target.value
         });
     };
 
@@ -44,7 +49,7 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
     const handleChange = (name: keyof UserLicenseDto) => (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        const value = name === 'expirationDate' ? new Date(event.target.value) : event.target.value;
+        const value = name === 'expirationDate' || name === "dateOfIssue" ? new Date(event.target.value) : event.target.value;
 
         // Set form data
         setFormData({
@@ -60,28 +65,17 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
         });
     };
 
-    const handleChangeSelect = () => (
-        event: SelectChangeEvent
-    ) => {
-        const value = event.target.value;
-
-        // Set form data
-        setFormData({
-            ...formData,
-            issuingState: value
-        });
-
-        // Validate and set errors
-        const error = validateInput('issuingState', value);
-        setErrors({
-            ...errors,
-            'issuingState': error
-        });
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        console.log(formData);
+        const userLicenseDto = await userService.saveLicense(formData as UserLicenseDto).catch(handleAPIError);
+        console.log(userLicenseDto);
+        if (userLicenseDto && frontImage && backImage) {
+            await userService.uploadLicenseImage(userLicenseDto.id, "FRONT", frontImage).catch(handleAPIError);
+            await userService.uploadLicenseImage(userLicenseDto.id, "BACK", backImage).catch(handleAPIError);
+        }
+
         onSave(formData as UserLicenseDto);
         setLoading(false);
     };
@@ -107,6 +101,20 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
                                     onChange={handleSelect('issuingState')}
                                     error={Boolean(errors.issuingState)}
                                     helperText={errors.issuingState}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    fullWidth
+                                    label="Issued Date"
+                                    type="date"
+                                    value={formData.dateOfIssue?.toISOString().split('T')[0] || ''}
+                                    onChange={handleChange('dateOfIssue')}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    error={Boolean(errors.dateOfIssue)}
+                                    helperText={errors.dateOfIssue}
                                 />
                             </Grid>
                             <Grid item>

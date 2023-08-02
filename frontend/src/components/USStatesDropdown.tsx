@@ -61,13 +61,11 @@ const US_STATES = [
 ];
 
 const USStatesDropdown: React.FC<Props> = ({ onChange, value, error, helperText }) => {
-    const effectiveValue = value ? value : "OK"; // If value is null, default to "OK"
-console.log(effectiveValue);
     return (
         <FormControl fullWidth variant="outlined" error={error}>
             <InputLabel>State</InputLabel>
             <Select
-                value={effectiveValue}
+                value={value}
                 onChange={onChange}
                 label="State"
             >
