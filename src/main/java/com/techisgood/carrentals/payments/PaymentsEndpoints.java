@@ -30,7 +30,8 @@ public class PaymentsEndpoints {
 	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentsInvoiceCreateDto requestBody) throws RemoteServiceException {
 		try {
 			PaymentsInvoice invoice = paymentsService.createInvoice(requestBody.getRentalId(), requestBody.getPayerId(), requestBody.getDayPrice(), requestBody.getDays());
-			return ResponseEntity.ok().body(invoice);
+			PaymentsInvoiceDto response = PaymentsInvoiceDto.from(invoice);
+			return ResponseEntity.ok().body(response);
 		} catch (StripeException e) {
 			throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
 		}
