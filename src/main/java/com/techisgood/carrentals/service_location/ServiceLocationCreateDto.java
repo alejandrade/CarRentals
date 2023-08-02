@@ -2,10 +2,11 @@ package com.techisgood.carrentals.service_location;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ServiceLocationCreateDto {
 
     @NotBlank(message = "name is required")
