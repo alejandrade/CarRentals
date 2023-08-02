@@ -97,7 +97,7 @@ public class PaymentsService {
 		
 		pi.setTotal(taxInfo.total);
 		
-		paymentsInvoiceRepository.save(pi);
+		pi = paymentsInvoiceRepository.save(pi);
 		
 		return pi;
 	}
