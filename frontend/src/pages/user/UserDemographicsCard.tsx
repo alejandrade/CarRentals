@@ -13,8 +13,8 @@ const UserDemographicsCard: React.FC<UserDemographicsCardProps> = ({dto, userId}
     const [isEditing, setIsEditing] = useState(false);
     const [data, setData] = useState<Partial<UserDemographicsDto>>(dto);
 
-    const handleEditClick = () => {
-        setIsEditing(true);
+    const handleEditClick = (val: boolean) => {
+        setIsEditing(val);
         console.log("start editing")
     };
 
@@ -24,7 +24,7 @@ const UserDemographicsCard: React.FC<UserDemographicsCardProps> = ({dto, userId}
     };
     return (
         <Card>
-            <CardHeader title="Personal Information" action={<Button onClick={handleEditClick}>Edit</Button>}/>
+            <CardHeader title="Personal Information" action={isEditing ? <Button onClick={() => setIsEditing(false)}>Cancel</Button> : <Button onClick={() => setIsEditing(true)}>Edit</Button>} />
             <CardContent>
                 {data && !isEditing ?
                     <Container>

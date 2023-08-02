@@ -22,7 +22,7 @@ const UserInsuranceCard: React.FC<UserInsuranceCardProps> = ({ dto }) => {
 
     return (
         <Card>
-            <CardHeader title="User Insurance" action={isEditing ? <Button onClick={() => setIsEditing(false)}>Cancel</Button> : <Button onClick={handleEditClick}>Edit</Button>} />
+            <CardHeader title="Insurance Details" action={isEditing ? <Button onClick={() => setIsEditing(false)}>Cancel</Button> : <Button onClick={handleEditClick}>Edit</Button>} />
             <CardContent>
                 {!isEditing && data.policyNumber && data.provider && data.endDate ? (
                     <Container>

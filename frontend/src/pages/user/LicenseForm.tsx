@@ -4,6 +4,7 @@ import USStatesDropdown from "../../components/USStatesDropdown";
 import {compressImage} from "../../util/ImageFunctions";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {Gender, UserDemographicsDto, UserInsuranceDto, UserLicenseDto} from "../../services/user/UserService.types";
+import ImageUpload from "../../components/ImageUpload";
 
 
 type Props = {
@@ -17,23 +18,6 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
     const [backImage, setBackImage] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const handleImageChange = (setImage: React.Dispatch<React.SetStateAction<File | null>>) => async (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            try {
-                const compressedBlob = await compressImage(file);
-                const compressedFile = new File([compressedBlob], file.name, {
-                    type: compressedBlob.type,
-                    lastModified: new Date().getTime()
-                });
-                setImage(compressedFile);
-            } catch (err) {
-                console.error('Failed to compress image:', err);
-            }
-        }
-    };
     const validateInput = (name: keyof UserLicenseDto, value: any) => {
         switch (name) {
             case 'licenseNumber':
@@ -139,29 +123,11 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
                                     helperText={errors.expirationDate}
                                 />
                             </Grid>
-                            <Grid item>
-                                <TextField
-                                    fullWidth
-                                    label="Front of License"
-                                    type="file"
-                                    onChange={handleImageChange(setFrontImage)}
-                                    InputProps={{ inputProps: { accept: 'image/*' } }}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
+                            <Grid item >
+                                <ImageUpload label="Front of License" onImageChange={setFrontImage} />
                             </Grid>
                             <Grid item>
-                                <TextField
-                                    fullWidth
-                                    label="Back of License"
-                                    type="file"
-                                    onChange={handleImageChange(setBackImage)}
-                                    InputProps={{ inputProps: { accept: 'image/*' } }}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
+                                <ImageUpload label="Back of License" onImageChange={setBackImage} />
                             </Grid>
                             <Grid item>
                                 <LoadingButton loading={loading} type="submit" variant="contained" fullWidth color="primary">

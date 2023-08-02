@@ -1,12 +1,34 @@
 import React, { useEffect } from 'react';
-import { Typography, Tabs, Tab, Box, Grid } from '@mui/material';
+import {Typography, Tabs, Tab, Grid, Box} from '@mui/material';
 import { useAuth } from "../../contexts/auth_context";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet } from 'react-router-dom';
+import { styled } from '@mui/system';
+
+const TabsContainer = styled(Box)(({ theme }) => ({
+    [theme.breakpoints.down('sm')]: {
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+    },
+    [theme.breakpoints.up('md')]: {
+        order: 1,
+    },
+}));
+
+const ContentContainer = styled(Grid)(({ theme }) => ({
+    [theme.breakpoints.down('sm')]: {
+        paddingBottom: 56, // or whatever the height of your tabs is
+    },
+    [theme.breakpoints.up('md')]: {
+        order: 2,
+    },
+}));
 
 const AuthoritySelectPage: React.FC = () => {
 
-    //roles to show for admin
     const roles = ["user", "staff", "clerk", "admin"];
 
     const { authorities } = useAuth();
@@ -14,9 +36,8 @@ const AuthoritySelectPage: React.FC = () => {
     const location = useLocation();
     const [selectedTab, setSelectedTab] = React.useState(0);
 
-
     useEffect(() => {
-        const tab = roles.filter(x=> location.pathname.includes(x))[0];
+        const tab = roles.filter(x => location.pathname.includes(x))[0];
         if (tab) {
             setSelectedTab(roles.indexOf(tab));
         } else {
@@ -25,7 +46,7 @@ const AuthoritySelectPage: React.FC = () => {
                 onSelect(newTab);
             }
         }
-    }, [])
+    }, []);
 
     function onSelect(path: string) {
         navigate(`/dash/${path}`);
@@ -46,26 +67,24 @@ const AuthoritySelectPage: React.FC = () => {
 
     return (
         <Grid container direction="column">
-            <Grid item xs={12}>
-                <Box bgcolor="background.paper">
-                    <Tabs
-                        value={selectedTab}
-                        onChange={handleChange}
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        indicatorColor="primary"
-                        textColor="primary"
-                    >
-                        {getAuthorities().map((role, index) => (
-                            <Tab key={index} label={role} />
-                        ))}
-                    </Tabs>
-                </Box>
-            </Grid>
+            <TabsContainer bgcolor="background.paper">
+                <Tabs
+                    value={selectedTab}
+                    onChange={handleChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    indicatorColor="primary"
+                    textColor="primary"
+                >
+                    {getAuthorities().map((role, index) => (
+                        <Tab key={index} label={role} />
+                    ))}
+                </Tabs>
+            </TabsContainer>
 
-            <Grid item xs={12}>
+            <ContentContainer item xs={12}>
                 <Outlet />
-            </Grid>
+            </ContentContainer>
         </Grid>
     );
 }

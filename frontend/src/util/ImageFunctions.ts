@@ -12,7 +12,7 @@ type ImageCompressionOptions = {
  */
 export const compressImage = (file: File, options: ImageCompressionOptions = {}): Promise<Blob> => {
     return new Promise((resolve, reject) => {
-        const { maxWidth = 1024, quality = 0.8 } = options;
+        const { maxWidth = 512, quality = 0.8 } = options;
         const img = new Image();
         img.src = URL.createObjectURL(file);
         img.onload = () => {

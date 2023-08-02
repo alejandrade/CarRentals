@@ -23,7 +23,7 @@ const UserLicenseCard: React.FC<UserLicenseCardProps> = ({ dto }) => {
     return (
         <Card>
             <CardHeader
-                title="User License"
+                title="License Details"
                 action={isEditing ?
                     <Button onClick={() => setIsEditing(false)}>Cancel</Button> :
                     <Button onClick={handleEditClick}>Edit</Button>

@@ -5,6 +5,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import {UserInsuranceDto} from "../../services/user/UserService.types";
 import userService from "../../services/user/UserService";
 import {useErrorModal} from "../../contexts/ErrorModalContext";
+import ImageUpload from "../../components/ImageUpload";
 
 
 export interface keyHolder {
@@ -71,24 +72,6 @@ const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave}) => {
         }
     };
 
-
-    const handleImageChange = (setImage: React.Dispatch<React.SetStateAction<File | null>>) => async (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            try {
-                const compressedBlob = await compressImage(file);
-                const compressedFile = new File([compressedBlob], file.name, {
-                    type: compressedBlob.type, // This ensures the file type (MIME) remains the same
-                    lastModified: new Date().getTime() // Optionally set the last modified date
-                });
-                setImage(compressedFile);
-            } catch (err) {
-                console.error('Failed to compress image:', err);
-            }
-        }
-    };
 
     const handleChange = (name: keyof UserInsuranceDto) => (
         event: React.ChangeEvent<HTMLInputElement>
@@ -175,33 +158,11 @@ const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave}) => {
                         </Grid>
 
                         <Grid item>
-                            <TextField
-                                fullWidth
-                                label="Front of Card"
-                                type="file"
-                                onChange={handleImageChange(setFrontImage)}
-                                error={Boolean(errors.frontImage)}
-                                helperText={errors.frontImage}
-                                InputProps={{ inputProps: { accept: 'image/*' } }}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
+                            <ImageUpload label="Front of Card" onImageChange={setFrontImage} />
                         </Grid>
 
                         <Grid item>
-                            <TextField
-                                fullWidth
-                                label="Back of Card"
-                                type="file"
-                                onChange={handleImageChange(setBackImage)}
-                                error={Boolean(errors.backImage)}
-                                helperText={errors.backImage}
-                                InputProps={{ inputProps: { accept: 'image/*' } }}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
+                            <ImageUpload label="Back of Card" onImageChange={setBackImage} />
                         </Grid>
 
                         <Grid item>

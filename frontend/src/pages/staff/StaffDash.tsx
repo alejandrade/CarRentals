@@ -5,6 +5,9 @@ import {
     AccordionDetails,
     Typography,
     Button,
+    useMediaQuery,
+    useTheme,
+    Box
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CarTable from "./CarTable";
@@ -15,6 +18,8 @@ const StaffDash: React.FC = () => {
     const [refresh, setRefresh] = useState<boolean>(false);
     const [carFormModalOpen, setCarFormModalOpen] = useState<boolean>(false);
     const [carId, setCarId] = useState<string | null>();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     function onSelect(id: string | null) {
         setCarId(id);
@@ -22,6 +27,14 @@ const StaffDash: React.FC = () => {
 
     function refreshTable() {
         setRefresh(true);
+    }
+
+    if (isMobile) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <Typography variant="h6">Must use desktop to access this page.</Typography>
+            </Box>
+        );
     }
 
     return (

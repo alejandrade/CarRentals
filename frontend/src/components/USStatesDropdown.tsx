@@ -60,12 +60,17 @@ const US_STATES = [
     { State: "Wyoming", abrv: "WY" },
 ];
 
-
 const USStatesDropdown: React.FC<Props> = ({ onChange, value, error, helperText }) => {
+    const effectiveValue = value ? value : "OK"; // If value is null, default to "OK"
+console.log(effectiveValue);
     return (
-        <FormControl fullWidth variant="outlined" error={error} >
+        <FormControl fullWidth variant="outlined" error={error}>
             <InputLabel>State</InputLabel>
-            <Select value={value} onChange={onChange} label="State">
+            <Select
+                value={effectiveValue}
+                onChange={onChange}
+                label="State"
+            >
                 {US_STATES.map((state) => (
                     <MenuItem key={state.State} value={state.abrv}>
                         {state.State}
