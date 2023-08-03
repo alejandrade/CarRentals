@@ -13,6 +13,7 @@ import {UserWithDetailsDto} from "../../services/user/UserService.types";
 import Pagination from '@mui/material/Pagination';
 import CustomToolbar from "../../components/CustomToolbar";
 import EditUserModal from "./EditUserModal";
+import Typography from "@mui/material/Typography";
 
 const UserDetailsTable: React.FC = () => {
     const [users, setUsers] = useState<UserWithDetailsDto[]>([]);
@@ -45,12 +46,14 @@ const UserDetailsTable: React.FC = () => {
     }
 
     return (<>
-            {selectedUserId &&
-            <CustomToolbar>
-                <EditUserModal userId={selectedUserId}/>
-            </CustomToolbar>
-            }
+
         <Paper>
+            <Typography variant={"h4"}>Users</Typography>
+            {selectedUserId &&
+                <CustomToolbar>
+                    <EditUserModal onSave={fetchUsers} userId={selectedUserId}/>
+                </CustomToolbar>
+            }
             <Table>
                 <TableHead>
                     <TableRow>

@@ -15,6 +15,11 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import {UserDto} from "../../services/user/UserService.types";
 import UserRoleDropdown from "../../components/RoleDropdown";
 import ServiceLocationTypeahead from "../../components/ServiceLocationTypeahead";
+import userService from "../../services/user/UserService";
+import PhoneInputComponent from "../../components/PhoneInputComponent";
+import {useErrorModal} from "../../contexts/ErrorModalContext";
+import Typography from "@mui/material/Typography";
+import serviceLocationService from "../../services/service_location/ServiceLocationService";
 
 type FormErrors = {
     email?: string;
@@ -25,7 +30,7 @@ type FormErrors = {
 };
 
 type UserDtoProps = {
-    dto?: Partial<UserDto>;
+    dto: Partial<UserDto>;
     onSave: (data: UserDto) => void;
 }
 
@@ -33,6 +38,30 @@ const UserDtoForm: React.FC<UserDtoProps> = ({ dto, onSave }) => {
     const [formData, setFormData] = useState<Partial<UserDto>>(dto || {});
     const [errors, setErrors] = useState<FormErrors>({});
     const [loading, setLoading] = useState<boolean>(false);
+    const { showError, handleAPIError } = useErrorModal();
+
+    useEffect(()=> {
+        init();
+    }, [])
+
+    async function init() {
+        setLoading(true);
+        if (!dto?.id) {
+            throw new Error("illegal state");
+        }
+        const user = await userService.getUser(dto?.id).catch(handleAPIError);
+        if (user) {
+            setFormData({
+                id: user.id,
+                email: user.email,
+                phoneNumber: user.phoneNumber,
+                serviceLocations: user.serviceLocations,
+                authorities: user.authorities,
+                enabled: user.enabled
+            })
+        }
+        setLoading(false);
+    }
 
     useEffect(() => {
         validateForm();
@@ -100,24 +129,25 @@ const UserDtoForm: React.FC<UserDtoProps> = ({ dto, onSave }) => {
                         />
                     </Grid>
                     <Grid item>
-                        <TextField
-                            fullWidth
-                            label="Phone Number"
-                            value={formData.phoneNumber || ''}
-                            onChange={handleChange('phoneNumber')}
-                            error={!!errors.phoneNumber}
-                            helperText={errors.phoneNumber}
+                        <PhoneInputComponent value={formData.phoneNumber || ''}
+                                             onChange={(val) => {
+                                                 setFormData({
+                                                     ...formData,
+                                                     phoneNumber: val
+                                                 });
+                                             }}
                         />
+
                     </Grid>
 
                     <Grid item>
                         <ServiceLocationTypeahead
-                            state={"OK"}
                         value={formData.serviceLocations || []}
                         onChange={(selectedServiceLocations) => {
                             setFormData({
                                 ...formData,
-                                serviceLocations: selectedServiceLocations
+                                serviceLocations: selectedServiceLocations,
+                                serviceLocationId: selectedServiceLocations.map(x => x.id)
                             });
                         }}
                         error={!!errors.serviceLocations}

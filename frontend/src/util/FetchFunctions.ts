@@ -1,4 +1,3 @@
-import { debounce } from "@mui/material";
 import memoize from 'lodash/memoize';
 
 type ErrorDetails = {
@@ -110,20 +109,32 @@ const resolver = (input: RequestInfo, init?: RequestInit, withAuth?: boolean) =>
 
     return keyParts.join("::");
 };
+// Memoize with expiration function
+function memoizeWithExpiration(fn: Function, resolver?: Function, expirationTime: number = 5000) {
+    const cacheExpirations = new Map();
 
 
-// Memoize the function
-const memoizedFetch = memoize(_fetch, resolver);
-
-export async function authFetch(input: RequestInfo, init?: RequestInit): Promise<WrappedResponse> {
-    const result = await memoizedFetch(input, init, true); // withAuth is true
-
-    // Set a timeout to clear the specific cache entry after 500ms
-    setTimeout(() => {
-        memoizedFetch.cache.delete(resolver(input, init, true));
-    }, 500);
+    const result = memoize(
+        function(...args: any[]) {
+            const key = resolver ? resolver(...args) : args[0];
+            setTimeout(() => {
+                result.cache.delete(key);
+                cacheExpirations.delete(key);
+            }, expirationTime);
+            return fn(...args);
+        },
+        // @ts-ignore
+        resolver
+    );
 
     return result;
+}
+
+// Memoize the function
+const memoizedFetch = memoizeWithExpiration(_fetch, resolver, 500);
+export async function authFetch(input: RequestInfo, init?: RequestInit): Promise<WrappedResponse> {
+     // withAuth is true
+    return await memoizedFetch(input, init, true);
 }
 
 export async function memFetch(input: RequestInfo, init?: RequestInit): Promise<WrappedResponse> {

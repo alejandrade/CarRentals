@@ -2,28 +2,44 @@ package com.techisgood.carrentals.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "service_location_clerk", uniqueConstraints = {
         @UniqueConstraint(name = "service_location_clerk_key", columnNames = {"location_id", "clerk_id"})
 })
 public class ServiceLocationClerk {
 
     @EmbeddedId
-    private ServiceLocationClerkId id;
+    private ServiceLocationClerkId id = new ServiceLocationClerkId();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId("clerkId")  // map to the field in the composite key
-    @JoinColumn(name = "clerk_id", referencedColumnName = "id", insertable = false, updatable = false, columnDefinition = "char(36)")
+    @ManyToOne
+    @JoinColumn(name = "clerk_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id", insertable = false, updatable = false)
     private DbUser clerk;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId("locationId")  // map to the field in the composite key
-    @JoinColumn(name = "location_id", referencedColumnName = "id", insertable = false, updatable = false, columnDefinition = "char(36)")
+    @ManyToOne
+    @JoinColumn(name = "location_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id", insertable = false, updatable = false)
     private ServiceLocation serviceLocation;
+
+    public void setClerk(DbUser clerk) {
+        this.clerk = clerk;
+        if(clerk != null) {
+            this.id.setClerkId(clerk.getId());
+        }
+    }
+
+    public void setServiceLocation(ServiceLocation serviceLocation) {
+        this.serviceLocation = serviceLocation;
+        if(serviceLocation != null) {
+            this.id.setServiceLocationId(serviceLocation.getId());
+        }
+    }
+
+    public String getServiceLocationId() {
+        return this.serviceLocation.getId();
+    }
 
     // other fields and methods if needed
 }

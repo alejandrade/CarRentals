@@ -21,6 +21,24 @@ import lombok.RequiredArgsConstructor;
 public class ServiceLocationService {
 	
 	private final ServiceLocationRepository serviceLocationRepository;
+	public ServiceLocationDto save(ServiceLocationDto dto) {
+		ServiceLocation serviceLocation;
+		if (dto.getId() == null) {
+			serviceLocation = new ServiceLocation();
+		} else {
+			serviceLocation = serviceLocationRepository.findById(dto.getId()).orElseThrow();
+		}
+		serviceLocation.setName(dto.getName());
+		serviceLocation.setCountry("US");
+		serviceLocation.setCity(dto.getCity());
+		serviceLocation.setState(dto.getState());
+		serviceLocation.setAdditionalInfo(dto.getAdditionalInfo());
+		serviceLocation.setPostalCode(dto.getPostalCode());
+		serviceLocation.setAddress(dto.getAddress());
+		serviceLocation.setVersion(dto.getVersion());
+		serviceLocationRepository.save(serviceLocation);
+		return ServiceLocationDto.from(serviceLocation);
+	}
 
 	public List<ServiceLocation> getAll() {
 		return serviceLocationRepository.findAll();

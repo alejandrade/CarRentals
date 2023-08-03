@@ -3,28 +3,30 @@ import Modal from "@mui/material/Modal";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {UserDto} from "../../services/user/UserService.types";
 import userService from "../../services/user/UserService";
 import UserDtoForm from "./AdminUserDtoForm";
+import {useErrorModal} from "../../contexts/ErrorModalContext";
 
 type Param = {
-    userId: string
+    userId: string,
+    onSave: () => void
 }
 const EditUserModal: React.FC<Param> = ({userId}) => {
     const [open, setOpen] = useState(false);
     const [textValue, setTextValue] = useState("");
     const [editedUserDto, setEditedUserDto] = useState<UserDto>();
+    const { showError, handleAPIError } = useErrorModal();
 
     useEffect(() => {
-
+        init();
     }, []);
 
     async function init() {
-        const user = await userService.getUser(userId);
+        const user = await userService.getUser(userId).catch(handleAPIError);
+        console.log(user);
+        if (user)
         setEditedUserDto(user);
     }
 
@@ -37,9 +39,10 @@ const EditUserModal: React.FC<Param> = ({userId}) => {
         setTextValue(""); // Clear the text field when closing the modal
     };
 
-    const handleSubmit = (data: UserDto) => {
+    const handleSubmit = async (data: UserDto) => {
         // Do something with the text value (e.g., submit to the server)
         console.log("Submitted value:", textValue);
+        await userService.modifyUser(data.id, data).catch(handleAPIError);
         handleClose();
     };
 
@@ -59,7 +62,7 @@ const EditUserModal: React.FC<Param> = ({userId}) => {
                 }}>
                     <CardHeader title="Edit User" />
                     <CardContent>
-                        <UserDtoForm onSave={handleSubmit}/>
+                        <UserDtoForm dto={{id: userId}} onSave={handleSubmit}/>
                     </CardContent>
                 </Card>
             </Modal>

@@ -13,6 +13,7 @@ export interface UserDto {
     accountNonLocked: boolean;
     version?: number;
     serviceLocations?: ServiceLocationDto[];
+    serviceLocationId?: string[];
     authorities?: string[];
     userLicenses?: UserLicenseDto[];
     userInsurances?: UserInsuranceDto[];
