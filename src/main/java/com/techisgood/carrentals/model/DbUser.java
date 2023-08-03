@@ -1,6 +1,6 @@
 package com.techisgood.carrentals.model;
 
-import com.techisgood.carrentals.model.audit.Auditable;
+import com.techisgood.carrentals.model.audit.VersionedAuditable;
 import com.techisgood.carrentals.user.UserEntityListener;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @EntityListeners({AuditingEntityListener.class, UserEntityListener.class})
-public class DbUser extends Auditable {
+public class DbUser extends VersionedAuditable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -55,5 +55,9 @@ public class DbUser extends Auditable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserInsurance> userInsurances;
+
+    @OneToMany(mappedBy = "clerk", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ServiceLocationClerk> serviceLocationClerks;  // Added this line
+
 
 }

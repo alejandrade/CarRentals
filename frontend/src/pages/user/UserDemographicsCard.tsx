@@ -5,13 +5,13 @@ import {UserDemographicsDto} from "../../services/user/UserService.types";
 
 
 interface UserDemographicsCardProps {
-    dto: UserDemographicsDto;
+    dto?: UserDemographicsDto;
     userId: string
 }
 
 const UserDemographicsCard: React.FC<UserDemographicsCardProps> = ({dto, userId}) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [data, setData] = useState<Partial<UserDemographicsDto>>(dto);
+    const [data, setData] = useState<Partial<UserDemographicsDto|undefined>>(dto);
 
     const handleEditClick = (val: boolean) => {
         setIsEditing(val);

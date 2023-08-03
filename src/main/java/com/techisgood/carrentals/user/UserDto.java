@@ -1,10 +1,9 @@
 package com.techisgood.carrentals.user;
 
 
+import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.model.Authority;
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.model.UserInsurance;
-import com.techisgood.carrentals.model.UserLicense;
 import lombok.Data;
 
 import jakarta.validation.constraints.Email;
@@ -43,7 +42,11 @@ public class UserDto {
     @NotNull
     private Boolean accountNonLocked;
 
-    private List<String> authorities;
+    private Integer version;
+
+    private List<String> serviceLocationId;
+
+    private List<UserAuthority> authorities;
 
     private List<UserLicenseDto> userLicenses;
 
@@ -62,10 +65,16 @@ public class UserDto {
         userDto.setAccountNonExpired(dbUser.getAccountNonExpired());
         userDto.setCredentialsNonExpired(dbUser.getCredentialsNonExpired());
         userDto.setAccountNonLocked(dbUser.getAccountNonLocked());
+        userDto.setVersion(dbUser.getVersion());
+        if (dbUser.getServiceLocationClerks() != null) {
+            userDto.setServiceLocationId(dbUser.getServiceLocationClerks().stream()
+                    .map(x -> x.getServiceLocation().getId()).toList());
+        }
 
         if (dbUser.getAuthorities() != null) {
             userDto.setAuthorities(dbUser.getAuthorities().stream()
-                    .map(Authority::getAuthority)  // Assuming Authority has a getName method to get the authority name
+                    .map(Authority::getAuthority)
+                    .map(UserAuthority::valueOf)// Assuming Authority has a getName method to get the authority name
                     .collect(Collectors.toList()));
         }
 

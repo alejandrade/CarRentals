@@ -1,6 +1,7 @@
 package com.techisgood.carrentals.service_location;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import com.techisgood.carrentals.model.ServiceLocation;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/staff/v1/serviceLocations")
 @RequiredArgsConstructor
@@ -20,22 +23,40 @@ import lombok.RequiredArgsConstructor;
 public class ServiceLocationEndpoints {
 
 	private final ServiceLocationService serviceLocationService;
+
+	@GetMapping("/byname")
+	public ResponseEntity<?> getAllServiceLocationsByName(
+			@RequestParam(required=false) String state,
+			@RequestParam(required=false) String name,
+			Pageable pageable) {
+
+		Page<ServiceLocation> result =
+				serviceLocationService.getServiceLocationByStateAndName(name, state, pageable);
+		return ResponseEntity.ok().body(result.stream().map(ServiceLocationDto::from).toList());
+	}
 	
 	@GetMapping()
 	public ResponseEntity<?> getAllServiceLocations(
-			@RequestParam(required=false) String state, 
-			@RequestParam(required=false, defaultValue="0") Integer page, 
-			@RequestParam(required=false, defaultValue="10") Integer size) {
+			@RequestParam(required=false) String state,
+			Pageable pageable) {
 		
 		if (state != null && (state.isBlank() || state.isEmpty())) state = null;
-		Page<ServiceLocation> result = serviceLocationService.getServiceLocations(null, state, page, size);
-		return ResponseEntity.ok().body(result);
+		Page<ServiceLocation> result = serviceLocationService.getServiceLocations(null, state, pageable);
+		return ResponseEntity.ok().body(result.stream().map(ServiceLocationDto::from).toList());
+	}
+
+	@GetMapping("/all")
+	public ResponseEntity<?> getAllServiceLocations() {
+
+		List<ServiceLocation> result = serviceLocationService.getAll();
+		return ResponseEntity.ok().body(result.stream().map(ServiceLocationDto::from).toList());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getServiceLocationBy(@PathVariable String id) {
-		Page<ServiceLocation> locations = serviceLocationService.getServiceLocations(id, null, 0, 10);
-		return ResponseEntity.ok().body(locations);
+		Pageable first = Pageable.ofSize(10);
+		Page<ServiceLocation> locations = serviceLocationService.getServiceLocations(id, null, first);
+		return ResponseEntity.ok().body(locations.stream().map(ServiceLocationDto::from).toList());
 	}
 	
 }

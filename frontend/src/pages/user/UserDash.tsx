@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails, Typography, useMediaQuery, useTheme } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import UserDemographicsForm from "./UserDemographicsForm";
 import { UserDto } from "../../services/user/UserService.types";
 import userService from "../../services/user/UserService";
-import InsuranceForm from "./InsuranceForm";
-import LicenseForm from "./LicenseForm";
-import ContactInformationForm from "./ContactInformationForm";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import UserDemographicsCard from "./UserDemographicsCard";
 import ContactInformationCard from "./ContactInformationCard";

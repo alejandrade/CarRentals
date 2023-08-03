@@ -1,10 +1,11 @@
 import { authFetch } from "../../util/FetchFunctions";
 import {
+    Page,
     UpdateContactInformation,
     UserDemographicsDto,
     UserDto,
     UserInsuranceDto,
-    UserLicenseDto
+    UserLicenseDto, UserWithDetailsDto
 } from "./UserService.types";
 
 class UserService {
@@ -142,6 +143,67 @@ class UserService {
 
         return response.json;
     }
+
+
+    /**
+     * Fetch paginated user details with admin role.
+     *
+     * @param page - The page number.
+     * @param size - The number of items per page.
+     * @returns - A promise with the response containing the paginated user details.
+     */
+    async getUserWithDetails(page: number = 0, size: number = 10): Promise<Page<UserWithDetailsDto>> {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user?page=${page}&size=${size}`);
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch user details');
+        }
+
+        return response.json;
+    }
+
+    /**
+     * Modify user information with admin role.
+     *
+     * @param userId - The ID of the user to modify.
+     * @param userDto - The modified user data.
+     * @returns - A promise with the response containing the modified user data.
+     */
+    async modifyUser(userId: string, userDto: UserDto): Promise<UserDto> {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/admin/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userDto),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to modify user information');
+        }
+
+        return response.json;
+    }
+
+    /**
+     * Get user information with admin role.
+     *
+     * @param userId - The ID of the user to retrieve.
+     * @returns - A promise with the response containing the user data.
+     */
+    async getUser(userId: string): Promise<UserDto> {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/admin/${userId}`, {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get user information');
+        }
+
+        return response.json;
+    }
 }
+
+
 
 export default new UserService();
