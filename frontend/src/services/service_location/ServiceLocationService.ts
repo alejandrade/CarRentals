@@ -48,6 +48,49 @@ class ServiceLocationService {
 
         return response.json;
     }
+
+    /**
+     * Fetch a single service location by its ID.
+     *
+     * @param id - The ID of the service location.
+     * @returns - A promise with the response containing the service location data.
+     */
+    async getServiceLocationById(id: string): Promise<ServiceLocationDto> {
+        const url = `${this.BASE_URL}/staff/v1/serviceLocations/${id}`;
+
+        const response = await authFetch(url);
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch service location by ID');
+        }
+
+        return response.json;
+    }
+
+    /**
+     * Save or create a new service location.
+     *
+     * @param dto - The ServiceLocationDto data.
+     * @returns - A promise with the response containing the saved service location data.
+     */
+    async save(dto: ServiceLocationDto): Promise<ServiceLocationDto> {
+        const url = `${this.BASE_URL}/staff/v1/serviceLocations`;
+
+        const response = await authFetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dto)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save service location');
+        }
+
+        return response.json;
+    }
+
 }
 
 export default new ServiceLocationService();

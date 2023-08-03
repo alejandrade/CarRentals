@@ -170,7 +170,7 @@ class UserService {
      * @returns - A promise with the response containing the modified user data.
      */
     async modifyUser(userId: string, userDto: UserDto): Promise<UserDto> {
-        const response = await authFetch(`${this.BASE_URL}/users/v1/admin/${userId}`, {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/admin/${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ class UserService {
      * @returns - A promise with the response containing the user data.
      */
     async getUser(userId: string): Promise<UserDto> {
-        const response = await authFetch(`${this.BASE_URL}/users/v1/admin/${userId}`, {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/admin/${userId}`, {
             method: 'GET',
         });
 

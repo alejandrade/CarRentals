@@ -1,14 +1,11 @@
 package com.techisgood.carrentals.service_location;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.techisgood.carrentals.model.ServiceLocation;
 
@@ -23,6 +20,12 @@ import java.util.List;
 public class ServiceLocationEndpoints {
 
 	private final ServiceLocationService serviceLocationService;
+	private final ServiceLocationRepository serviceLocationRepository;
+
+	@PostMapping
+	public ServiceLocationDto save(@Valid @RequestBody ServiceLocationDto dto) {
+		return serviceLocationService.save(dto);
+	}
 
 	@GetMapping("/byname")
 	public ResponseEntity<?> getAllServiceLocationsByName(
@@ -53,10 +56,8 @@ public class ServiceLocationEndpoints {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getServiceLocationBy(@PathVariable String id) {
-		Pageable first = Pageable.ofSize(10);
-		Page<ServiceLocation> locations = serviceLocationService.getServiceLocations(id, null, first);
-		return ResponseEntity.ok().body(locations.stream().map(ServiceLocationDto::from).toList());
+	public ServiceLocationDto getServiceLocationBy(@PathVariable String id) {
+		return serviceLocationRepository.findById(id).map(ServiceLocationDto::from).orElseThrow();
 	}
 	
 }

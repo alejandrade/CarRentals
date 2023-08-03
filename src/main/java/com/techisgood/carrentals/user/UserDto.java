@@ -4,12 +4,10 @@ package com.techisgood.carrentals.user;
 import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.model.Authority;
 import com.techisgood.carrentals.model.DbUser;
+import com.techisgood.carrentals.model.ServiceLocationClerk;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,19 +25,15 @@ public class UserDto {
     @Size(max = 15)
     private String phoneNumber;
 
-    @NotNull
     private Boolean isEmailAuth;
 
     @NotNull
     private Boolean enabled;
 
-    @NotNull
     private Boolean accountNonExpired;
 
-    @NotNull
     private Boolean credentialsNonExpired;
 
-    @NotNull
     private Boolean accountNonLocked;
 
     private Integer version;
@@ -68,7 +62,7 @@ public class UserDto {
         userDto.setVersion(dbUser.getVersion());
         if (dbUser.getServiceLocationClerks() != null) {
             userDto.setServiceLocationId(dbUser.getServiceLocationClerks().stream()
-                    .map(x -> x.getServiceLocation().getId()).toList());
+                    .map(ServiceLocationClerk::getServiceLocationId).toList());
         }
 
         if (dbUser.getAuthorities() != null) {
