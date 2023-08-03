@@ -1,6 +1,7 @@
 package com.techisgood.carrentals.service_location;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -21,6 +22,9 @@ public class ServiceLocationService {
 	
 	private final ServiceLocationRepository serviceLocationRepository;
 
+	public List<ServiceLocation> getAll() {
+		return serviceLocationRepository.findAll();
+	}
 	public Page<ServiceLocation> getServiceLocationByStateAndName(String name, String state, Pageable page) {
 		return serviceLocationRepository.findAllByNameStartsWithAndStateEquals(name, state, page);
 	}

@@ -14,15 +14,8 @@ class ServiceLocationService {
      * @param name - The state to filter by.
      * @returns - A promise with the response containing the paginated service locations.
      */
-    async getAllServiceLocationName(page: number = 0, size: number = 10, state?: string, name?: string): Promise<Page<ServiceLocationDto>> {
-        let url = `${this.BASE_URL}/staff/v1/serviceLocations?page=${page}&size=${size}`;
-        if (state) {
-            url += `&state=${encodeURIComponent(state)}`;
-        }
-
-        if (name) {
-            url += `&name=${encodeURIComponent(name)}`;
-        }
+    async getAllServiceLocation(): Promise<ServiceLocationDto[]> {
+        let url = `${this.BASE_URL}/staff/v1/serviceLocations/all`;
 
         const response = await authFetch(url);
 

@@ -33,16 +33,11 @@ public class PaymentsInvoice {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36) default (uuid())", nullable = false)
 	private String id;
-	
-	@Column(name="rental_id", columnDefinition = "char(36)")
-	private String rentalId;
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "rental_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_rentals"))
 	private Rental rental;
-	
-	@Column(name="payer_id", columnDefinition = "char(36)")
-	private String payerId;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "payer_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_users_payer"))
@@ -65,14 +60,10 @@ public class PaymentsInvoice {
 
 	@Column(name="total")
 	private Integer total;
-	
-	@Column(name="paid_by_id", columnDefinition = "char(36)")
-	private String paidById;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "paid_by_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_users_paid"))
 	private DbUser paidBy;
-	
 	
 
 	@Column(name="external_payment_id", columnDefinition = "char(36)")

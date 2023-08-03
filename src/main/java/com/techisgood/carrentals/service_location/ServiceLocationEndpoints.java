@@ -14,6 +14,8 @@ import com.techisgood.carrentals.model.ServiceLocation;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/staff/v1/serviceLocations")
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class ServiceLocationEndpoints {
 
 		Page<ServiceLocation> result =
 				serviceLocationService.getServiceLocationByStateAndName(name, state, pageable);
-		return ResponseEntity.ok().body(result);
+		return ResponseEntity.ok().body(result.stream().map(ServiceLocationDto::from).toList());
 	}
 	
 	@GetMapping()
@@ -40,14 +42,21 @@ public class ServiceLocationEndpoints {
 		
 		if (state != null && (state.isBlank() || state.isEmpty())) state = null;
 		Page<ServiceLocation> result = serviceLocationService.getServiceLocations(null, state, pageable);
-		return ResponseEntity.ok().body(result);
+		return ResponseEntity.ok().body(result.stream().map(ServiceLocationDto::from).toList());
+	}
+
+	@GetMapping("/all")
+	public ResponseEntity<?> getAllServiceLocations() {
+
+		List<ServiceLocation> result = serviceLocationService.getAll();
+		return ResponseEntity.ok().body(result.stream().map(ServiceLocationDto::from).toList());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getServiceLocationBy(@PathVariable String id) {
 		Pageable first = Pageable.ofSize(10);
 		Page<ServiceLocation> locations = serviceLocationService.getServiceLocations(id, null, first);
-		return ResponseEntity.ok().body(locations);
+		return ResponseEntity.ok().body(locations.stream().map(ServiceLocationDto::from).toList());
 	}
 	
 }
