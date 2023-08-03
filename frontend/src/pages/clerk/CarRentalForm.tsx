@@ -97,7 +97,7 @@ const CarRentalForm: React.FC = () => {
                             fullWidth
                             type="number"
                             value={initialOdometerReading}
-                            onChange={(e) => {
+                            onChange={(e:any) => {
                                 setInitialOdometerReading(e.target.value);
                                 handleFieldValidation('initialOdometerReading', e.target.value);
                             }}

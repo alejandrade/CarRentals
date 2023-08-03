@@ -10,10 +10,12 @@ public class PaymentMethodSessionBeginDto {
 
 	@NotBlank(message = "userId is required")
 	public String userId;
+	@NotBlank(message = "successUrl is required")
+	public String successUrl;
+	@NotBlank(message = "cancelUrl is required")
+	public String cancelUrl;
 	
 	public String url;
-	public String successUrl;
-	public String cancelUrl;
 	
 	public static PaymentMethodSessionBeginDto from(String userId, Session session) {
 		PaymentMethodSessionBeginDto result = new PaymentMethodSessionBeginDto();

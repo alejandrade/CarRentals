@@ -1,10 +1,13 @@
 package com.techisgood.carrentals.admin;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,15 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.car.CarCreationDto;
 import com.techisgood.carrentals.car.CarService;
+import com.techisgood.carrentals.exception.RemoteServiceException;
 import com.techisgood.carrentals.model.Car;
 import com.techisgood.carrentals.model.DbUser;
+import com.techisgood.carrentals.model.DbUserDemographics;
 import com.techisgood.carrentals.model.ServiceLocation;
+import com.techisgood.carrentals.model.DbUserDemographics.Gender;
 import com.techisgood.carrentals.rentals.RentalCreateDto;
 import com.techisgood.carrentals.rentals.RentalService;
 import com.techisgood.carrentals.rentals.RentalStatus;
 import com.techisgood.carrentals.service_location.ServiceLocationCreateDto;
 import com.techisgood.carrentals.service_location.ServiceLocationService;
+import com.techisgood.carrentals.user.UserCreateDemographicsService;
 import com.techisgood.carrentals.user.UserCreateIfNotExistServiceImpl;
+import com.techisgood.carrentals.user.UserDto;
+import com.techisgood.carrentals.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +43,8 @@ public class AdminDebugEndpoints {
 	private final ServiceLocationService serviceLocationService;
 	private final RentalService rentalService;
 	private final UserCreateIfNotExistServiceImpl userCreateService;
+	private final UserCreateDemographicsService userCreateDemographicsService;
+	private final UserService userService;
 	
 	@GetMapping
 	public ResponseEntity<?> test() {
@@ -41,8 +52,21 @@ public class AdminDebugEndpoints {
 	}
 	
 	@GetMapping("/create-initial-debug-data")
-	public ResponseEntity<?> createInitialDebugData() {
-		
+	public ResponseEntity<?> createInitialDebugData(@AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
+		UserDto authUser = userService.getUser(auth.getUsername());
+		DbUserDemographics authUserDemographics = userCreateDemographicsService.createUserDemographics(
+				authUser.getId(), 
+				"Jack", 
+				null, 
+				null, 
+				LocalDate.of(1970, 1, 1), 
+				Gender.Male, 
+				null, 
+				null, 
+				null, 
+				null, 
+				null, 
+				null);
 
 		ServiceLocationCreateDto serviceLocationCreation = new ServiceLocationCreateDto(
 				"Cool Car Workshop",
@@ -72,6 +96,8 @@ public class AdminDebugEndpoints {
 		serviceLocationService.addCar(serviceLocation, car);
 		
 		DbUser clerk = userCreateService.createIfNoneExists("+19285551000", UserAuthority.ROLE_CLERK);
+
+		
 		serviceLocationService.addClerk(serviceLocation, clerk);
 		
 		RentalCreateDto rentalCreation = new RentalCreateDto(

@@ -9,6 +9,7 @@ import UserDash from "./pages/user/UserDash";
 import ClerkDash from "./pages/clerk/ClerkDash";
 import AdminDash from "./pages/admin/AdminDash";
 import CarRentalForm from "./pages/clerk/CarRentalForm";
+import Test_StripeCheckoutSetup from "./pages/admin/Test_StripeCheckoutSetup";
 
 function dashTabs() {
     return [
@@ -65,6 +66,17 @@ export default createBrowserRouter([
             <AuthorizationWrapper>
                 <StandardLayout>
                     <CarRentalForm/>
+                </StandardLayout>
+            </AuthorizationWrapper>
+        )
+    },
+    //TODO(justin): below this is all test routes that should be deleted after properly integrated.
+    {
+        path:"test/stripeCheckout",
+        element: (
+            <AuthorizationWrapper>
+                <StandardLayout>
+                    <Test_StripeCheckoutSetup></Test_StripeCheckoutSetup>
                 </StandardLayout>
             </AuthorizationWrapper>
         )

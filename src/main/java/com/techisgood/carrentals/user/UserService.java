@@ -31,6 +31,7 @@ public class UserService {
     public UserDto getUser(String userId) {
         return userRepository.findById(userId).map(UserDto::from).orElseThrow();
     }
+    
     @Transactional
     public UserDto modifyUser(String userId, UserDto modifiedUserDto) {
         // Find the user in the database by userId

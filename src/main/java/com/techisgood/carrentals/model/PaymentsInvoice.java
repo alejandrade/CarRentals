@@ -33,11 +33,16 @@ public class PaymentsInvoice {
 	@Column(columnDefinition = "char(36) default (uuid())", nullable = false)
 	private String id;
 
+	@Column(name="rental_id", columnDefinition = "char(36)", nullable = false)
+	private String rentalId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "rental_id", insertable=false, updatable=false, nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_rentals"))
 	private Rental rental;
 
+	@Column(name="payer_id", columnDefinition = "char(36)", nullable = false)
+	private String payerId;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "payer_id", insertable=false, updatable=false, nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_users_payer"))
 	private DbUser payer;

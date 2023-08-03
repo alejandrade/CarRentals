@@ -2,6 +2,8 @@ package com.techisgood.carrentals.payments;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,8 +42,15 @@ public class PaymentsEndpoints {
 	}
 	
 
+
+	@PostMapping("/paymentMethod/sessionBegin/TestWithLoggedInUser")
+	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
+		requestBody.setUserId(auth.getUsername());
+		return createPaymentMethodSessionBegin(requestBody);
+	}
+	
 	@PostMapping("/paymentMethod/sessionBegin")
-	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody) throws RemoteServiceException {
+	public ResponseEntity<?> createPaymentMethodSessionBegin(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody) throws RemoteServiceException {
 		try {
 			PaymentsCustomer pc = paymentsService.getCustomerByUserId(requestBody.getUserId());
 			ResponseEntity<?> result = null;
