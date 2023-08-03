@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
 import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.PaymentsCustomer;
 import com.techisgood.carrentals.model.PaymentsInvoice;
@@ -82,6 +83,10 @@ public class PaymentsService {
 		pi.setDays(days);
 		
 		Rental rental = optionalRental.get();
+		
+		pi.setRental(rental);
+		pi.setPayer(optionalPayer.get());
+		
 		ServiceLocation serviceLocation = rental.getServiceLocation();
 		
 		PaymentsTaxInfo taxInfo = remotePaymentsService.calculateTaxRate(
@@ -99,6 +104,23 @@ public class PaymentsService {
 		pi = paymentsInvoiceRepository.save(pi);
 		
 		return pi;
+	}
+	
+	public PaymentsInvoiceDto getInvoice(String invoiceId) {
+		Optional<PaymentsInvoice> maybeInvoice = paymentsInvoiceRepository.findById(invoiceId);
+		if (maybeInvoice.isEmpty()) return null;
+		return PaymentsInvoiceDto.from(maybeInvoice.get());
+	}
+	
+	@Transactional
+	public String getUrlForPayment(String invoiceId, String customerId, String successUrl, String cancelUrl) throws StripeException {
+		String result = null;
+		
+		PaymentsInvoiceDto invoice = getInvoice(invoiceId);
+		Session session = remotePaymentsService.createCheckoutSession(customerId, successUrl, cancelUrl, invoice.getTotal());
+		result = session.getUrl();
+		
+		return result;
 	}
 	
 }

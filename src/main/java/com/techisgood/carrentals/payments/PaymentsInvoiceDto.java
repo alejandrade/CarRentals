@@ -42,7 +42,9 @@ public class PaymentsInvoiceDto {
     	result.taxRate = invoice.getTaxRate().doubleValue();
     	result.taxTotal = invoice.getTaxTotal();
     	result.total = invoice.getTotal();
-    	result.paidBy = invoice.getPaidBy().getId();
+    	if (invoice.getPaidBy() != null) {
+    		result.paidBy = invoice.getPaidBy().getId();
+    	}
     	result.externalPaymentId = invoice.getExternalPaymentId();
     	result.externalPaymentStatus = invoice.getExternalPaymentStatus();
     	

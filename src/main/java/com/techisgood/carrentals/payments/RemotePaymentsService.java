@@ -18,6 +18,10 @@ import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.ConfirmationMethod;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.param.checkout.SessionCreateParams.LineItem;
+import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData;
+import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData.ProductData;
+import com.stripe.param.checkout.SessionListLineItemsParams;
 import com.techisgood.carrentals.model.DbUserDemographics;
 
 import lombok.extern.slf4j.Slf4j;
@@ -105,6 +109,7 @@ public class RemotePaymentsService {
 	}
 	
 	
+	
 	public PaymentsTaxInfo calculateTaxRate(String addressLine, String city, String state, String postalCode, Integer total) throws StripeException {
 		PaymentsTaxInfo taxInfo = new PaymentsTaxInfo();
 
@@ -157,19 +162,6 @@ public class RemotePaymentsService {
 	
 	
 	
-	public enum PaymentMethodType {
-		CARD("card"),
-		US_BANK("us_bank_account"),
-		;
-		private String name;
-		private PaymentMethodType(String name) {
-			this.name = name;
-		}
-		public String getName() {
-			return name;
-		}
-	}
-	
 	public Session setupPaymentMethodPrepareSession(String customerId, String successUrl, String cancelUrl) throws StripeException {
 		SessionCreateParams params =
 		SessionCreateParams.builder()
@@ -188,7 +180,50 @@ public class RemotePaymentsService {
 		
 	}
 	
+
 	
+	public Session createCheckoutSession(String customerId, String successUrl, String cancelUrl, Integer total) throws StripeException {
+		ProductData productData = ProductData.builder()
+				.setName(customerId + " charge for " + (total/100.0))
+				.build();
+		PriceData priceData = PriceData.builder()
+				.setUnitAmount(total.longValue())
+				.setProductData(productData)
+				.setCurrency("USD").build();
+		LineItem item = LineItem.builder().
+				setPriceData(priceData)
+				.setQuantity(1L).build();
+		
+		SessionCreateParams params = 
+				SessionCreateParams.builder()
+				.setMode(SessionCreateParams.Mode.PAYMENT)
+				.setCustomer(customerId)
+				.setSuccessUrl(successUrl + "?success=true")
+				.setCancelUrl(cancelUrl + "?canceled=true")
+				.addLineItem(item)
+		        .build();
+		Session session = Session.create(params);
+		return session;
+	}
+	
+	
+	
+	
+	
+	
+	
+	public enum PaymentMethodType {
+		CARD("card"),
+		US_BANK("us_bank_account"),
+		;
+		private String name;
+		private PaymentMethodType(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+	}
 	public void verifyMicrodeposits(String setupIntentId, Integer centsA, Integer centsB) throws StripeException {
 		SetupIntent setupIntent =
 		  SetupIntent.retrieve(setupIntentId);

@@ -41,10 +41,29 @@ public class PaymentsEndpoints {
 		}
 	}
 	
+	@PostMapping("/invoices/createPayment/TestWithLoggedInUser")
+	public ResponseEntity<?> invoiceCreatePayment(@Valid @RequestBody PaymentsInvoiceCreatePaymentDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
+		requestBody.setUserId(auth.getUsername());
+		requestBody.setInvoiceId("2b4184e0-a178-4848-b90c-4d752149b502");
+		return invoiceCreatePayment(requestBody);
+	}
+	
+	@PostMapping("/invoices/createPayment")
+	public ResponseEntity<?> invoiceCreatePayment(@Valid @RequestBody PaymentsInvoiceCreatePaymentDto requestBody) throws RemoteServiceException {
+		try {
+			PaymentsCustomer customer = paymentsService.getCustomerByUserId(requestBody.getUserId());
+			String paymentUrl = paymentsService.getUrlForPayment(requestBody.getInvoiceId(), customer.getCustomerId(), requestBody.getSuccessUrl(), requestBody.getCancelUrl());
+			requestBody.url = paymentUrl;
+			return ResponseEntity.ok().body(requestBody);
+		} catch (StripeException e) {
+			throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
+		}
+	}
+	
 
 
 	@PostMapping("/paymentMethod/sessionBegin/TestWithLoggedInUser")
-	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
+	public ResponseEntity<?> createPaymentMethodSessionBegin(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
 		requestBody.setUserId(auth.getUsername());
 		return createPaymentMethodSessionBegin(requestBody);
 	}
