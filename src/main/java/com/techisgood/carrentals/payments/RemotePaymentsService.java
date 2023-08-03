@@ -11,11 +11,13 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
 import com.stripe.model.PaymentMethodCollection;
 import com.stripe.model.SetupIntent;
+import com.stripe.model.checkout.Session;
 import com.stripe.model.tax.Calculation;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.ConfirmationMethod;
+import com.stripe.param.checkout.SessionCreateParams;
 import com.techisgood.carrentals.model.DbUserDemographics;
 
 import lombok.extern.slf4j.Slf4j;
@@ -123,6 +125,8 @@ public class RemotePaymentsService {
 		HashMap<String, Object> lineItem1 = new HashMap<>();
 		lineItem1.put("amount", total);
 		lineItem1.put("reference", "Tax Rate Calculation");
+		//NOTE(justin):  tax_code: txcd_10103001 (Software as a service (SaaS) - business use) refer to : https://stripe.com/docs/tax/tax-categories
+		lineItem1.put("tax_code", "txcd_10103001"); 
 		lineItems.add(lineItem1);
 		
 		
@@ -133,12 +137,14 @@ public class RemotePaymentsService {
 		
 		ArrayList<Object> expand = new ArrayList<>();
 		expand.add("line_items");
-		expand.add("line_items");
 		params.put("expand", expand);
 		
-		Calculation calculation = Calculation.create(params);
-		String taxDecimalString = calculation.getTaxBreakdown().get(0).getTaxRateDetails().getPercentageDecimal();
+		Calculation calculation  = Calculation.create(params);
+		taxInfo.taxabilityReason = calculation.getTaxBreakdown().get(0).getTaxabilityReason();
+		taxInfo.state            = calculation.getTaxBreakdown().get(0).getTaxRateDetails().getState();
+		taxInfo.taxType          = calculation.getTaxBreakdown().get(0).getTaxRateDetails().getTaxType();
 		
+		String taxDecimalString = calculation.getTaxBreakdown().get(0).getTaxRateDetails().getPercentageDecimal();
 		taxInfo.subTotal          = total;
 		taxInfo.taxRatePercentage = Double.parseDouble(taxDecimalString) / 100.0;
 		taxInfo.taxTotal          = (int) Math.round(total * taxInfo.taxRatePercentage);
@@ -164,20 +170,21 @@ public class RemotePaymentsService {
 		}
 	}
 	
-	public SetupIntent createPaymentMethod(String customerId, PaymentMethodType type) throws StripeException {
-		ArrayList<Object> paymentMethodTypes =
-				  new ArrayList<>();
-		paymentMethodTypes.add(type.getName());
-		HashMap<String, Object> params = new HashMap<>();
-		params.put(
-		  "payment_method_types",
-		  paymentMethodTypes
-		);
+	public Session setupPaymentMethodPrepareSession(String customerId, String successUrl, String cancelUrl) throws StripeException {
+		SessionCreateParams params =
+		SessionCreateParams.builder()
+		.setMode(SessionCreateParams.Mode.SETUP)
+	    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+	    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.US_BANK_ACCOUNT)
+	    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CASHAPP)
+	    .setCustomer(customerId)
+	    .setSuccessUrl(successUrl + "?session_id={CHECKOUT_SESSION_ID}")
+	    .setCancelUrl(cancelUrl)
+	    .build();
 
-		SetupIntent setupIntent =
-		  SetupIntent.create(params);
+		Session session = Session.create(params);
 		
-		return setupIntent;
+		return session;
 		
 	}
 	

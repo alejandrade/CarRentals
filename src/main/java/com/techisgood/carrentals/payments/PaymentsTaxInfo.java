@@ -6,5 +6,8 @@ public class PaymentsTaxInfo {
 	public Double taxRatePercentage;
 	public Integer taxTotal;
 	public Integer total;
+	public String state;
+	public String taxType;
+	public String taxabilityReason;
 	
 }

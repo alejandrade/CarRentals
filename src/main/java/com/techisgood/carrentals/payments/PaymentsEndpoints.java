@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
 import com.techisgood.carrentals.exception.RemoteServiceException;
 import com.techisgood.carrentals.exception.RemoteServiceException.RemoteService;
+import com.techisgood.carrentals.model.PaymentsCustomer;
 import com.techisgood.carrentals.model.PaymentsInvoice;
 
 import jakarta.validation.Valid;
@@ -37,12 +39,43 @@ public class PaymentsEndpoints {
 		}
 	}
 	
+
+	@PostMapping("/paymentMethod/sessionBegin")
+	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody) throws RemoteServiceException {
+		try {
+			PaymentsCustomer pc = paymentsService.getCustomerByUserId(requestBody.getUserId());
+			ResponseEntity<?> result = null;
+			if (pc == null) {
+				result = ResponseEntity.ok().body(null);
+			}
+			else {
+				Session checkoutSession = remotePaymentsService.setupPaymentMethodPrepareSession(
+						pc.getCustomerId(), 
+						requestBody.getSuccessUrl(), 
+						requestBody.getCancelUrl());
+				requestBody.url = checkoutSession.getUrl();
+				
+				result = ResponseEntity.ok().body(requestBody);
+			}
+			
+			return result; 
+		} catch (StripeException e) {
+			throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
+		}
+	}
+	
 	
 	@GetMapping("/test-tax")
 	public ResponseEntity<?> testTax(@RequestParam String address, @RequestParam String city, @RequestParam String state, @RequestParam String postalCode, @RequestParam Integer total) {
 		try {
 			PaymentsTaxInfo taxInfo = remotePaymentsService.calculateTaxRate(address, city, state, postalCode, total);
-			return ResponseEntity.ok().body("Tax Info: subTotal: " + taxInfo.subTotal + ", taxRate: " + taxInfo.taxRatePercentage + ", taxTotal:" + taxInfo.taxTotal + ", total: " + taxInfo.total);
+			return ResponseEntity.ok().body("Tax Info: subTotal: " + taxInfo.subTotal + 
+					", taxRate: " + taxInfo.taxRatePercentage + 
+					", taxTotal:" + taxInfo.taxTotal + 
+					", total: " + taxInfo.total + 
+					", state:" + taxInfo.state +
+					", taxType:" + taxInfo.taxType +
+					", taxabilityReason:" + taxInfo.taxabilityReason);
 			
 		} catch (StripeException e) {
 			e.printStackTrace();

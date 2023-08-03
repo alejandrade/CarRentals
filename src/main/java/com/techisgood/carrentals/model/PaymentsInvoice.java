@@ -17,7 +17,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,14 +37,14 @@ public class PaymentsInvoice {
 	private String rentalId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "rental_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_rentals"))
+	@JoinColumn(name = "rental_id", insertable=false, updatable=false, nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_rentals"))
 	private Rental rental;
 	
 	@Column(name="payer_id", columnDefinition = "char(36)")
 	private String payerId;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "payer_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_users_payer"))
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "payer_id", insertable=false, updatable=false, nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_users_payer"))
 	private DbUser payer;
 	
 	@Column(name="day_price")
@@ -70,7 +69,7 @@ public class PaymentsInvoice {
 	private String paidById;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "paid_by_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_users_paid"))
+	@JoinColumn(name = "paid_by_id", insertable=false, updatable=false, nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_paid_by_id"))
 	private DbUser paidBy;
 	
 	

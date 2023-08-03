@@ -74,17 +74,16 @@ public class PaymentsService {
 			throw new IllegalArgumentException("payer_id");
 		}
 		
-		Rental rental = optionalRental.get();
-		DbUser payer = optionalPayer.get();
-		
 		PaymentsInvoice pi = new  PaymentsInvoice();
 		Integer subTotal = dayPrice * days;
-		pi.setRental(rental);
-		pi.setPayer(payer);
+		pi.setRentalId(rentalId);
+		pi.setPayerId(payerId);
 		pi.setDayPrice(dayPrice);
 		pi.setDays(days);
 		
+		Rental rental = optionalRental.get();
 		ServiceLocation serviceLocation = rental.getServiceLocation();
+		
 		PaymentsTaxInfo taxInfo = remotePaymentsService.calculateTaxRate(
 				serviceLocation.getAddress(), 
 				serviceLocation.getCity(), 
