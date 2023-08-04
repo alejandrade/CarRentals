@@ -3,19 +3,12 @@ package com.techisgood.carrentals.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.techisgood.carrentals.model.audit.VersionedAuditable;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,8 +61,10 @@ public class Car extends VersionedAuditable {
     @Column(name = "short_id", length = 8, insertable = false, updatable = false) // Added generated column mapping
     private String shortId;
     
-    @ElementCollection
+    @OneToMany
     @JoinColumn(name="car_id", referencedColumnName = "id")
-    private List<CarServiceLocation> locations;
+    private List<CarServiceLocationHistory> locationsHistory;
 
+    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL)
+    private ServiceLocationCar serviceLocationsForCar;
 }

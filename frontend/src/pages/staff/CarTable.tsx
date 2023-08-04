@@ -8,7 +8,7 @@ import {
     TableRow,
     TableContainer,
     TablePagination,
-    Checkbox,
+    Checkbox, Typography,
 } from '@mui/material';
 import { CarResponseDto, PaginatedCarResponse } from "../../services/car/carService.types";
 import CarService from "../../services/car/carService";
@@ -95,12 +95,13 @@ const CarTable: React.FC<CarProps> = ({ onSelected, refresh }) => {
 
     return (
         <Paper>
+
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
                             {/* Add a column for selection */}
-                            <TableCell></TableCell>
+                            <TableCell>Select</TableCell>
                             <TableCell>Make</TableCell>
                             <TableCell>Model</TableCell>
                             <TableCell>Year</TableCell>

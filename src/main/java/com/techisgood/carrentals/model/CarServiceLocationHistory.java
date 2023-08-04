@@ -21,8 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name="car_service_location", catalog="car_rentals")
-public class CarServiceLocation extends VersionedAuditable {
-	
+public class CarServiceLocationHistory extends VersionedAuditable {
 
 	@Id
 	@GeneratedValue(generator = "UUID")

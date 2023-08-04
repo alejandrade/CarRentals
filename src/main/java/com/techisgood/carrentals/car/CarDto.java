@@ -22,6 +22,7 @@ public class CarDto {
     private String licensePlate;
     private String status;
     private Integer version;
+    private String serviceLocationId;
 
     // Audit properties
     private LocalDateTime createdAt;
@@ -45,6 +46,7 @@ public class CarDto {
         dto.setLicensePlate(car.getLicensePlate());
         dto.setStatus(car.getStatus());
         dto.setVersion(car.getVersion());
+        dto.setServiceLocationId(car.getServiceLocationsForCar().getServiceLocation().getId());
         // Setting audit properties
         dto.setCreatedAt(car.getCreatedAt());
         dto.setUpdatedAt(car.getUpdatedAt());

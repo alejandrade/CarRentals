@@ -39,14 +39,26 @@ const AuthoritySelectPage: React.FC = () => {
     useEffect(() => {
         const tab = roles.filter(x => location.pathname.includes(x))[0];
         if (tab) {
-            setSelectedTab(roles.indexOf(tab));
+            setSelectedTab(authorities.indexOf(`ROLE_${tab.toUpperCase()}`));
         } else {
-            if (authorities[0]) {
-                const newTab = authorities[0].replace("ROLE_", "").toLowerCase();
-                onSelect(newTab);
+            if (authorities.includes(`ROLE_ADMIN`)) {
+                onSelect("admin");
+                setSelectedTab(authorities.indexOf(`ROLE_ADMIN`));
+            } else if (authorities.includes("ROLE_CLERK")) {
+                onSelect("clerk")
+                setSelectedTab(authorities.indexOf(`ROLE_CLERK`));
+            } else if (authorities.includes("ROLE_STAFF")) {
+                onSelect("staff")
+                setSelectedTab(authorities.indexOf(`ROLE_STAFF`));
+
+            } else if (authorities.includes("ROLE_USER")) {
+                onSelect("user");
+                setSelectedTab(authorities.indexOf(`ROLE_USER`));
+
             }
         }
-    }, []);
+
+    }, [authorities]);
 
     function onSelect(path: string) {
         navigate(`/dash/${path}`);
@@ -58,11 +70,7 @@ const AuthoritySelectPage: React.FC = () => {
     };
 
     function getAuthorities() {
-        if (authorities.includes("ROLE_ADMIN")) {
-            return roles;
-        } else {
-            return authorities.map(x => x.replace("ROLE_", "").toLowerCase());
-        }
+        return authorities.map(x => x.replace("ROLE_", "").toLowerCase());
     }
 
     return (

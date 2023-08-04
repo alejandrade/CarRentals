@@ -61,6 +61,9 @@ public class ServiceLocation extends VersionedAuditable {
 			inverseJoinColumns = @JoinColumn(name="car_id", referencedColumnName = "id")
 	)
 	private List<Car> cars;
+
+	@OneToMany(mappedBy = "serviceLocation", cascade = CascadeType.ALL)
+	private List<ServiceLocationCar> carsInLocation;
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinTable(

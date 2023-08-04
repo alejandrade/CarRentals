@@ -33,7 +33,6 @@ const StatusAutocomplete: React.FC<StatusAutocompleteProps> = ({ value, onChange
                         name="status"
                         label="Status"
                         fullWidth
-                        margin="normal"
                         error={Boolean(error)}
                     />
                 )}

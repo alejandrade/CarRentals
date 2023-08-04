@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import {Box, Container, Paper, useMediaQuery, useTheme} from "@mui/material";
 import UserDetailsTable from "./UserDetailsTable";
 import LocationsTable from "./LocationsTable";
+import CarEditor from "../staff/CarEditor";
 
 const AdminDash: React.FC = () => {
     const theme = useTheme();
@@ -20,6 +21,10 @@ const AdminDash: React.FC = () => {
             <Container component={Paper} sx={{ mb: 3, p: 3 }}>  {/* Add spacing and padding for aesthetic appeal */}
                 <LocationsTable/>
             </Container>
+            <Container component={Paper} sx={{ mb: 3, p: 3 }}>  {/* Add spacing and padding for aesthetic appeal */}
+                <CarEditor/>
+            </Container>
+
         </Box>
     );
 }

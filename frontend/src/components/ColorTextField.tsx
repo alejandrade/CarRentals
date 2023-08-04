@@ -33,7 +33,7 @@ const ColorTextField: React.FC<ColorTextFieldProps> = ({ value, onChange }) => {
                 }
             }}
             renderInput={(params) => (
-                <TextField {...params} name="color" label="Color" fullWidth margin="normal" />
+                <TextField {...params} name="color" label="Color" fullWidth />
             )}
         />
     );

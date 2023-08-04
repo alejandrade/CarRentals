@@ -34,7 +34,6 @@ const YearTextField: React.FC<YearTextFieldProps> = ({value, onChange }) => {
                         name="year"
                         label="Year"
                         fullWidth
-                        margin="normal"
                         type="number"
                         error={Boolean(error)}
                     />

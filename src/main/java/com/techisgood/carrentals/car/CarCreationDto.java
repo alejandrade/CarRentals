@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.car;
 
+import com.techisgood.carrentals.service_location.ServiceLocationDto;
 import lombok.*;
 
 import jakarta.validation.constraints.NotBlank;
@@ -58,4 +59,6 @@ public class CarCreationDto {
 
     @PositiveOrZero(message = "Version must be positive or zero")
     private Integer version = 0;
+
+    private String serviceLocationId;
 }

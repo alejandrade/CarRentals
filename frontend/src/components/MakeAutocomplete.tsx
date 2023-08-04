@@ -51,7 +51,6 @@ const MakeAutocomplete: React.FC<MakeAutocompleteProps> = ({ value, onChange }) 
                         name="make"
                         label="Make"
                         fullWidth
-                        margin="normal"
                         error={Boolean(error)}
                     />
                 )}

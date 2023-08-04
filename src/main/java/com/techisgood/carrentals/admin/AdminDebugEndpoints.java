@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.techisgood.carrentals.service_location.ServiceLocationRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,72 +46,72 @@ public class AdminDebugEndpoints {
 	private final UserCreateIfNotExistServiceImpl userCreateService;
 	private final UserCreateDemographicsService userCreateDemographicsService;
 	private final UserService userService;
-	
+
 	@GetMapping
 	public ResponseEntity<?> test() {
 		return ResponseEntity.ok("GOOD");
 	}
-	
-	@GetMapping("/create-initial-debug-data")
-	public ResponseEntity<?> createInitialDebugData(@AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
-		UserDto authUser = userService.getUser(auth.getUsername());
-		DbUserDemographics authUserDemographics = userCreateDemographicsService.createUserDemographics(
-				authUser.getId(), 
-				"Jack", 
-				null, 
-				null, 
-				LocalDate.of(1970, 1, 1), 
-				Gender.Male, 
-				null, 
-				null, 
-				null, 
-				null, 
-				null, 
-				null);
-
-		ServiceLocationCreateDto serviceLocationCreation = new ServiceLocationCreateDto(
-				"Cool Car Workshop",
-				"100 Wall St.",
-				"New York",
-				"NY",
-				"10001",
-				"US",
-				"This place is great!"
-				);
-		ServiceLocation serviceLocation = serviceLocationService.createServiceLocation(serviceLocationCreation);
-		
-		CarCreationDto carCreation = new CarCreationDto(
-				"Honda", 
-				new BigDecimal(20.00), 
-				"Civic", 
-				2015, 
-				"12345678912345678", 
-				"Red",
-				new BigDecimal(1000.00), 
-				new BigDecimal(10000.00), 
-				true, 
-				"ABC123", 
-				"awesome", 
-				0);
-		Car car = carService.createOrUpdateCar(carCreation);
-		serviceLocationService.addCar(serviceLocation, car);
-		
-		DbUser clerk = userCreateService.createIfNoneExists("+19285551000", UserAuthority.ROLE_CLERK);
-
-		
-		serviceLocationService.addClerk(serviceLocation, clerk);
-		
-		RentalCreateDto rentalCreation = new RentalCreateDto(
-				car.getShortId(), 
-				clerk.getId(), 
-				serviceLocation.getId(),
-				clerk.getPhoneNumber(), 
-				RentalStatus.DATA_ENTRY, 
-				car.getMileage(), 
-				LocalDateTime.now(), 
-				0);
-		rentalService.createRentalUsingDto(car.getId(), rentalCreation);
-		
-		return ResponseEntity.ok("DONE");
-	}
+//
+//	@GetMapping("/create-initial-debug-data")
+//	public ResponseEntity<?> createInitialDebugData(@AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
+//		UserDto authUser = userService.getUser(auth.getUsername());
+//		DbUserDemographics authUserDemographics = userCreateDemographicsService.createUserDemographics(
+//				authUser.getId(),
+//				"Jack",
+//				null,
+//				null,
+//				LocalDate.of(1970, 1, 1),
+//				Gender.Male,
+//				null,
+//				null,
+//				null,
+//				null,
+//				null,
+//				null);
+//
+//		ServiceLocationCreateDto serviceLocationCreation = new ServiceLocationCreateDto(
+//				"Cool Car Workshop",
+//				"100 Wall St.",
+//				"New York",
+//				"NY",
+//				"10001",
+//				"US",
+//				"This place is great!"
+//				);
+//		ServiceLocation serviceLocation = serviceLocationService.createServiceLocation(serviceLocationCreation);
+//
+//		CarCreationDto carCreation = new CarCreationDto(
+//				"Honda",
+//				new BigDecimal(20.00),
+//				"Civic",
+//				2015,
+//				"12345678912345678",
+//				"Red",
+//				new BigDecimal(1000.00),
+//				new BigDecimal(10000.00),
+//				true,
+//				"ABC123",
+//				"awesome",
+//				0);
+//		Car car = carService.createOrUpdateCar(carCreation);
+//		serviceLocationService.addCar(serviceLocation, car);
+//
+//		DbUser clerk = userCreateService.createIfNoneExists("+19285551000", UserAuthority.ROLE_CLERK);
+//
+//
+//		serviceLocationService.addClerk(serviceLocation, clerk);
+//
+//		RentalCreateDto rentalCreation = new RentalCreateDto(
+//				car.getShortId(),
+//				clerk.getId(),
+//				serviceLocation.getId(),
+//				clerk.getPhoneNumber(),
+//				RentalStatus.DATA_ENTRY,
+//				car.getMileage(),
+//				LocalDateTime.now(),
+//				0);
+//		rentalService.createRentalUsingDto(car.getId(), rentalCreation);
+//
+//		return ResponseEntity.ok("DONE");
+//	}
 }

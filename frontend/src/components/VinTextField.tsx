@@ -24,7 +24,6 @@ const VinTextField: React.FC<VinTextFieldProps> = ({ value, onChange }) => {
             value={value}
             onChange={handleChange}
             fullWidth
-            margin="normal"
             error={value ? !vinRegex.test(value) : false}
             helperText={value ? (!vinRegex.test(value) ? 'Invalid VIN' : '') : ""}
         />

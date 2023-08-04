@@ -11,6 +11,7 @@ export interface CarCreationDto {
     rentPrice?: number;
     licensePlate?: string;
     status?: string;
+    serviceLocationId?: string;
 }
 
 export interface CarResponseDto extends CarCreationDto {

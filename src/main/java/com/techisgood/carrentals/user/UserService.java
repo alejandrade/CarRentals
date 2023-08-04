@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AuthorityRepository authorityRepository;
     private final UserWithDetailsDtoConverter converter;
-    private final ServiceLocationClerkRepository serviceLocationClerkRepository;
     private final ServiceLocationRepository serviceLocationRepository;
 
     public UserDto getUser(String userId) {

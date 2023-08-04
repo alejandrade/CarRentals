@@ -32,7 +32,6 @@ public class TwilioEndpoints {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserCreateIfNotExistService userCreateIfNotExistService;
     private final AuthorityRepository authorityRepository;
-    private final UserDetailsService userDetailsService;
 
     @PostMapping("/startVerification")
     public ResponseEntity<TwilioVerifyResponse> processTwilioRequest(@Valid @RequestBody TwilioDto twilioRequest) throws InvalidPhoneNumberException {
