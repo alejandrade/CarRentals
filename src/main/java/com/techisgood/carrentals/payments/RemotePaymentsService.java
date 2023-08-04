@@ -21,7 +21,7 @@ import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.LineItem;
 import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData;
 import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData.ProductData;
-import com.stripe.param.checkout.SessionListLineItemsParams;
+import com.stripe.param.checkout.SessionCreateParams.PaymentIntentData;
 import com.techisgood.carrentals.model.DbUserDemographics;
 
 import lombok.extern.slf4j.Slf4j;
@@ -182,7 +182,7 @@ public class RemotePaymentsService {
 	
 
 	
-	public Session createCheckoutSession(String customerId, String successUrl, String cancelUrl, Integer total) throws StripeException {
+	public Session createCheckoutSession(String internalInvoiceId, String customerId, String successUrl, String cancelUrl, Integer total) throws StripeException {
 		ProductData productData = ProductData.builder()
 				.setName(customerId + " charge for " + (total/100.0))
 				.build();
@@ -194,15 +194,24 @@ public class RemotePaymentsService {
 				setPriceData(priceData)
 				.setQuantity(1L).build();
 		
+		//this is what links up the eventual payment with our internal invoice table.
+		PaymentIntentData paymentIntentData = PaymentIntentData.builder().putMetadata("internalInvoiceId", internalInvoiceId).build();
+		
 		SessionCreateParams params = 
 				SessionCreateParams.builder()
 				.setMode(SessionCreateParams.Mode.PAYMENT)
+			    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+			    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.US_BANK_ACCOUNT)
+			    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CASHAPP)
 				.setCustomer(customerId)
-				.setSuccessUrl(successUrl + "?success=true")
+				.setPaymentIntentData(paymentIntentData)
+				.putMetadata("internalInvoiceId", internalInvoiceId)
+				.setSuccessUrl(successUrl + "?session_id={CHECKOUT_SESSION_ID}&success=true")
 				.setCancelUrl(cancelUrl + "?canceled=true")
 				.addLineItem(item)
 		        .build();
 		Session session = Session.create(params);
+		log.info("Payment Intent: " + session.getPaymentIntent());
 		return session;
 	}
 	

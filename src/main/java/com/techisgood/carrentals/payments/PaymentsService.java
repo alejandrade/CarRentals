@@ -106,6 +106,29 @@ public class PaymentsService {
 		return pi;
 	}
 	
+	
+	@Transactional 
+	public PaymentsInvoice updateInvoiceSetRemotePaymentInfo(String invoiceId, String remotePaymentId, String remotePaymentStatus) {
+		Optional<PaymentsInvoice> opi = paymentsInvoiceRepository.findById(invoiceId);
+		if (opi.isEmpty()) return null;
+		PaymentsInvoice pi = opi.get();
+		if (pi.getExternalPaymentStatus() != null) {
+			if (remotePaymentStatus == null) {
+				return pi;
+			}
+			if (pi.getExternalPaymentStatus().equalsIgnoreCase("succeeded")) {
+				return pi;
+			}
+		}
+		
+		pi.setExternalPaymentId(remotePaymentId);
+		pi.setExternalPaymentStatus(remotePaymentStatus);
+		pi = paymentsInvoiceRepository.save(pi);
+		return pi;
+	}
+	
+	
+	
 	public PaymentsInvoiceDto getInvoice(String invoiceId) {
 		Optional<PaymentsInvoice> maybeInvoice = paymentsInvoiceRepository.findById(invoiceId);
 		if (maybeInvoice.isEmpty()) return null;
@@ -117,10 +140,12 @@ public class PaymentsService {
 		String result = null;
 		
 		PaymentsInvoiceDto invoice = getInvoice(invoiceId);
-		Session session = remotePaymentsService.createCheckoutSession(customerId, successUrl, cancelUrl, invoice.getTotal());
+		Session session = remotePaymentsService.createCheckoutSession(invoiceId, customerId, successUrl, cancelUrl, invoice.getTotal());
 		result = session.getUrl();
 		
 		return result;
 	}
+	
+	
 	
 }
