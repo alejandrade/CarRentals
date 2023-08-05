@@ -13,3 +13,6 @@ alter table car_rentals.user_licenses
 alter table car_rentals.user_licenses
     change front_card_picture front_card_picture_key varchar(255) null;
 
+alter table car_rentals.rental_pictures
+    change s3_url s3_key varchar(500) null;
+

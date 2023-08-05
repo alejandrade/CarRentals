@@ -26,9 +26,9 @@ public class CreateUserInsuranceService {
         UserInsurance userInsurance = userInsuranceRepository.findById(insuranceId).orElseThrow();
         String upload = storageService.upload(userInsurance.getId(), imageFile);
         if (angle.equals(ImageAngle.FRONT)) {
-            userInsurance.setFrontCardPicture(upload);
+            userInsurance.setFrontCardPictureKey(upload);
         } else if (angle.equals(ImageAngle.BACK)) {
-            userInsurance.setBackCardPicture(upload);
+            userInsurance.setBackCardPictureKey(upload);
         }
         userInsuranceRepository.save(userInsurance);
         return UserInsuranceDto.from(userInsurance);

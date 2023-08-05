@@ -30,8 +30,8 @@ export interface UserLicenseDto {
     dateOfIssue: Date;
     expirationDate: Date;
     licenseClass: string;
-    backCardPicture: string;
-    frontCardPicture: string;
+    backCardPictureKey: string;
+    frontCardPictureKey: string;
     active: boolean;
 }
 
@@ -42,8 +42,8 @@ export interface UserInsuranceDto {
     userId: string;
     policyNumber: string;
     provider: string;
-    frontCardPicture: string;
-    backCardPicture: string;
+    frontCardPictureKey: string;
+    backCardPictureKey: string;
     endDate: Date;
     active: boolean;
 }

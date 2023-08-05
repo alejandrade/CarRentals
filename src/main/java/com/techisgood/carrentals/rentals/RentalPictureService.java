@@ -41,8 +41,8 @@ public class RentalPictureService {
         RentalPicture savedRentalPicture = rentalPictureRepository.save(rentalPicture);
         String fileName = file.getOriginalFilename();
 
-        String url = storageService.upload(savedRentalPicture.getId() + "/" + fileName, file);
-        rentalPicture.setS3Url(url);
+        String key = storageService.upload(savedRentalPicture.getId() + "/" + fileName, file);
+        rentalPicture.setS3Key(key);
         rentalPictureRepository.save(rentalPicture);
         // Convert entity back to DTO and return
         return RentalPictureDto.from(savedRentalPicture);

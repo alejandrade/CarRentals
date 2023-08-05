@@ -26,9 +26,9 @@ public class CreateUserLicenseService {
         UserLicense license = userLicenseRepository.findById(licenseId).orElseThrow();
         String upload = storageService.upload(license.getId(), imageFile);
         if (angle.equals(ImageAngle.FRONT)) {
-            license.setFrontCardPicture(upload);
+            license.setFrontCardPictureKey(upload);
         } else if (angle.equals(ImageAngle.BACK)) {
-            license.setBackCardPicture(upload);
+            license.setBackCardPictureKey(upload);
         }
         userLicenseRepository.save(license);
         return UserLicenseDto.from(license);

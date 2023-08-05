@@ -33,7 +33,7 @@ public class S3StorageService implements StorageService {
             metadata.setContentType(file.getContentType());
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream, metadata);
             amazonS3.putObject(putObjectRequest);
-            return amazonS3.getUrl(bucketName, key).toString();
+            return key;
         } catch (IOException e) {
             // Handle any exceptions that might occur during the upload
             e.printStackTrace();

@@ -28,7 +28,7 @@ export interface RentalPictureDto {
     id: string;
     rentalId: string;
     angle: string; // Assuming RentalPictureAngle is a string representation of an angle
-    s3Url: string;
+    s3Key: string;
     isInitialPicture: boolean;
     takenById: string;
     takenAt: string; // You may want to use a string representation of the datetime

@@ -22,9 +22,9 @@ public class UserInsuranceDto {
     @NotNull(message = "provider is required")
     private String provider;
 
-    private String frontCardPicture;
+    private String frontCardPictureKey;
 
-    private String backCardPicture;
+    private String backCardPictureKey;
 
     @NotNull(message = "endDate is required")
     private LocalDateTime endDate;
@@ -37,8 +37,8 @@ public class UserInsuranceDto {
         userInsuranceDto.setUserId(userInsurance.getUser().getId());
         userInsuranceDto.setPolicyNumber(userInsurance.getPolicyNumber());
         userInsuranceDto.setProvider(userInsurance.getProvider());
-        userInsuranceDto.setFrontCardPicture(userInsurance.getFrontCardPicture());
-        userInsuranceDto.setBackCardPicture(userInsurance.getBackCardPicture());
+        userInsuranceDto.setFrontCardPictureKey(userInsurance.getFrontCardPictureKey());
+        userInsuranceDto.setBackCardPictureKey(userInsurance.getBackCardPictureKey());
         userInsuranceDto.setEndDate(userInsurance.getEndDate());
         userInsuranceDto.setActive(userInsurance.isActive());
 

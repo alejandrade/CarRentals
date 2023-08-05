@@ -32,11 +32,11 @@ public class UserInsurance extends VersionedAuditable {
     @Column(name = "provider", length = 100, nullable = false)
     private String provider;
 
-    @Column(name = "front_card_picture")
-    private String frontCardPicture;
+    @Column(name = "front_card_picture_key")
+    private String frontCardPictureKey;
 
-    @Column(name = "back_card_picture")
-    private String backCardPicture;
+    @Column(name = "back_card_picture_key")
+    private String backCardPictureKey;
 
     @Column(name = "end_date", nullable = false)
     private LocalDateTime endDate;

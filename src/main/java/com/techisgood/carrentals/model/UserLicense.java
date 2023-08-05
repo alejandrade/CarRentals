@@ -39,11 +39,11 @@ public class UserLicense extends VersionedAuditable {
     @Column(name = "license_class", length = 10)
     private String licenseClass;
 
-    @Column(name = "back_card_picture")
-    private String backCardPicture;
+    @Column(name = "back_card_picture_key")
+    private String backCardPictureKey;
 
-    @Column(name = "front_card_picture")
-    private String frontCardPicture;
+    @Column(name = "front_card_picture_key")
+    private String frontCardPictureKey;
 
     @Column(name = "active")
     private boolean active;

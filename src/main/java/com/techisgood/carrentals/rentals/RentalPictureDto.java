@@ -11,7 +11,7 @@ public class RentalPictureDto {
     private String id;
     private String rentalId;          // Use the ID instead of the entire Rental object
     private RentalPictureAngle angle;
-    private String s3Url;
+    private String s3Key;
     private Boolean isInitialPicture;
     private String takenById;         // Use the ID instead of the entire DbUser object
     private LocalDateTime takenAt;
@@ -27,7 +27,7 @@ public class RentalPictureDto {
         dto.setId(rentalPicture.getId());
         dto.setRentalId(rentalPicture.getRental().getId());
         dto.setAngle(rentalPicture.getAngle());
-        dto.setS3Url(rentalPicture.getS3Url());
+        dto.setS3Key(rentalPicture.getS3Key());
         dto.setIsInitialPicture(rentalPicture.getIsInitialPicture());
         dto.setTakenById(rentalPicture.getTakenBy().getId());
         dto.setTakenAt(rentalPicture.getTakenAt());

@@ -29,8 +29,8 @@ public class RentalPicture extends Auditable {
     @Enumerated(EnumType.STRING)
     private RentalPictureAngle angle;
 
-    @Column(name = "s3_url", length = 500, nullable = false)
-    private String s3Url;
+    @Column(name = "s3_key", length = 500, nullable = false)
+    private String s3Key;
 
     @Column(name = "is_initial_picture", nullable = false, columnDefinition = "tinyint(1)")
     private Boolean isInitialPicture;

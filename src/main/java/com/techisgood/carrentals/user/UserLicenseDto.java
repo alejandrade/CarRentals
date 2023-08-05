@@ -29,9 +29,9 @@ public class UserLicenseDto {
 
     private String licenseClass;
 
-    private String backCardPicture;
+    private String backCardPictureKey;
 
-    private String frontCardPicture;
+    private String frontCardPictureKey;
 
     private boolean active;
 
@@ -44,8 +44,8 @@ public class UserLicenseDto {
         userLicenseDto.setDateOfIssue(userLicense.getDateOfIssue());
         userLicenseDto.setExpirationDate(userLicense.getExpirationDate());
         userLicenseDto.setLicenseClass(userLicense.getLicenseClass());
-        userLicenseDto.setBackCardPicture(userLicense.getBackCardPicture());
-        userLicenseDto.setFrontCardPicture(userLicense.getFrontCardPicture());
+        userLicenseDto.setBackCardPictureKey(userLicense.getBackCardPictureKey());
+        userLicenseDto.setFrontCardPictureKey(userLicense.getFrontCardPictureKey());
         userLicenseDto.setActive(userLicense.isActive());
 
         return userLicenseDto;
