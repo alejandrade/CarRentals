@@ -1,19 +1,19 @@
 package com.techisgood.carrentals.car;
 
-import com.techisgood.carrentals.model.ServiceLocationCar;
+import com.techisgood.carrentals.model.*;
 import com.techisgood.carrentals.service_location.ServiceLocationCarRepository;
 import com.techisgood.carrentals.service_location.ServiceLocationRepository;
+import com.techisgood.carrentals.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.techisgood.carrentals.model.Car;
-import com.techisgood.carrentals.model.ServiceLocation;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +23,8 @@ public class CarService {
     private final CarRepository carRepository;
     private final ServiceLocationRepository serviceLocationRepository;
     private final ServiceLocationCarRepository serviceLocationCarRepository;
+    private final UserRepository userRepository;
+
     @Transactional
     public Car createOrUpdateCar(@Valid CarCreationDto carCreationDto) {
         // Check if a car with the given VIN exists
@@ -59,6 +61,14 @@ public class CarService {
     @Transactional(readOnly = true)
     public Page<CarDto> findAllCars(Pageable pageable) {
         Page<Car> cars = carRepository.findAll(pageable);
+        return cars.map(CarDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CarDto> findAllCarsByLocation(Pageable pageable, UserDetails userDetails) {
+        DbUser user = userRepository.findById(userDetails.getUsername()).orElseThrow();
+        List<ServiceLocationClerk> serviceLocationClerks = user.getServiceLocationClerks();
+        Page<Car> cars = carRepository.findAllByLocationId(serviceLocationClerks.stream().findAny().orElseThrow().getServiceLocationId(), pageable);
         return cars.map(CarDto::from);
     }
 

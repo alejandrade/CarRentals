@@ -1,11 +1,15 @@
 package com.techisgood.carrentals.exception;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class ErrorDetails {
     private LocalDateTime timestamp;
     private Integer status;

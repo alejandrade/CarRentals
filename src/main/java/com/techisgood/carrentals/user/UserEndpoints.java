@@ -1,8 +1,14 @@
 package com.techisgood.carrentals.user;
 
+import com.techisgood.carrentals.authorities.UserAuthority;
+import com.techisgood.carrentals.model.DbUser;
+import com.techisgood.carrentals.security.SecurityUtils;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,6 +34,7 @@ public class UserEndpoints {
 	private final CreateUserInsuranceService createUserInsuranceService;
 	private final CreateUserLicenseService createUserLicenseService;
 	private final UserService userService;
+	private final UserRepository userRepository;
 
 	@PostMapping("/admin/{userId}")
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -37,6 +46,13 @@ public class UserEndpoints {
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	public UserDto getUser(@PathVariable String userId) {
 		return userService.getUser(userId);
+	}
+
+	@GetMapping("/client/{phoneNumber}")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CLERK')")
+	public UserDto getClient(@PathVariable @Pattern(regexp = "^\\+?[0-9]{10,15}$") String phoneNumber) {
+		DbUser dbUser = userRepository.findByPhoneNumber(phoneNumber.replace(" ", "")).orElseThrow();
+		return activeUserDataService.getCurrentUser(dbUser.getId());
 	}
 
 	@GetMapping("/current")
@@ -89,7 +105,8 @@ public class UserEndpoints {
 	}
 	
 	@PostMapping("/demographic")
-	public ResponseEntity<?> createUserDemographics(@Valid @RequestBody UserDemographicsDto requestBody) throws RemoteServiceException {
+	public ResponseEntity<?> createUserDemographics(@Valid @RequestBody UserDemographicsDto requestBody, @AuthenticationPrincipal UserDetails userDetails) throws RemoteServiceException {
+		SecurityUtils.isAdminClerkOrSameUser(requestBody, userDetails);
 		userCreateDemographicsService.createUserDemographics(
 				requestBody.getUserId(), 
 				requestBody.getFirstName(), 
@@ -106,6 +123,9 @@ public class UserEndpoints {
 				);
         return ResponseEntity.ok(requestBody);
 	}
+
+
+
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@GetMapping
 	public ResponseEntity<?> getUserWithDetails(Pageable pageable) {

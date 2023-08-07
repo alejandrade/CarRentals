@@ -37,6 +37,9 @@ const AuthoritySelectPage: React.FC = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
 
     useEffect(() => {
+        if (authorities.length === 0) {
+            return;
+        }
         const tab = roles.filter(x => location.pathname.includes(x))[0];
         if (tab) {
             setSelectedTab(authorities.indexOf(`ROLE_${tab.toUpperCase()}`));

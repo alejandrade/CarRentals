@@ -11,6 +11,12 @@ import AdminDash from "./pages/admin/AdminDash";
 import CarRentalForm from "./pages/clerk/CarRentalForm";
 import Test_StripeCheckoutSetup from "./pages/admin/Test_StripeCheckoutSetup";
 import Test_StripeCheckoutPayment from "./pages/admin/Test_StripeCheckoutPayment";
+import * as path from "path";
+import UserCreate from "./pages/UserCreate/user-create";
+import CarSelect from "./pages/car/car-registration";
+import CarConfirmation from "./pages/car/car-confirmation";
+
+
 
 function dashTabs() {
     return [
@@ -25,6 +31,22 @@ function dashTabs() {
             element: (
                 <ClerkDash/>
             )
+        },
+        {
+            path: "clerk/userCreate/:phoneNumber",
+            element: (
+                <UserCreate/>
+            )
+        },
+        {
+            path: "car/select/:phoneNumber",
+            element: (
+                <CarSelect/>
+            )
+        },
+        {
+            path: "clerk/:phoneNumber/cars/:cardId",
+            element: <CarConfirmation/>
         },
         {
             path: "admin",

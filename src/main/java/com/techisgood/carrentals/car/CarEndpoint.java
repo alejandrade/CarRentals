@@ -1,10 +1,13 @@
 package com.techisgood.carrentals.car;
 
+import com.techisgood.carrentals.authorities.UserAuthority;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,8 +36,12 @@ public class CarEndpoint {
     }
 
     @GetMapping
-    public Page<CarDto> findAllCars(Pageable pageable) {
-        return carService.findAllCars(pageable);
+    @PreAuthorize("hasAuthority('ROLE_CLERK') || hasAuthority('ROLE_STAFF') || hasAuthority('ROLE_ADMIN')")
+    public Page<CarDto> findAllCarsByLocation(Pageable pageable, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails.getAuthorities().stream().anyMatch(x -> x.getAuthority().equals(UserAuthority.ROLE_ADMIN.name()))) {
+            return carService.findAllCars(pageable);
+        }
+        return carService.findAllCarsByLocation(pageable, userDetails);
     }
 
     @GetMapping("/{id}")

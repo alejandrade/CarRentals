@@ -117,6 +117,16 @@ class UserService {
         return response.json;
     }
 
+    async getClient(phoneNumber: string): Promise<UserDto> {
+        const response = await authFetch(`${this.BASE_URL}/users/v1/user/client/${phoneNumber}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch logged-in user');
+        }
+
+        return response.json;
+    }
+
+
     async getLoggedInUser(): Promise<UserDto> {
         const response = await authFetch(`${this.BASE_URL}/users/v1/user/current`);
         if (!response.ok) {
