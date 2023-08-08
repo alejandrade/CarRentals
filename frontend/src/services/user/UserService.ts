@@ -36,16 +36,18 @@ class UserService {
     /**
      * Upload an insurance image.
      *
+     * @param userId - the id of person whos insurance you are updating
      * @param insuranceId - The ID of the insurance.
      * @param imageAngle - The angle of the image (FRONT/BACK).
      * @param imageFile - The image file to upload.
      * @returns - A promise with the server response.
      */
-    async uploadInsuranceImage(insuranceId: string, imageAngle: "FRONT" | "BACK", imageFile: File): Promise<Response> {
+    async uploadInsuranceImage(userId: string, insuranceId: string, imageAngle: "FRONT" | "BACK", imageFile: File): Promise<Response> {
         const formData = new FormData();
         formData.append('insuranceId', insuranceId);
         formData.append('imageAngle', imageAngle);
         formData.append('image', imageFile);
+        formData.append('userId', userId);
 
         const response = await authFetch(`${this.BASE_URL}/users/v1/user/insurance/upload`, {
             method: 'POST',
@@ -89,11 +91,12 @@ class UserService {
      * @param imageFile - The image file to upload.
      * @returns - A promise with the server response.
      */
-    async uploadLicenseImage(licenseId: string, imageAngle: "FRONT" | "BACK", imageFile: File): Promise<Response> {
+    async uploadLicenseImage(userId: string, licenseId: string, imageAngle: "FRONT" | "BACK", imageFile: File): Promise<Response> {
         const formData = new FormData();
         formData.append('licenseId', licenseId);
         formData.append('imageAngle', imageAngle);
         formData.append('image', imageFile);
+        formData.append("userId", userId)
 
         const response = await authFetch(`${this.BASE_URL}/users/v1/user/license/upload`, {
             method: 'POST',

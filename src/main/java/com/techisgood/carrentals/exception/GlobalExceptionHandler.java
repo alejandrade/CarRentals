@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 
 
@@ -19,7 +20,19 @@ public class GlobalExceptionHandler {
         log.error("Collection Empty", ex);
         return ErrorDetails.builder()
                 .status(404)
+                .error(ex.getMessage())
                 .message("not found")
+                .build();
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDetails handleSqlConstraintException(NoSuchElementException ex) {
+        log.error("Collection Empty", ex);
+        return ErrorDetails.builder()
+                .status(400)
+                .error(ex.getMessage())
+                .message("duplicate")
                 .build();
     }
 }

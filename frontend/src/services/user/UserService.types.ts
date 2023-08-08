@@ -12,8 +12,8 @@ export interface UserDto {
     credentialsNonExpired: boolean;
     accountNonLocked: boolean;
     version?: number;
-    serviceLocations?: ServiceLocationDto[];
-    serviceLocationId?: string[];
+    serviceLocation?: ServiceLocationDto;
+    serviceLocationId?: string;
     authorities?: string[];
     userLicenses?: UserLicenseDto[];
     userInsurances?: UserInsuranceDto[];
@@ -72,8 +72,8 @@ export interface UserDemographicsDto {
 }
 
 export interface UpdateContactInformation {
+    userId: string;
     username: string;
-    code: string;
 }
 
 export type UserWithDetailsDto = {

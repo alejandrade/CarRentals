@@ -5,9 +5,10 @@ import LicenseForm from "./LicenseForm"; // assuming you have a similar form cre
 
 interface UserLicenseCardProps {
     dto: Partial<UserLicenseDto>;
+    userId: string;
 }
 
-const UserLicenseCard: React.FC<UserLicenseCardProps> = ({ dto }) => {
+const UserLicenseCard: React.FC<UserLicenseCardProps> = ({ dto, userId }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [data, setData] = useState<Partial<UserLicenseDto>>(dto);
 
@@ -45,7 +46,7 @@ const UserLicenseCard: React.FC<UserLicenseCardProps> = ({ dto }) => {
                         </Grid>
                     </Container>
                 ) : (
-                    <LicenseForm onSave={handleSaveClick}  dto={data} /> // Assuming a similar structure for the LicenseForm
+                    <LicenseForm userId={userId} onSave={handleSaveClick}  dto={data} /> // Assuming a similar structure for the LicenseForm
                 )}
             </CardContent>
         </Card>

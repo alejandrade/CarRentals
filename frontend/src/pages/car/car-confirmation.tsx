@@ -32,7 +32,6 @@ const CarConfirmation: React.FC<{ }>  = () => {
                 <Button onClick={back} variant={"contained"} color={"secondary"}>Back</Button>
                 <Button onClick={pay} variant={"contained"} color={"primary"}>Pay</Button>
             </CustomToolbar>
-
         </>
     );
 }

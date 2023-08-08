@@ -18,9 +18,7 @@ import static com.techisgood.carrentals.user.UserNameValidator.*;
 @Service
 public class UserUpdateContactInformationService {
 
-    private final TwilioService twilioService;
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public UserDto update(UpdateContactInformation contactInformation) {
@@ -30,20 +28,11 @@ public class UserUpdateContactInformationService {
             throw new IllegalArgumentException("Not email or phone number");
         }
 
-        TwilioVerifyResponse verify = twilioService.verify(contactInformation.getCode(), username);
-        if (!verify.isVerified()) {
-            throw new ValidationException("validation failed");
-        }
-
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
-
-        DbUser dbUser = userRepository.findById(userIdFromJWT).orElseThrow();
+        DbUser dbUser = userRepository.findById(contactInformation.getUserId()).orElseThrow();
         if (isEmail(username)) {
             dbUser.setEmail(username);
         } else if (isPhoneNumber(username)) {
-            dbUser.setPhoneNumber(userIdFromJWT);
+            dbUser.setPhoneNumber(contactInformation.getUsername());
         }
 
         userRepository.save(dbUser);

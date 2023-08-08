@@ -31,7 +31,8 @@ const ContactInformationCard: React.FC<ContactInformationCardProps> = ({ dto, us
 
     return (
         <Card>
-            <CardHeader title="Contact Information"/>
+            <CardHeader title="Contact Information" action={isEditing ? <Button onClick={() => setIsEditing(false)}>Cancel</Button> : <Button onClick={() => setIsEditing(true)}>Edit</Button>} />
+
             <CardContent>
                 {!isEditing && data.email && data.phoneNumber ? (
                     <Container>

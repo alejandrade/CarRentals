@@ -1,5 +1,7 @@
 package com.techisgood.carrentals.user;
 
+import static com.techisgood.carrentals.security.SecurityUtils.isAdminClerkOrSameUser;
+
 import java.util.Collections;
 
 import org.springframework.data.domain.Pageable;
@@ -18,12 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.techisgood.carrentals.exception.RemoteServiceException;
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.security.SecurityUtils;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users/v1/user")
@@ -62,52 +62,63 @@ public class UserEndpoints {
 	}
 
 	@PostMapping("/contactInformation")
-	public UserDto updateContactInformation(@RequestBody @Valid UpdateContactInformation updateContactInformation) {
+	public UserDto updateContactInformation(@RequestBody @Valid UpdateContactInformation updateContactInformation, @AuthenticationPrincipal UserDetails userDetails) {
+		isAdminClerkOrSameUser(updateContactInformation.getUserId(), userDetails);
 		return userUpdateContactInformationService.update(updateContactInformation);
 	}
 
 	@PostMapping("/insurance")
-	public UserInsuranceDto createInsurance(@Valid @RequestBody UserInsuranceDto userInsuranceDto) {
+	public UserInsuranceDto createInsurance(@Valid @RequestBody UserInsuranceDto userInsuranceDto, @AuthenticationPrincipal UserDetails userDetails) {
+		isAdminClerkOrSameUser(userInsuranceDto.getUserId(), userDetails);
 		return UserInsuranceDto.from(createUserInsuranceService.save(userInsuranceDto));
 	}
 
 
 	@PostMapping("/insurance/upload")
 	public ResponseEntity<?> uploadInsuranceImage(
+			@RequestParam("userId") String userId,
 			@RequestParam("insuranceId") String insuranceId,
 			@RequestParam("imageAngle") ImageAngle imageAngle,
-			@RequestParam("image") MultipartFile imageFile) throws Exception {
+			@RequestParam("image") MultipartFile imageFile,
+			@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+		isAdminClerkOrSameUser(userId, userDetails);
 
 		if (imageFile.isEmpty()) {
 			return ResponseEntity.badRequest().body(Collections.singletonMap("image", "failed"));
 		}
+
 		// Assuming you have a service to handle this upload.
-		createUserInsuranceService.uploadInsuranceImage(insuranceId, imageFile, imageAngle);
+		createUserInsuranceService.uploadInsuranceImage(userId, insuranceId, imageFile, imageAngle);
 		return ResponseEntity.ok(Collections.singletonMap("image", "success"));
 	}
 
 	@PostMapping("/license")
-	public UserLicenseDto createLicense(@Valid @RequestBody UserLicenseDto userInsuranceDto) {
+	public UserLicenseDto createLicense(@Valid @RequestBody UserLicenseDto userInsuranceDto,
+										@AuthenticationPrincipal UserDetails userDetails) {
+		isAdminClerkOrSameUser(userInsuranceDto.getUserId(), userDetails);
 		return UserLicenseDto.from(createUserLicenseService.save(userInsuranceDto));
 	}
 
 	@PostMapping("/license/upload")
 	public ResponseEntity<?> uploadLicenseImage(
+			@RequestParam("userId") String userId,
 			@RequestParam("licenseId") String licenseId,
 			@RequestParam("imageAngle") ImageAngle imageAngle,
-			@RequestParam("image") MultipartFile imageFile) throws Exception {
+			@RequestParam("image") MultipartFile imageFile,
+			@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+		isAdminClerkOrSameUser(userId, userDetails);
 
 		if (imageFile.isEmpty()) {
 			return ResponseEntity.badRequest().body(Collections.singletonMap("image", "failed"));
 		}
 		// Assuming you have a service to handle this upload.
-		createUserLicenseService.uploadLicenseImage(licenseId, imageFile, imageAngle);
+		createUserLicenseService.uploadLicenseImage(userId, licenseId, imageFile, imageAngle);
 		return ResponseEntity.ok(Collections.singletonMap("image", "success"));
 	}
 	
 	@PostMapping("/demographic")
 	public ResponseEntity<?> createUserDemographics(@Valid @RequestBody UserDemographicsDto requestBody, @AuthenticationPrincipal UserDetails userDetails) throws RemoteServiceException {
-		SecurityUtils.isAdminClerkOrSameUser(requestBody, userDetails);
+		isAdminClerkOrSameUser(requestBody.getUserId(), userDetails);
 		userCreateDemographicsService.createUserDemographics(
 				requestBody.getUserId(), 
 				requestBody.getFirstName(), 

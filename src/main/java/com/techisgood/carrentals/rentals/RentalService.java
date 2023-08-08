@@ -57,9 +57,6 @@ public class RentalService {
 		Rental rental = createRental(
 				carId, 
 				dbUser.getId(),
-				dto.getClerkId(),
-				dto.getServiceLocationId(),
-				dto.getInitialOdometerReading(), 
 				dto.getRentalDatetime(),
 				dto.getStatus());
 		return RentalDto.from(rental);
@@ -68,10 +65,7 @@ public class RentalService {
 	@Transactional
 	public Rental createRental(
 			String carId, 
-			String renterId, 
-			String clerkId,
-			String serviceLocationId,
-			BigDecimal odometer, 
+			String renterId,
 			LocalDateTime rentalDateTime,
 			RentalStatus status) throws IllegalArgumentException {
 		Optional<Car> car = carRepository.findById(carId);
@@ -82,34 +76,26 @@ public class RentalService {
 		if (renter.isEmpty()) {
 			throw new IllegalArgumentException("renter_id");
 		}
-		Optional<DbUser> clerk = userRepository.findById(clerkId);
-		if (clerk.isEmpty()) {
-			throw new IllegalArgumentException("clerk_id");
-		}
-		Optional<ServiceLocation> serviceLocation = serviceLocationRepository.findById(serviceLocationId);
-		if (serviceLocation.isEmpty()) {
-			throw new IllegalArgumentException("service_location_id");
-		}
+//		Optional<DbUser> clerk = userRepository.findById(clerkId);
+//		if (clerk.isEmpty()) {
+//			throw new IllegalArgumentException("clerk_id");
+//		}
+//		Optional<ServiceLocation> serviceLocation = serviceLocationRepository.findById(serviceLocationId);
+//		if (serviceLocation.isEmpty()) {
+//			throw new IllegalArgumentException("service_location_id");
+//		}
 		
 		Rental rental = new Rental();
 		rental.setCar(car.get());
-		rental.setClerk(clerk.get());
+//		rental.setClerk(clerk.get());
 		rental.setRenter(renter.get());
-		rental.setServiceLocation(serviceLocation.get());
-		rental.setInitialOdometerReading(odometer);
+//		rental.setServiceLocation(serviceLocation.get());
+//		rental.setInitialOdometerReading(odometer);
 		rental.setRentalDatetime(rentalDateTime);
 		rental.setStatus(status);
 		
 		rentalRepository.save(rental);
 		return rental;
-	}
-
-
-	@Transactional(readOnly = true)
-	public List<RentalDto> findRentalsByCarShortId(String carId) {
-		return rentalRepository.findByCar_ShortId(carId).stream()
-				.map(RentalDto::from)
-				.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
