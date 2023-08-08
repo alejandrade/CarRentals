@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import com.techisgood.carrentals.model.ServiceLocation;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.Optional;
+
 public interface ServiceLocationRepository extends JpaRepository<ServiceLocation, String>, PagingAndSortingRepository<ServiceLocation, String> {
 	@Query("SELECT s FROM ServiceLocation s WHERE s.id = :id")
 	public Page<ServiceLocation> findAllById(String id, Pageable pageable); 
@@ -16,5 +18,8 @@ public interface ServiceLocationRepository extends JpaRepository<ServiceLocation
 
 	@Query("SELECT s FROM ServiceLocation s WHERE s.name LIKE CONCAT(:namePrefix, '%') AND s.state = :state")
 	Page<ServiceLocation> findAllByNameStartsWithAndStateEquals(String namePrefix, String state, Pageable pageable);
+
+	@Query("SELECT s FROM ServiceLocation s join ServiceLocationClerk c on c.serviceLocation = s where c.clerk.id = :clerkId")
+	Optional<ServiceLocation> byClerkId(String clerkId);
 
 }
