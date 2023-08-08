@@ -5,13 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.techisgood.carrentals.model.Car;
-import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.ServiceLocation;
+import com.techisgood.carrentals.model.ServiceLocationClerk;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +74,7 @@ public class ServiceLocationService {
 		sl = serviceLocationRepository.save(sl);
 		
 		sl.setCars(new ArrayList<Car>());
-		sl.setClerks(new ArrayList<DbUser>());
+		sl.setClerks(new ArrayList<ServiceLocationClerk>());
 		
 		return sl;
 	}
@@ -114,11 +113,11 @@ public class ServiceLocationService {
 	
 	
 	@Transactional
-	public ServiceLocation addClerk(ServiceLocation serviceLocation, DbUser clerk) {
+	public ServiceLocation addClerk(ServiceLocation serviceLocation, ServiceLocationClerk clerk) {
 		
 		boolean found = false;
-		for (DbUser u : serviceLocation.getClerks()) {
-			if (u.getId() == clerk.getId()) {
+		for (ServiceLocationClerk c : serviceLocation.getClerks()) {
+			if (c.getId() == clerk.getId()) {
 				found = true;
 				break;
 			}

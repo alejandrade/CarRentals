@@ -66,11 +66,7 @@ public class ServiceLocation extends VersionedAuditable {
 	private List<ServiceLocationCar> carsInLocation;
 	
 	@OneToMany(cascade=CascadeType.ALL)
-	@JoinTable(
-			name="service_location_clerk",
-			joinColumns = @JoinColumn(name="location_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name="clerk_id", referencedColumnName = "id")
-	)
-	private List<DbUser> clerks;
+	@JoinColumn(name="location_id")
+	private List<ServiceLocationClerk> clerks;
 	
 }

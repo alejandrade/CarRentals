@@ -1,45 +1,51 @@
 package com.techisgood.carrentals.model;
 
-import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.techisgood.carrentals.model.audit.VersionedAuditable;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
-@Table(name = "service_location_clerk", uniqueConstraints = {
-        @UniqueConstraint(name = "service_location_clerk_key", columnNames = {"location_id", "clerk_id"})
-})
-public class ServiceLocationClerk {
+@Setter
+@Table(name = "service_location_clerk", catalog="car_rentals")
+@EntityListeners(AuditingEntityListener.class)
+public class ServiceLocationClerk extends VersionedAuditable {
 
-    @EmbeddedId
-    private ServiceLocationClerkId id = new ServiceLocationClerkId();
-
-    @MapsId("clerkId")  // map to the field in the composite key
-    @ManyToOne
-    @JoinColumn(name = "clerk_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id", insertable = false, updatable = false)
+	@Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(columnDefinition = "char(36) default (uuid())", nullable = false)
+	private String id;
+	
+	@Column(name="user_id", columnDefinition = "char(36)")
+	private String userId;
+	
+    @OneToOne
+    @JoinColumn(name = "user_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id", insertable = false, updatable = false)
     private DbUser clerk;
 
-    @MapsId("locationId")  // map to the field in the composite key
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "location_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id", insertable = false, updatable = false)
     private ServiceLocation serviceLocation;
 
-    public void setClerk(DbUser clerk) {
-        this.clerk = clerk;
-        if(clerk != null) {
-            this.id.setClerkId(clerk.getId());
-        }
-    }
+    @Column(name="first_name")
+    String firstName;
+    
+    @Column(name="last_name")
+    String lastName;
 
-    public void setServiceLocation(ServiceLocation serviceLocation) {
-        this.serviceLocation = serviceLocation;
-        if(serviceLocation != null) {
-            this.id.setServiceLocationId(serviceLocation.getId());
-        }
-    }
-
-    public String getServiceLocationId() {
-        return this.serviceLocation.getId();
-    }
-
-    // other fields and methods if needed
+    @Column(name="status")
+    String status;
 }

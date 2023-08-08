@@ -56,8 +56,5 @@ public class DbUser extends VersionedAuditable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserInsurance> userInsurances;
 
-    @OneToMany(mappedBy = "clerk", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ServiceLocationClerk> serviceLocationClerks;  // Added this line
-
 
 }

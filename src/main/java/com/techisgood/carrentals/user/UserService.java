@@ -1,21 +1,20 @@
 package com.techisgood.carrentals.user;
 
-import com.techisgood.carrentals.authorities.AuthorityRepository;
-import com.techisgood.carrentals.authorities.UserAuthority;
-import com.techisgood.carrentals.model.*;
-import com.techisgood.carrentals.service_location.ServiceLocationClerkRepository;
-import com.techisgood.carrentals.service_location.ServiceLocationRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.techisgood.carrentals.model.Authority;
+import com.techisgood.carrentals.model.DbUser;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserWithDetailsDtoConverter converter;
-    private final ServiceLocationRepository serviceLocationRepository;
 
     public UserDto getUser(String userId) {
         return userRepository.findById(userId).map(UserDto::from).orElseThrow();
@@ -62,24 +60,6 @@ public class UserService {
             }
         }
 
-        // Update ServiceLocationClerks
-        Set<String> currentServiceLocationIds = dbUser.getServiceLocationClerks().stream()
-                .map(ServiceLocationClerk::getServiceLocationId)
-                .collect(Collectors.toSet());
-
-        // Remove ServiceLocationClerks that are no longer present
-        dbUser.getServiceLocationClerks().removeIf(clerk -> !modifiedUserDto.getServiceLocationId().contains(clerk.getServiceLocationId()));
-
-        // Add new ServiceLocationClerks
-        for (String serviceLocationId : modifiedUserDto.getServiceLocationId()) {
-            if (!currentServiceLocationIds.contains(serviceLocationId)) {
-                ServiceLocationClerk clerk = new ServiceLocationClerk();
-                ServiceLocation serviceLocation = serviceLocationRepository.findById(serviceLocationId).orElseThrow();
-                clerk.setClerk(dbUser);
-                clerk.setServiceLocation(serviceLocation);
-                dbUser.getServiceLocationClerks().add(clerk);
-            }
-        }
 
         // Save the user
         userRepository.save(dbUser);

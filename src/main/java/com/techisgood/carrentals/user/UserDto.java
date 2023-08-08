@@ -1,15 +1,18 @@
 package com.techisgood.carrentals.user;
 
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.model.Authority;
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.model.ServiceLocationClerk;
-import jakarta.validation.constraints.*;
-import lombok.Data;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Data
 public class UserDto {
@@ -38,8 +41,6 @@ public class UserDto {
 
     private Integer version;
 
-    private List<String> serviceLocationId;
-
     private List<UserAuthority> authorities;
 
     private List<UserLicenseDto> userLicenses;
@@ -60,10 +61,6 @@ public class UserDto {
         userDto.setCredentialsNonExpired(dbUser.getCredentialsNonExpired());
         userDto.setAccountNonLocked(dbUser.getAccountNonLocked());
         userDto.setVersion(dbUser.getVersion());
-        if (dbUser.getServiceLocationClerks() != null) {
-            userDto.setServiceLocationId(dbUser.getServiceLocationClerks().stream()
-                    .map(ServiceLocationClerk::getServiceLocationId).toList());
-        }
 
         if (dbUser.getAuthorities() != null) {
             userDto.setAuthorities(dbUser.getAuthorities().stream()
