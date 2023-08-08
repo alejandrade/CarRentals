@@ -4,21 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.techisgood.carrentals.security.JwtTokenProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.techisgood.carrentals.model.Car;
 import com.techisgood.carrentals.model.ServiceLocation;
 import com.techisgood.carrentals.model.ServiceLocationClerk;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ServiceLocationService {
-	
+	private final JwtTokenProvider jwtTokenProvider;
+
 	private final ServiceLocationRepository serviceLocationRepository;
 	public ServiceLocationDto save(ServiceLocationDto dto) {
 		ServiceLocation serviceLocation;
@@ -58,6 +62,13 @@ public class ServiceLocationService {
 			result = serviceLocationRepository.findAll(page);
 		}
 		return result;
+	}
+
+	@Transactional(readOnly = true)
+	public ServiceLocation currentUserLocation() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
+		return serviceLocationRepository.byClerkId(userIdFromJWT).orElseThrow();
 	}
 	
 	@Transactional
