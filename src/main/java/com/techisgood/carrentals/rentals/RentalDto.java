@@ -11,7 +11,6 @@ public class RentalDto {
 
     private String id;
     private String carId;  // Assuming you want to represent the car with its id
-    private String shortId;
     private String clerkId; // Assuming you want to represent the clerk with its id
     private String renterPhoneNumber; // Assuming you want to represent the renter with its id
     private RentalStatus status;

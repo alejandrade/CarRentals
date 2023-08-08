@@ -4,6 +4,7 @@ import com.techisgood.carrentals.global.StorageService;
 import com.techisgood.carrentals.model.UserLicense;
 import com.techisgood.carrentals.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,15 @@ import java.util.List;
 public class CreateUserLicenseService {
     private final UserLicenseRepository userLicenseRepository;
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final StorageService storageService;
 
 
     @Transactional
-    public UserLicenseDto uploadLicenseImage(String licenseId, MultipartFile imageFile, ImageAngle angle) {
+    public UserLicenseDto uploadLicenseImage(String userId, String licenseId, MultipartFile imageFile, ImageAngle angle) {
         UserLicense license = userLicenseRepository.findById(licenseId).orElseThrow();
+        if (!license.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("license does not match user id");
+        }
         String upload = storageService.upload(license.getId(), imageFile);
         if (angle.equals(ImageAngle.FRONT)) {
             license.setFrontCardPictureKey(upload);
@@ -36,17 +39,15 @@ public class CreateUserLicenseService {
 
     @Transactional
     public UserLicense save(UserLicenseDto dto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
 
-        List<UserLicense> byUserId = userLicenseRepository.findByUserIdAndActiveTrue(userIdFromJWT);
+        List<UserLicense> byUserId = userLicenseRepository.findByUserIdAndActiveTrue(dto.getUserId());
         for (UserLicense item : byUserId) {
             item.setActive(false);
             userLicenseRepository.save(item);
         }
 
         UserLicense item = new UserLicense();
-        item.setUser(userRepository.getReferenceById(userIdFromJWT));
+        item.setUser(userRepository.getReferenceById(dto.getUserId()));
         item.setActive(true);
         item.setDateOfIssue(dto.getDateOfIssue());
         item.setExpirationDate(dto.getExpirationDate());

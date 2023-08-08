@@ -1,14 +1,10 @@
 package com.techisgood.carrentals.user;
 
-import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.security.SecurityUtils;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
+
+import static com.techisgood.carrentals.security.SecurityUtils.isAdminClerkOrSameUser;
 
 @RequiredArgsConstructor
 @RestController
@@ -61,52 +57,63 @@ public class UserEndpoints {
 	}
 
 	@PostMapping("/contactInformation")
-	public UserDto updateContactInformation(@RequestBody @Valid UpdateContactInformation updateContactInformation) {
+	public UserDto updateContactInformation(@RequestBody @Valid UpdateContactInformation updateContactInformation, @AuthenticationPrincipal UserDetails userDetails) {
+		isAdminClerkOrSameUser(updateContactInformation.getUserId(), userDetails);
 		return userUpdateContactInformationService.update(updateContactInformation);
 	}
 
 	@PostMapping("/insurance")
-	public UserInsuranceDto createInsurance(@Valid @RequestBody UserInsuranceDto userInsuranceDto) {
+	public UserInsuranceDto createInsurance(@Valid @RequestBody UserInsuranceDto userInsuranceDto, @AuthenticationPrincipal UserDetails userDetails) {
+		isAdminClerkOrSameUser(userInsuranceDto.getUserId(), userDetails);
 		return UserInsuranceDto.from(createUserInsuranceService.save(userInsuranceDto));
 	}
 
 
 	@PostMapping("/insurance/upload")
 	public ResponseEntity<?> uploadInsuranceImage(
+			@RequestParam("userId") String userId,
 			@RequestParam("insuranceId") String insuranceId,
 			@RequestParam("imageAngle") ImageAngle imageAngle,
-			@RequestParam("image") MultipartFile imageFile) throws Exception {
+			@RequestParam("image") MultipartFile imageFile,
+			@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+		isAdminClerkOrSameUser(userId, userDetails);
 
 		if (imageFile.isEmpty()) {
 			return ResponseEntity.badRequest().body(Collections.singletonMap("image", "failed"));
 		}
+
 		// Assuming you have a service to handle this upload.
-		createUserInsuranceService.uploadInsuranceImage(insuranceId, imageFile, imageAngle);
+		createUserInsuranceService.uploadInsuranceImage(userId, insuranceId, imageFile, imageAngle);
 		return ResponseEntity.ok(Collections.singletonMap("image", "success"));
 	}
 
 	@PostMapping("/license")
-	public UserLicenseDto createLicense(@Valid @RequestBody UserLicenseDto userInsuranceDto) {
+	public UserLicenseDto createLicense(@Valid @RequestBody UserLicenseDto userInsuranceDto,
+										@AuthenticationPrincipal UserDetails userDetails) {
+		isAdminClerkOrSameUser(userInsuranceDto.getUserId(), userDetails);
 		return UserLicenseDto.from(createUserLicenseService.save(userInsuranceDto));
 	}
 
 	@PostMapping("/license/upload")
 	public ResponseEntity<?> uploadLicenseImage(
+			@RequestParam("userId") String userId,
 			@RequestParam("licenseId") String licenseId,
 			@RequestParam("imageAngle") ImageAngle imageAngle,
-			@RequestParam("image") MultipartFile imageFile) throws Exception {
+			@RequestParam("image") MultipartFile imageFile,
+			@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+		isAdminClerkOrSameUser(userId, userDetails);
 
 		if (imageFile.isEmpty()) {
 			return ResponseEntity.badRequest().body(Collections.singletonMap("image", "failed"));
 		}
 		// Assuming you have a service to handle this upload.
-		createUserLicenseService.uploadLicenseImage(licenseId, imageFile, imageAngle);
+		createUserLicenseService.uploadLicenseImage(userId, licenseId, imageFile, imageAngle);
 		return ResponseEntity.ok(Collections.singletonMap("image", "success"));
 	}
 	
 	@PostMapping("/demographic")
 	public ResponseEntity<?> createUserDemographics(@Valid @RequestBody UserDemographicsDto requestBody, @AuthenticationPrincipal UserDetails userDetails) throws RemoteServiceException {
-		SecurityUtils.isAdminClerkOrSameUser(requestBody, userDetails);
+		isAdminClerkOrSameUser(requestBody.getUserId(), userDetails);
 		userCreateDemographicsService.createUserDemographics(
 				requestBody.getUserId(), 
 				requestBody.getFirstName(), 

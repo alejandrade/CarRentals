@@ -41,8 +41,8 @@ const UserEdit: React.FC<Param> = ({dto}) => {
                 <>
                     {renderCard('Contact Information', <ContactInformationCard userId={user.id} dto={{ email: user.email, phoneNumber: user.phoneNumber }} />, user.email)}
                     {renderCard('Personal Information', <UserDemographicsCard userId={user.id} dto={user?.userDemographics} />, user?.userDemographics)}
-                    {renderCard('Insurance Details', <UserInsuranceCard dto={user.userInsurances && user.userInsurances.length > 0 ? user.userInsurances[0] : {}} />, user.userInsurances && user.userInsurances.length > 0 ? user.userInsurances[0] : null)}
-                    {renderCard('License Details', <UserLicenseCard dto={user.userLicenses && user.userLicenses.length > 0 ? user.userLicenses[0] : {}} />, user.userLicenses && user.userLicenses.length > 0 ? user.userLicenses[0] : null)}
+                    {renderCard('Insurance Details', <UserInsuranceCard userId={user.id}  dto={user.userInsurances && user.userInsurances.length > 0 ? user.userInsurances[0] : {}} />, user.userInsurances && user.userInsurances.length > 0 ? user.userInsurances[0] : null)}
+                    {renderCard('License Details', <UserLicenseCard userId={user.id} dto={user.userLicenses && user.userLicenses.length > 0 ? user.userLicenses[0] : {}} />, user.userLicenses && user.userLicenses.length > 0 ? user.userLicenses[0] : null)}
                 </>
             ) : (
                <></>

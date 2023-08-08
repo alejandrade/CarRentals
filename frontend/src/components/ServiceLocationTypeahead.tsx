@@ -5,19 +5,18 @@ import { ServiceLocationDto } from "../services/service_location/ServiceLocation
 import serviceLocationService from "../services/service_location/ServiceLocationService";
 
 interface Props {
-    onChange?: (selectedServiceLocations: ServiceLocationDto | ServiceLocationDto[] | null) => void;
-    value?: Partial<ServiceLocationDto> | Partial<ServiceLocationDto>[] | null;
+    onChange?: (selectedServiceLocation: ServiceLocationDto | undefined) => void;
+    value?: Partial<ServiceLocationDto> | undefined;
     error?: boolean;
     helperText?: string;
-    multiple?: boolean;
 }
 
 const ServiceLocationTypeahead: React.FC<Props> = ({
-                                                       value, onChange, error, helperText, multiple = false
+                                                       value, onChange, error, helperText
                                                    }) => {
     const [options, setOptions] = useState<ServiceLocationDto[]>([]);
     // Set the initial value for defaultValue based on multiple prop
-    const [selectedValue, setSelectedValue] = useState<ServiceLocationDto | ServiceLocationDto[] | null>(multiple ? [] : null);
+    const [selectedValue, setSelectedValue] = useState<ServiceLocationDto | undefined>();
 
     useEffect(() => {
         const fetchServiceLocations = async () => {
@@ -39,12 +38,9 @@ const ServiceLocationTypeahead: React.FC<Props> = ({
                     return;
                 }
 
-                let serviceLocationDtos = response.filter(loc => ids.includes(loc.id));
-                if (multiple) {
-                    setSelectedValue(serviceLocationDtos);
-                } else {
-                    setSelectedValue(serviceLocationDtos[0]);
-                }
+                let serviceLocationDto = response.find(loc => ids.includes(loc.id));
+                setSelectedValue(serviceLocationDto);
+
 
             } catch (error) {
                 console.error("Failed to fetch service locations:", error);
@@ -58,13 +54,12 @@ const ServiceLocationTypeahead: React.FC<Props> = ({
         <Autocomplete
             id="service-locations"
             options={options}
-            multiple={multiple}
             getOptionLabel={(option: ServiceLocationDto) => option.name}
             value={selectedValue}
             onChange={(event, newValue) => {
-                setSelectedValue(newValue);
+                setSelectedValue(newValue || undefined);
                 if (onChange) {
-                    onChange(newValue);
+                    onChange(newValue || undefined);
                 }
             }}
             renderInput={(params) => (

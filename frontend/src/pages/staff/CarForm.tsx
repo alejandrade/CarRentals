@@ -120,7 +120,7 @@ const CarForm: React.FC<CarFormProps> = ({ id, refreshTable }) => {
                         onChange={(e) => handleChange('licensePlate', e.target.value)}
                         fullWidth
                     />
-                    <ServiceLocationTypeahead value={{id: formData.serviceLocationId}} multiple={false}
+                    <ServiceLocationTypeahead value={{id: formData.serviceLocationId}}
                                               onChange={(val) => handleChange('serviceLocationId', (val as ServiceLocationDto).id)} />
                     <StatusAutocomplete value={formData.status} onChange={(val) => handleChange("status", val)} />
                     <Button variant="contained" color="primary" type="submit">

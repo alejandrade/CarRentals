@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {Card, CardHeader, CardContent, TextField, Button, Grid, Container} from '@mui/material';
-import {compressImage} from "../../util/ImageFunctions";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {UserInsuranceDto} from "../../services/user/UserService.types";
 import userService from "../../services/user/UserService";
@@ -19,10 +18,11 @@ export interface keyHolder {
 
 type ContactInformationProps = {
     dto: Partial<UserInsuranceDto>,
-    onSave: (dto: UserInsuranceDto) => void;
+    onSave: (dto: UserInsuranceDto) => void,
+    userId: string
 };
 
-const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave}) => {
+const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave, userId}) => {
     const [formData, setFormData] = useState<Partial<UserInsuranceDto>>(dto);
     const [errors, setErrors] = useState<{ [key in keyof keyHolder]?: string }>({});
     const [frontImage, setFrontImage] = useState<File | null>(null);  // New state for compressed front image
@@ -32,19 +32,10 @@ const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave}) => {
     const { showError, handleAPIError } = useErrorModal();
 
     const isFormValid = () => {
-        const requiredFields: (keyof keyHolder)[] = ['policyNumber', 'provider', 'endDate', 'frontImage', 'backImage'];
-
         // Check if any error exists
         for (let key in errors) {
             // @ts-ignore
             if (errors[key]) return false;
-        }
-
-        // Check if all required fields are present
-        for (let field of requiredFields) {
-            // @ts-ignore
-            if (!formData[field] && field !== 'frontImage' && field !== 'backImage') return false;
-            if ((field === 'frontImage' && !frontImage) || (field === 'backImage' && !backImage)) return false;
         }
 
         return true;
@@ -103,13 +94,16 @@ const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave}) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        formData.userId = userId;
         const userInsuranceDto = await userService.saveInsurance(formData as UserInsuranceDto).catch(handleAPIError);
         if (userInsuranceDto && frontImage && backImage) {
-            await userService.uploadInsuranceImage(userInsuranceDto.id, "FRONT", frontImage).catch(handleAPIError);
-            await userService.uploadInsuranceImage(userInsuranceDto.id, "BACK", backImage).catch(handleAPIError);
+            await userService.uploadInsuranceImage(userId, userInsuranceDto.id, "FRONT", frontImage).catch(handleAPIError);
+            await userService.uploadInsuranceImage(userId, userInsuranceDto.id, "BACK", backImage).catch(handleAPIError);
         }
         setLoading(false);
-        onSave(formData as UserInsuranceDto);
+        if (userInsuranceDto) {
+            onSave(formData as UserInsuranceDto);
+        }
     };
 
     return (

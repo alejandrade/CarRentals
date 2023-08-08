@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Card, CardContent, CardHeader, TextField, Button, Grid, SelectChangeEvent, Container } from '@mui/material';
 import USStatesDropdown from "../../components/USStatesDropdown";
-import {compressImage} from "../../util/ImageFunctions";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {Gender, UserDemographicsDto, UserInsuranceDto, UserLicenseDto} from "../../services/user/UserService.types";
 import ImageUpload from "../../components/ImageUpload";
@@ -12,8 +11,9 @@ import {useErrorModal} from "../../contexts/ErrorModalContext";
 type Props = {
     dto: Partial<UserLicenseDto>,
     onSave: (dto: UserLicenseDto) => void;
+    userId: string;
 };
-const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
+const LicenseForm: React.FC<Props> = ({dto, onSave, userId}) => {
     const [formData, setFormData] = useState<Partial<UserLicenseDto>>(dto);
     const [errors, setErrors] = useState<{ [key in keyof UserLicenseDto]?: string }>({});
     const [frontImage, setFrontImage] = useState<File | null>(null);
@@ -68,15 +68,16 @@ const LicenseForm: React.FC<Props> = ({dto, onSave}) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        console.log(formData);
+        formData.userId = userId;
+        console.log("is this happening?");
         const userLicenseDto = await userService.saveLicense(formData as UserLicenseDto).catch(handleAPIError);
-        console.log(userLicenseDto);
         if (userLicenseDto && frontImage && backImage) {
-            await userService.uploadLicenseImage(userLicenseDto.id, "FRONT", frontImage).catch(handleAPIError);
-            await userService.uploadLicenseImage(userLicenseDto.id, "BACK", backImage).catch(handleAPIError);
+            await userService.uploadLicenseImage(userId, userLicenseDto.id, "FRONT", frontImage).catch(handleAPIError);
+            await userService.uploadLicenseImage(userId, userLicenseDto.id, "BACK", backImage).catch(handleAPIError);
         }
 
-        onSave(formData as UserLicenseDto);
+        if (userLicenseDto) onSave(userLicenseDto);
+
         setLoading(false);
     };
 

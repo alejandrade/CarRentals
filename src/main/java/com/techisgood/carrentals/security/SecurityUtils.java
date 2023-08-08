@@ -10,13 +10,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class SecurityUtils {
-    public static void isAdminClerkOrSameUser(UserDemographicsDto requestBody, UserDetails userDetails) {
+    public static void isAdminClerkOrSameUser(String userId, UserDetails userDetails) {
         Optional<? extends GrantedAuthority> any = userDetails.getAuthorities().stream()
                 .filter(x -> UserAuthority.clerkOrAdmin(UserAuthority.valueOf(x.getAuthority()))).findAny();
 
         boolean clerkOrAdmin = any.isPresent();
         if (!clerkOrAdmin) {
-            if (!Objects.equals(userDetails.getUsername(), requestBody.getUserId())) {
+            if (!Objects.equals(userDetails.getUsername(), userId)) {
                 throw new AccessDeniedException("you must be clerk, admin or same user to update demographics");
             }
         }

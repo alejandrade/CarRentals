@@ -32,7 +32,7 @@ public class RentalEndpoint {
     // POST endpoint to create a new rental
     @PostMapping
     public ResponseEntity<RentalDto> createRental(@RequestBody @Valid RentalCreateDto dto) {
-        Optional<Car> byShortId = carRepository.findByShortId(dto.getCarShortId());
+        Optional<Car> byShortId = carRepository.findById(dto.getCarId());
         if (byShortId.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

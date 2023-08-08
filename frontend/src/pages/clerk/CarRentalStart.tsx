@@ -43,7 +43,6 @@ const CarRentalStart: React.FC = () => {
             }
 
             if (client) {
-                console.log("this happened")
                 setUserFound(true);
                 setUser(client);
                 navigate(`userCreate/${client.phoneNumber}`)

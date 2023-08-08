@@ -14,8 +14,9 @@ const UserDash: React.FC = () => {
     }, []);
 
     return (
-        <>
+        <>{user &&
             <UserEdit dto={user} />
+        }
         </>
     );
 }

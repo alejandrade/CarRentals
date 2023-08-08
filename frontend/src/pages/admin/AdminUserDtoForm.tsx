@@ -55,7 +55,7 @@ const UserDtoForm: React.FC<UserDtoProps> = ({ dto, onSave }) => {
                 id: user.id,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
-                serviceLocations: user.serviceLocations,
+                serviceLocation: user.serviceLocation,
                 authorities: user.authorities,
                 enabled: user.enabled
             })
@@ -142,15 +142,12 @@ const UserDtoForm: React.FC<UserDtoProps> = ({ dto, onSave }) => {
 
                     <Grid item>
                         <ServiceLocationTypeahead
-                            multiple={true}
-                        value={formData.serviceLocations || []}
-                        onChange={(selectedServiceLocations) => {
+                        value={formData.serviceLocation}
+                        onChange={(selectedServiceLocation) => {
                             setFormData({
                                 ...formData,
-                                serviceLocations: selectedServiceLocations && Array.isArray(selectedServiceLocations) ?
-                                    selectedServiceLocations : undefined,
-                                serviceLocationId: selectedServiceLocations && Array.isArray(selectedServiceLocations) ?
-                                    selectedServiceLocations.map(x => x.id) : undefined
+                                serviceLocation: selectedServiceLocation,
+                                serviceLocationId: selectedServiceLocation?.id
                             });
                         }}
                         error={!!errors.serviceLocations}

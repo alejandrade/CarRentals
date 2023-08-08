@@ -5,9 +5,10 @@ import InsuranceForm from "./InsuranceForm";
 
 interface UserInsuranceCardProps {
     dto: Partial<UserInsuranceDto>;
+    userId: string;
 }
 
-const UserInsuranceCard: React.FC<UserInsuranceCardProps> = ({ dto }) => {
+const UserInsuranceCard: React.FC<UserInsuranceCardProps> = ({ dto, userId }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [data, setData] = useState<Partial<UserInsuranceDto>>(dto);
 
@@ -39,7 +40,7 @@ const UserInsuranceCard: React.FC<UserInsuranceCardProps> = ({ dto }) => {
                         </Grid>
                     </Container>
                 ) : (
-                    <InsuranceForm onSave={handleSaveClick} dto={data} />
+                    <InsuranceForm userId={userId} onSave={handleSaveClick} dto={data} />
                 )}
             </CardContent>
         </Card>

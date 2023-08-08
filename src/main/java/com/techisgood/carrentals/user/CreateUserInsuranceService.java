@@ -4,6 +4,7 @@ import com.techisgood.carrentals.global.StorageService;
 import com.techisgood.carrentals.model.UserInsurance;
 import com.techisgood.carrentals.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,16 @@ import java.util.List;
 public class CreateUserInsuranceService {
     private final UserInsuranceRepository userInsuranceRepository;
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final StorageService storageService;
 
 
     @Transactional
-    public UserInsuranceDto uploadInsuranceImage(String insuranceId, MultipartFile imageFile, ImageAngle angle) {
+    public UserInsuranceDto uploadInsuranceImage(String userId, String insuranceId, MultipartFile imageFile, ImageAngle angle) {
         UserInsurance userInsurance = userInsuranceRepository.findById(insuranceId).orElseThrow();
+        String id = userInsurance.getUser().getId();
+        if (!id.equals(userId)) {
+            throw new AccessDeniedException("Updating insurnace does not match user id");
+        }
         String upload = storageService.upload(userInsurance.getId(), imageFile);
         if (angle.equals(ImageAngle.FRONT)) {
             userInsurance.setFrontCardPictureKey(upload);
@@ -36,22 +40,18 @@ public class CreateUserInsuranceService {
 
     @Transactional
     public UserInsurance save(UserInsuranceDto dto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
-
-        List<UserInsurance> byUserId = userInsuranceRepository.findByUserIdAndActiveTrue(userIdFromJWT);
+        List<UserInsurance> byUserId = userInsuranceRepository.findByUserIdAndActiveTrue(dto.getUserId());
         for (UserInsurance userInsurance : byUserId) {
             userInsurance.setActive(false);
             userInsuranceRepository.save(userInsurance);
         }
 
         UserInsurance userInsurance = new UserInsurance();
-        userInsurance.setUser(userRepository.getReferenceById(userIdFromJWT));
+        userInsurance.setUser(userRepository.getReferenceById(dto.getUserId()));
         userInsurance.setProvider(dto.getProvider());
         userInsurance.setEndDate(dto.getEndDate());
         userInsurance.setPolicyNumber(dto.getPolicyNumber());
         userInsurance.setActive(true);
-        UserInsurance save = userInsuranceRepository.save(userInsurance);
-        return save;
+        return userInsuranceRepository.save(userInsurance);
     }
 }

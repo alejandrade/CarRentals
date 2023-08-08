@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class UpdateContactInformation {
-    @NotBlank
-    private String username;
+
+    private String userId;
 
     @NotBlank
-    private String code;
+    private String username;
 }

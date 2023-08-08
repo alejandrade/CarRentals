@@ -80,7 +80,6 @@ const UserDemographicsForm: React.FC<param> = ({ dto, userId, onSave }) => {
             ...formData,
             [name]: event.target.value as Gender
         });
-        validateForm(name);  // Real-time validation for this field
     };
 
     const validateForm = (field?: keyof UserDemographicsDto): boolean => {
