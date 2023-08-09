@@ -55,20 +55,19 @@ public class RentalService {
 	}
 
 	@Transactional
-	public RentalDto createRentalUsingDto(String carId, RentalCreateDto dto) throws IllegalArgumentException {
+	public Rental createRentalUsingDto(String carId, RentalCreateDto dto) throws IllegalArgumentException {
 		DbUser dbUser = userRepository.findByPhoneNumber(dto.getRenterPhoneNumber()).orElseThrow();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
 		ServiceLocation serviceLocation = serviceLocationService.currentUserLocation();
 
-		Rental rental = createRental(
-				carId, 
+		return createRental(
+				carId,
 				dbUser.getId(),
 				userIdFromJWT,
 				serviceLocation.getId(),
 				dto.getRentalDatetime(),
 				dto.getStatus());
-		return RentalDto.from(rental);
 	}
 
 	@Transactional
@@ -90,8 +89,7 @@ public class RentalService {
 		rental.setServiceLocation(serviceLocation);
 		rental.setRentalDatetime(rentalDateTime);
 		rental.setStatus(status);
-		rentalRepository.save(rental);
-		return rental;
+		return rentalRepository.save(rental);
 	}
 
 	@Transactional(readOnly = true)

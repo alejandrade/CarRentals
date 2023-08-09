@@ -11,8 +11,8 @@ export interface RentalDto {
     status: string;
     initialOdometerReading: number;
     endingOdometerReading: number;
-    rentalDatetime: string; // You may want to use a string representation of the datetime
-    returnDatetime: string; // You may want to use a string representation of the datetime
+    rentalDatetime: Date; // You may want to use a string representation of the datetime
+    returnDatetime: Date; // You may want to use a string representation of the datetime
 
     // Audit properties
     createdAt: string;

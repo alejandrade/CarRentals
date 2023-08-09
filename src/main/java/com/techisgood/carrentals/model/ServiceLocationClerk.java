@@ -38,12 +38,6 @@ public class ServiceLocationClerk extends VersionedAuditable {
     @JoinColumn(name = "location_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id")
     private ServiceLocation serviceLocation;
 
-    @Column(name="first_name")
-    String firstName;
-    
-    @Column(name="last_name")
-    String lastName;
-
     @Column(name="status")
     String status;
 }

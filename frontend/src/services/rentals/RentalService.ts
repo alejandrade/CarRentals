@@ -48,6 +48,24 @@ class RentalService {
     }
 
     /**
+     * Start a rental by its ID.
+     *
+     * @param rentalId - The ID of the rental to start.
+     * @param rentalActionDto - The data for rental action, such as odometer reading and version.
+     * @returns - A promise with the response containing the started rental data.
+     */
+    async get(rentalId: string): Promise<RentalDto> {
+        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/${rentalId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.json;
+    }
+
+    /**
      * End a rental by its ID.
      *
      * @param rentalId - The ID of the rental to end.

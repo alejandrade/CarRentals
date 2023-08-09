@@ -2,6 +2,7 @@ package com.techisgood.carrentals.rentals;
 
 import java.util.Optional;
 
+import com.techisgood.carrentals.model.Rental;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,12 +28,20 @@ import lombok.RequiredArgsConstructor;
 public class RentalEndpoint {
     private final RentalService rentalService;
     private final RentalPictureService rentalPictureService;  // Inject the RentalPictureService
+    private final RentalRepository rentalRepository;
 
     // POST endpoint to create a new rental
     @PostMapping
     public ResponseEntity<RentalDto> createRental(@RequestBody @Valid RentalCreateDto dto) {
-        RentalDto createdRental = rentalService.createRentalUsingDto(dto.getCarId(), dto);
-        return ResponseEntity.ok(createdRental);
+        Rental createdRental = rentalService.createRentalUsingDto(dto.getCarId(), dto);
+        return ResponseEntity.ok(RentalDto.from(createdRental));
+    }
+
+    @GetMapping("/{rentalId}")
+    public RentalDto getRental(@PathVariable String rentalId) {
+        return rentalRepository.findById(rentalId)
+                .map(RentalDto::from)
+                .orElseThrow();
     }
 
     @PostMapping("/{rentalId}/start")
