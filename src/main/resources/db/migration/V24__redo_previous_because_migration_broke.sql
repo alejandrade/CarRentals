@@ -15,7 +15,6 @@ create table service_location_clerk
     updated_at  timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     id          varchar(36)                         not null
         primary key,
-    version     int                                 null,
     constraint service_location_clerk_key
         unique (location_id),
     constraint service_location_clerk_location_id
