@@ -49,6 +49,8 @@ public class UserDto {
 
     private UserDemographicsDto userDemographics;
 
+    private String serviceLocationId;
+
     public static UserDto from(DbUser dbUser) {
         UserDto userDto = new UserDto();
 

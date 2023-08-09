@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.techisgood.carrentals.model.ServiceLocationClerk;
 
 public interface ClerkRepository extends JpaRepository<ServiceLocationClerk, String> {
-	public Optional<ServiceLocationClerk> findByUserId(String userId);
+	 Optional<ServiceLocationClerk> findByUserId(String userId);
 }

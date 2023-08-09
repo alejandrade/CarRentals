@@ -44,3 +44,5 @@ src/main/resources/static
 **/dist
 .DS_Store
 stripe.exe
+
+**/application-dev.yaml

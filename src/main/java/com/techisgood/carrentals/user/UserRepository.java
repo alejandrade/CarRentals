@@ -36,7 +36,7 @@ public interface UserRepository extends JpaRepository<DbUser, String>, PagingAnd
             "FROM users u " +
             "LEFT JOIN user_demographics ud ON u.id = ud.user_id " +
             "LEFT JOIN authorities a ON u.id = a.user_id " +
-            "LEFT JOIN service_location_clerk slc ON u.id = slc.clerk_id " +
+            "LEFT JOIN service_location_clerk slc ON u.id = slc.user_id " +
             "LEFT JOIN service_location sl ON slc.location_id = sl.id " +
             "GROUP BY u.id, u.email, u.phone_number, ud.first_name, ud.last_name",
             nativeQuery = true)

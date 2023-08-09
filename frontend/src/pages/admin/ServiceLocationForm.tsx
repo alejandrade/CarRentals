@@ -58,10 +58,6 @@ const ServiceLocationForm: React.FC<ServiceLocationProps> = ({ dto, onSave }) =>
         } else if (!/^\d{5}$/.test(formData.postalCode)) {
             tempErrors.postalCode = "Invalid US ZIP code format";
         }
-
-        if (!formData.country) {
-            tempErrors.country = "Country is required.";
-        }
         // ... and so on for other fields if needed.
 
         setErrors(tempErrors);
@@ -75,6 +71,7 @@ const ServiceLocationForm: React.FC<ServiceLocationProps> = ({ dto, onSave }) =>
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log("this happened")
         setLoading(true);
         if (validateForm()) {
             onSave(formData as ServiceLocationDto);
@@ -117,7 +114,7 @@ const ServiceLocationForm: React.FC<ServiceLocationProps> = ({ dto, onSave }) =>
                         />
                     </Grid>
                     <Grid item>
-                        <USStatesDropdown value={formData.state || "OK"} onChange={(val) => {
+                        <USStatesDropdown value={formData.state || ''} onChange={(val) => {
                             setFormData({
                                 ...formData,
                                 state: val.target.value

@@ -19,7 +19,7 @@ public interface ServiceLocationRepository extends JpaRepository<ServiceLocation
 	@Query("SELECT s FROM ServiceLocation s WHERE s.name LIKE CONCAT(:namePrefix, '%') AND s.state = :state")
 	Page<ServiceLocation> findAllByNameStartsWithAndStateEquals(String namePrefix, String state, Pageable pageable);
 
-	@Query("SELECT s FROM ServiceLocation s join ServiceLocationClerk c on c.serviceLocation = s where c.clerk.id = :clerkId")
+	@Query("SELECT s FROM ServiceLocation s join ServiceLocationClerk c on c.serviceLocation = s where c.user.id = :clerkId")
 	Optional<ServiceLocation> byClerkId(String clerkId);
 
 }

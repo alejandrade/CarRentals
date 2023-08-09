@@ -5,7 +5,6 @@ export interface ServiceLocationDto {
     city: string;
     state: string;
     postalCode: string;
-    country: string;
     additionalInfo: string;
     createdAt: string;
     updatedAt: string;

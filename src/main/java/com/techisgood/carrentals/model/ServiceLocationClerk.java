@@ -28,16 +28,14 @@ public class ServiceLocationClerk extends VersionedAuditable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(columnDefinition = "char(36) default (uuid())", nullable = false)
 	private String id;
-	
-	@Column(name="user_id", columnDefinition = "char(36)")
-	private String userId;
+
 	
     @OneToOne
-    @JoinColumn(name = "user_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id", insertable = false, updatable = false)
-    private DbUser clerk;
+    @JoinColumn(name = "user_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id")
+    private DbUser user;
 
     @OneToOne
-    @JoinColumn(name = "location_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "location_id", columnDefinition = "char(36) default (uuid())", referencedColumnName = "id")
     private ServiceLocation serviceLocation;
 
     @Column(name="first_name")

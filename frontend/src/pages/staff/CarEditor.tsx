@@ -32,7 +32,6 @@ const CarEditor: React.FC = () => {
     return (
         <div>
             <Typography variant={"h4"}>Car Details</Typography>
-
             <CustomToolbar>
                 <Button variant={"contained"} onClick={() => setCarFormModalOpen(!carFormModalOpen)}>
                     {carId ? "Edit" : "Create" }

@@ -23,6 +23,7 @@ const LocationsTable: React.FC = () => {
 
     async function fetchLocations() {
         try {
+            console.log("test");
             const locationDetails = await serviceLocationService.getAllServiceLocation().catch(handleAPIError) || [];
             setLocations(locationDetails);
         } catch (error) {

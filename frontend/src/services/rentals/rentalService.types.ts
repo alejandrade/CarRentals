@@ -24,7 +24,7 @@ export interface RentalCreateDto {
     carId: string;
     renterPhoneNumber: string
     status: string;
-    rentalDateTime: string;
+    rentalDatetime: string;
 }
 // rentalService.types.ts
 

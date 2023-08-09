@@ -30,11 +30,12 @@ const CarSelect: React.FC<{ }>  = () => {
 
     async function next() {
         if (carId && phoneNumber) {
+            console.log("happened here")
             var rental = await rentalService.createRental({
                 carId,
                 renterPhoneNumber: phoneNumber,
                 status: "RESERVED",
-                rentalDateTime: new Date().toISOString()
+                rentalDatetime: new Date().toISOString()
             }).catch(handleAPIError);
 
             rental && navigate(`/dash/clerk/${phoneNumber}/cars/${carId}/${rental.id}`)
