@@ -45,7 +45,7 @@ function dashTabs() {
             )
         },
         {
-            path: "clerk/:phoneNumber/cars/:cardId",
+            path: "clerk/:phoneNumber/cars/:cardId/:rentId",
             element: <CarConfirmation/>
         },
         {

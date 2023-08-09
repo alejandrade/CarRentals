@@ -4,11 +4,13 @@ import {UserDto} from "../../services/user/UserService.types";
 import CustomToolbar from "../../components/CustomToolbar";
 import {Button} from "@mui/material";
 import CarTable from "../staff/CarTable";
+import {useErrorModal} from "../../contexts/ErrorModalContext";
 
 const CarConfirmation: React.FC<{ }>  = () => {
-    const { phoneNumber, cardId } = useParams();
+    const { phoneNumber, cardId, rentId } = useParams();
     const [user, setUser] = useState<UserDto | undefined>();
     const navigate = useNavigate();
+    const { showError, handleAPIError } = useErrorModal();
 
     useEffect(() => {
         init();

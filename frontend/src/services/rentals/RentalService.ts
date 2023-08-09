@@ -3,7 +3,7 @@ import {
     RentalActionDto,
     PaginatedRentalResponse,
     RentalPictureDto,
-    CreateRentalPictureDto
+    CreateRentalPictureDto, RentalCreateDto
 } from './rentalService.types';
 import { authFetch } from "../../util/FetchFunctions";
 
@@ -16,7 +16,7 @@ class RentalService {
      * @param data - The data for rental creation.
      * @returns - A promise with the response containing the created rental.
      */
-    async createRental(data: RentalDto): Promise<RentalDto> {
+    async createRental(data: RentalCreateDto): Promise<RentalDto> {
         const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals`, {
             method: 'POST',
             headers: {

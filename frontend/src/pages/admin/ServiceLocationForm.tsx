@@ -76,7 +76,6 @@ const ServiceLocationForm: React.FC<ServiceLocationProps> = ({ dto, onSave }) =>
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
         if (validateForm()) {
             onSave(formData as ServiceLocationDto);
             setLoading(false);

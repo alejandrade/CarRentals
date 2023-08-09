@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @PreAuthorize("hasAuthority('ROLE_CLERK') || hasAuthority('ROLE_ADMIN')")
 public class RentalEndpoint {
     private final RentalService rentalService;
-    private final CarRepository carRepository;
     private final RentalPictureService rentalPictureService;  // Inject the RentalPictureService
 
     // POST endpoint to create a new rental

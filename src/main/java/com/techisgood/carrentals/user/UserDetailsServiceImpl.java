@@ -24,7 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional
-    @Cacheable(cacheNames = "users", key = "#userID")
     public UserDetails loadUserByUsername(String userID) throws UsernameNotFoundException {
         DbUser dbUser = userRepository.getReferenceById(userID);
         List<Authority> authorities = dbUser.getAuthorities();

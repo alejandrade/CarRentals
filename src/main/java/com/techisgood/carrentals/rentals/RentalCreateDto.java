@@ -20,10 +20,8 @@ public class RentalCreateDto {
     private String carId;
 	@NotBlank(message="'Phone Number' is required")
     private String renterPhoneNumber;
-	@NotNull(message="'Status' must be 'DATA_ENTRY, RENTED, RETURNED, CANCELED'")
+	@NotNull(message="'Status' must be 'RESERVED, RENTED, RETURNED, CANCELED'")
     private RentalStatus status;
 	@NotNull
     private LocalDateTime rentalDatetime;
-	@PositiveOrZero(message = "Version must be positive or zero")
-    private Integer version = 0;
 }

@@ -28,7 +28,7 @@ const EditLocationModal: React.FC<Param> = ({ locationId, onClose }) => {
     async function init() {
         const location = await serviceLocationService.getServiceLocationById(locationId!).catch(handleAPIError);
         if (location)
-        setEditedLocationDto(location);
+            setEditedLocationDto(location);
     }
 
     const handleOpen = () => {

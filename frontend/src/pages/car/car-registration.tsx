@@ -6,12 +6,15 @@ import CustomToolbar from "../../components/CustomToolbar";
 import {Button} from "@mui/material";
 import CarTable from "../staff/CarTable";
 import {CarResponseDto} from "../../services/car/carService.types";
+import rentalService from "../../services/rentals/RentalService";
+import {useErrorModal} from "../../contexts/ErrorModalContext";
 
 const CarSelect: React.FC<{ }>  = () => {
     const { phoneNumber } = useParams();
     const [user, setUser] = useState<UserDto | undefined>();
-    const [cardId, setCarId] = useState<string| null>();
+    const [carId, setCarId] = useState<string| null>();
     const navigate = useNavigate();
+    const { showError, handleAPIError } = useErrorModal();
 
     useEffect(() => {
         init();
@@ -25,9 +28,16 @@ const CarSelect: React.FC<{ }>  = () => {
         navigate(`/dash/clerk/userCreate/${phoneNumber}`)
     }
 
-    function next() {
-        if (cardId) {
-            navigate(`/dash/clerk/${phoneNumber}/cars/${cardId}`)
+    async function next() {
+        if (carId && phoneNumber) {
+            var rental = await rentalService.createRental({
+                carId,
+                renterPhoneNumber: phoneNumber,
+                status: "RESERVED",
+                rentalDateTime: new Date().toISOString()
+            }).catch(handleAPIError);
+
+            rental && navigate(`/dash/clerk/${phoneNumber}/cars/${carId}/${rental.id}`)
         }
     }
 
@@ -39,7 +49,7 @@ const CarSelect: React.FC<{ }>  = () => {
         <>
             <CustomToolbar>
                 <Button onClick={back} variant={"contained"} color={"secondary"}>Back</Button>
-                <Button disabled={!cardId} onClick={next} variant={"contained"}>Next</Button>
+                <Button disabled={!carId} onClick={next} variant={"contained"}>Next</Button>
             </CustomToolbar>
             <CarTable onSelected={carSelected} refresh={false} />
         </>

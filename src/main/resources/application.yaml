@@ -38,15 +38,9 @@ server:
 
 comms:
   twilio:
-    auth-token: 4896a602e99673000780ac4d661cbf73
-    sid: ACeeaa2e225cdfedd522e6fe26528a1ee5
-    service: VAc3960f6b1aa900f290d66e04b5273ce3
     debug: true
 
 stripe:
-  secret-key: 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
-  secret-key-test: sk_test_51NPTGWHa21OTRYKEKdmY1MaHU7Es1Zt6KP3HFuUysNyiRzkYxIWH2cvJlD1X1P78JZBf3YQ0Mn205mHWW38kOZVA00jxVN3SaT
-  webhook-secret: whsec_4fddc0db0054eec2c80a86c6b745622c64744e6606c6239a2b9978a07584bcb3
   checkout-url-success: http://localhost:3000/checkout-success
   checkout-url-cancel: http://localhost:3000/checkout-cancel
 

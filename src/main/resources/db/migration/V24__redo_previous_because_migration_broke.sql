@@ -1,10 +1,7 @@
+
+
 alter table car_rentals.service_location_clerk
-drop constraint service_location_clerk_clerk_id,
-drop constraint service_location_clerk_service_location_id,
-drop column location_id,
-drop column clerk_id,
 add column user_id char(36) not null,
-add column location_id char(36) not null,
 add column first_name varchar(100),
 add column last_name varchar(100),
 add column status varchar(36),

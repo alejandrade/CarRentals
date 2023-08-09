@@ -6,7 +6,6 @@ export interface RentalActionDto {
 }
 export interface RentalDto {
     id: string;
-    shortId: string;
     clerkId: string;
     renterPhoneNumber: string;
     status: string;
@@ -21,7 +20,12 @@ export interface RentalDto {
     createdBy: string;
     updatedBy: string;
 }
-
+export interface RentalCreateDto {
+    carId: string;
+    renterPhoneNumber: string
+    status: string;
+    rentalDateTime: string;
+}
 // rentalService.types.ts
 
 export interface RentalPictureDto {
