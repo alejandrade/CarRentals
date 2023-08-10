@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -20,7 +21,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="car_service_location", catalog="car_rentals")
+@Table(name="car_service_location_history", catalog="car_rentals")
 public class CarServiceLocationHistory extends VersionedAuditable {
 
 	@Id
@@ -29,16 +30,23 @@ public class CarServiceLocationHistory extends VersionedAuditable {
 	@Column(name = "id", updatable = false, nullable = false, columnDefinition = "char(36) default (uuid())")
 	private String id;
 	
-	@Column(name="car_id", columnDefinition = "char(36)")
-	private String carId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="car_id", nullable = false)
+	private Car car;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "location_id", nullable = false)
 	private ServiceLocation serviceLocation;
 	
-	@Column(name="service_started")
-	private LocalDateTime serviceStarted;
+	@Column(name="start_date")
+	private LocalDateTime startDate;
 
-	@Column(name="service_ended")
-	private LocalDateTime serviceEnded;
+	@Column(name="end_date")
+	private LocalDateTime endDate;
+	
+	@Column(name="start_mileage")
+	private BigDecimal startMileage;
+	
+	@Column(name="end_mileage")
+	private BigDecimal endMileage;
 }

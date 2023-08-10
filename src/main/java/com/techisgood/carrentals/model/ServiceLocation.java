@@ -14,7 +14,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -53,17 +52,11 @@ public class ServiceLocation extends VersionedAuditable {
 
 	@Column(name = "additional_info", columnDefinition = "TEXT")
 	private String additionalInfo;
-	
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinTable(
-			name="service_location_car",
-			joinColumns = @JoinColumn(name="location_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name="car_id", referencedColumnName = "id")
-	)
-	private List<Car> cars;
 
-	@OneToMany(mappedBy = "serviceLocation", cascade = CascadeType.ALL)
-	private List<ServiceLocationCar> carsInLocation;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="location_id")
+	private List<Car> cars;
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="location_id")

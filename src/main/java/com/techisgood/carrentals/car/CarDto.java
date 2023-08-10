@@ -46,7 +46,10 @@ public class CarDto {
         dto.setLicensePlate(car.getLicensePlate());
         dto.setStatus(car.getStatus());
         dto.setVersion(car.getVersion());
-        dto.setServiceLocationId(car.getServiceLocationsForCar().getServiceLocation().getId());
+        
+        if (car.getServiceLocation() != null) {
+        	dto.setServiceLocationId(car.getServiceLocation().getId());
+        }
         // Setting audit properties
         dto.setCreatedAt(car.getCreatedAt());
         dto.setUpdatedAt(car.getUpdatedAt());

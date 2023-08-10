@@ -1,7 +1,5 @@
 package com.techisgood.carrentals.car;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.techisgood.carrentals.model.Car;
 import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.ServiceLocation;
-import com.techisgood.carrentals.model.ServiceLocationCar;
 import com.techisgood.carrentals.model.ServiceLocationClerk;
-import com.techisgood.carrentals.service_location.ServiceLocationCarRepository;
 import com.techisgood.carrentals.service_location.ServiceLocationRepository;
 import com.techisgood.carrentals.service_location_clerk.ClerkRepository;
 import com.techisgood.carrentals.user.UserRepository;
@@ -28,7 +24,6 @@ public class CarService {
     private final CarRepository carRepository;
     private final ServiceLocationRepository serviceLocationRepository;
     private final ClerkRepository clerkRepository;
-    private final ServiceLocationCarRepository serviceLocationCarRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -49,18 +44,9 @@ public class CarService {
         car.setLicensePlate(carCreationDto.getLicensePlate());
         car.setStatus(carCreationDto.getStatus());
         car.setVersion(carCreationDto.getVersion());
-        ServiceLocationCar slc;
-        if (car.getId() != null) {
-            Optional<ServiceLocationCar> byIdCarId = serviceLocationCarRepository.findByIdCarId(car.getId());
-            slc = byIdCarId.orElse(new ServiceLocationCar());
-        } else {
-            slc = new ServiceLocationCar();
-        }
+        car.setServiceLocation(serviceLocation);
 
         Car savedCar = carRepository.save(car);
-        slc.setCar(savedCar);
-        slc.setServiceLocation(serviceLocation);
-        serviceLocationCarRepository.save(slc);
         return savedCar;
     }
 

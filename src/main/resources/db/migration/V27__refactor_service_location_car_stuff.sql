@@ -1,0 +1,2 @@
+drop table car_rentals.service_location_car;
+drop table car_rentals.car_service_location;

@@ -14,6 +14,6 @@ public interface CarRepository extends PagingAndSortingRepository<Car, String>, 
     Optional<Car> findByVin(String vin);
     Optional<Car> findByShortId(String shortId);
 
-    @Query("SELECT c FROM Car c JOIN ServiceLocationCar slc ON c.id = slc.car.id WHERE slc.serviceLocation.id = :locationId")
+    @Query("SELECT c FROM Car c WHERE c.serviceLocation.id = :locationId")
     Page<Car> findAllByLocationId(String locationId, Pageable pageable);
 }
