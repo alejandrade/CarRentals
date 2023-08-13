@@ -1,6 +1,6 @@
 import { authFetch } from "../../util/FetchFunctions";
 import {ServiceLocationDto} from "./ServiceLocationService.types";
-import {Page} from "../user/UserService.types";
+import {Paginated} from "../user/UserService.types";
 
 class ServiceLocationService {
     private readonly BASE_URL = process.env.BASE_URL;
@@ -34,7 +34,7 @@ class ServiceLocationService {
      * @param state - The state to filter by.
      * @returns - A promise with the response containing the paginated service locations.
      */
-    async getAllServiceLocations(page: number = 0, size: number = 10, state?: string): Promise<Page<ServiceLocationDto>> {
+    async getAllServiceLocations(page: number = 0, size: number = 10, state?: string): Promise<Paginated<ServiceLocationDto>> {
         let url = `${this.BASE_URL}/staff/v1/serviceLocations?page=${page}&size=${size}`;
         if (state) {
             url += `&state=${encodeURIComponent(state)}`;

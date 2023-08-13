@@ -112,4 +112,11 @@ public class RentalService {
 		Page<Rental> rentalsByClerk = rentalRepository.findAllByServiceLocationId(serviceLocationId, pageable);
 		return rentalsByClerk.map(RentalDto::from);
 	}
+
+	@Transactional
+	public void cancel(String id) {
+		Rental byIdAndStatus = rentalRepository.findByIdAndStatus(id, RentalStatus.RESERVED);
+		byIdAndStatus.setStatus(RentalStatus.CANCELED);
+		rentalRepository.save(byIdAndStatus);
+	}
 }

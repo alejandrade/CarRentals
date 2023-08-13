@@ -1,6 +1,6 @@
 import { authFetch } from "../../util/FetchFunctions";
 import {
-    Page,
+    Paginated,
     UpdateContactInformation,
     UserDemographicsDto,
     UserDto,
@@ -165,7 +165,7 @@ class UserService {
      * @param size - The number of items per page.
      * @returns - A promise with the response containing the paginated user details.
      */
-    async getUserWithDetails(page: number = 0, size: number = 10): Promise<Page<UserWithDetailsDto>> {
+    async getUserWithDetails(page: number = 0, size: number = 10): Promise<Paginated<UserWithDetailsDto>> {
         const response = await authFetch(`${this.BASE_URL}/users/v1/user?page=${page}&size=${size}`);
 
         if (!response.ok) {
