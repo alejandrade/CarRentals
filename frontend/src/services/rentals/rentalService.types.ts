@@ -1,18 +1,22 @@
 // rentalService.types.ts
 
 export interface RentalActionDto {
-    odometer: number;
+    initialOdometerReading: number;
+    endingOdometerReading: number;
+    returnDatetime?: Date; // You may want to use a string representation of the datetime
     version: number;
 }
 export interface RentalDto {
     id: string;
     clerkId: string;
+    carId: string;
     renterPhoneNumber: string;
     status: string;
     initialOdometerReading: number;
     endingOdometerReading: number;
     rentalDatetime: Date; // You may want to use a string representation of the datetime
     returnDatetime: Date; // You may want to use a string representation of the datetime
+    version: number;
 
     // Audit properties
     createdAt: string;

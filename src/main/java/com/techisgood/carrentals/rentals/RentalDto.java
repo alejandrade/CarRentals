@@ -18,6 +18,7 @@ public class RentalDto {
     private BigDecimal endingOdometerReading;
     private LocalDateTime rentalDatetime;
     private LocalDateTime returnDatetime;
+    private Integer version;
 
     // Audit properties
     private LocalDateTime createdAt;
@@ -45,6 +46,7 @@ public class RentalDto {
         dto.setEndingOdometerReading(rental.getEndingOdometerReading());
         dto.setRentalDatetime(rental.getRentalDatetime());
         dto.setReturnDatetime(rental.getReturnDatetime());
+        dto.setVersion(rental.getVersion());
 
         // Setting audit properties
         dto.setCreatedAt(rental.getCreatedAt());

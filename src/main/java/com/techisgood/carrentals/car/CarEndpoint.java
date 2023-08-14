@@ -35,13 +35,15 @@ public class CarEndpoint {
         return new ResponseEntity<>(CarDto.from(car), HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/available")
     @PreAuthorize("hasAuthority('ROLE_CLERK') || hasAuthority('ROLE_STAFF') || hasAuthority('ROLE_ADMIN')")
-    public Page<CarDto> findAllCarsByLocation(Pageable pageable, @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails.getAuthorities().stream().anyMatch(x -> x.getAuthority().equals(UserAuthority.ROLE_ADMIN.name()))) {
-            return carService.findAllCars(pageable);
-        }
-        return carService.findAllCarsByLocation(pageable, userDetails);
+    public Page<CarDto> findAllAvailableCarsByLocation(Pageable pageable, @AuthenticationPrincipal UserDetails userDetails) {
+        return carService.findAllAvailableCarsByLocation(pageable, userDetails);
+    }
+
+    @GetMapping
+    public Page<CarDto> findAllAvailableCars(Pageable pageable, @AuthenticationPrincipal UserDetails userDetails) {
+        return carService.findAllAvailableCars(pageable);
     }
 
     @GetMapping("/{id}")

@@ -84,7 +84,7 @@ class RentalService {
     }
 
     async cancel(id: string): Promise<boolean> {
-        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/cancel`, {
+        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/cancel/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

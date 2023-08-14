@@ -52,7 +52,7 @@ const CarSelect: React.FC<{ }>  = () => {
                 <Button onClick={back} variant={"contained"} color={"secondary"}>Back</Button>
                 <Button disabled={!carId} onClick={next} variant={"contained"}>Next</Button>
             </CustomToolbar>
-            <CarTable onSelected={carSelected} refresh={false} />
+            <CarTable clerk={true} onSelected={carSelected} refresh={false} />
         </>
     );
 }

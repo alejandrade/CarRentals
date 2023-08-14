@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import {Button, Container, Grid, TextField, InputAdornment, useTheme, useMediaQuery, Typography} from '@mui/material';
-import { PhotoCamera, CheckCircle } from '@mui/icons-material';
+import React, {useEffect, useState} from 'react';
+import {
+    Button,
+    Container,
+    Grid,
+    TextField,
+    InputAdornment,
+    useTheme,
+    useMediaQuery,
+    Typography,
+    IconButton
+} from '@mui/material';
+import {PhotoCamera, CheckCircle, Clear} from '@mui/icons-material';
 import {UserDemographicsDto} from "../../services/user/UserService.types";
 import {RentalDto} from "../../services/rentals/rentalService.types";
 import {CarCreationDto} from "../../services/car/carService.types";
@@ -21,9 +31,10 @@ const CarRentalConfirmationForm: React.FC<{
     user: UserDemographicsDto | undefined;
     rental: RentalDto | undefined;
     car: CarCreationDto | undefined;
-}> = ({ user, rental, car }) => {
-    const [odometer, setOdometer] = useState('');
-    const [returnDay, setReturnDay] = useState('');
+    onChange: (rental: Partial<RentalDto>) => void;
+}> = ({ user, rental, car, onChange }) => {
+    const [odometer, setOdometer] = useState<number>(0);
+    const [returnDay, setReturnDay] = useState<string>('');
     const [pictures, setPictures] = useState({
         front: null,
         left: null,
@@ -34,7 +45,7 @@ const CarRentalConfirmationForm: React.FC<{
 
     const [validatedFields, setValidatedFields] = useState<ValidatedFieldsType>({
         odometer: false,
-        returnDay: false,
+        returnDay: true,
         front: false,
         left: false,
         right: false,
@@ -44,7 +55,60 @@ const CarRentalConfirmationForm: React.FC<{
     const theme = useTheme();
     // @ts-ignore
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const isAllFieldsValidated = Object.values(validatedFields).every(Boolean);
+
+    useEffect(() => {
+        let newReturnDatetime;
+
+        if (returnDay && isReturnDayValid(returnDay)) {
+            newReturnDatetime = new Date(returnDay);
+        } else {
+            newReturnDatetime = undefined;
+        }
+
+        onChange({
+            ...rental,
+            initialOdometerReading: odometer,
+            returnDatetime: newReturnDatetime
+        });
+    }, [odometer, returnDay])
+
+
+
+    const isReturnDayValid = (value: string) => {
+        const selectedDate = new Date(value);
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+
+        // Check if the selected date is tomorrow or later
+        if (selectedDate < tomorrow) {
+            return false;
+        }
+
+        // Check if the selected time is between 9am and 4pm
+        const selectedTime = selectedDate.getHours();
+        if (selectedTime < 9 || selectedTime >= 16) {
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleReturnDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        // Update the state with the new value
+        setReturnDay(value);
+
+        // Perform validation
+        const isValid = isReturnDayValid(value);
+
+        if (isValid) {
+            setValidatedFields(prev => ({ ...prev, returnDay: true }));
+        } else {
+            setValidatedFields(prev => ({ ...prev, returnDay: false }));
+        }
+    };
 
     const handleFieldValidation = (name: string, value: any) => {
         if (value) {
@@ -60,6 +124,10 @@ const CarRentalConfirmationForm: React.FC<{
             setPictures(prev => ({ ...prev, [name]: file }));
             handleFieldValidation(name, file);
         }
+    };
+
+    const clearReturnDay = () => {
+        setReturnDay('');
     };
 
     return (
@@ -105,7 +173,7 @@ const CarRentalConfirmationForm: React.FC<{
                             type="number"
                             value={odometer}
                             onChange={(e) => {
-                                setOdometer(e.target.value);
+                                setOdometer(Number(e.target.value));
                                 handleFieldValidation('odometer', e.target.value);
                             }}
                         />
@@ -121,18 +189,31 @@ const CarRentalConfirmationForm: React.FC<{
                                 shrink: true,
                             }}
                             value={returnDay}
-                            onChange={(e) => {
-                                setReturnDay(e.target.value);
-                                handleFieldValidation('returnDay', e.target.value);
+                            onChange={handleReturnDayChange}
+                            error={validatedFields.returnDay === false}
+                            helperText={validatedFields.returnDay === false && "Invalid return day."}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="Clear return day"
+                                            onClick={clearReturnDay}
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            edge="end"
+                                        >
+                                            <Clear />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
                             }}
                         />
                     </Grid>
 
-                    {["front", "left", "back", "right", "odometer"].map((angle) => (
-                        <Grid item key={angle}>
-                            <ImageUpload label={angle} onImageChange={handlePictureChange} />
-                        </Grid>
-                    ))}
+                    {/*{["front", "left", "back", "right", "odometer"].map((angle) => (*/}
+                    {/*    <Grid item key={angle}>*/}
+                    {/*        <ImageUpload label={angle} onImageChange={handlePictureChange} />*/}
+                    {/*    </Grid>*/}
+                    {/*))}*/}
 
                 </Grid>
             </form>

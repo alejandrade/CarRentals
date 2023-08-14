@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { CarResponseDto, PaginatedCarResponse } from "../../services/car/carService.types";
 import CarService from "../../services/car/carService";
+import carService from "../../services/car/carService";
 
 interface CarTableState {
     cars: CarResponseDto[];
@@ -24,9 +25,10 @@ interface CarTableState {
 interface CarProps {
     onSelected: (carId: string|null) => void;
     refresh: boolean; // Prop to trigger a table refresh
+    clerk: boolean
 }
 
-const CarTable: React.FC<CarProps> = ({ onSelected, refresh }) => {
+const CarTable: React.FC<CarProps> = ({ onSelected, refresh, clerk }) => {
     const [state, setState] = useState<CarTableState>({
         cars: [],
         selected: null, // Initialize with null to represent no selection initially
@@ -52,7 +54,7 @@ const CarTable: React.FC<CarProps> = ({ onSelected, refresh }) => {
     }, [refresh]);
 
     const loadCars = async () => {
-        const data: PaginatedCarResponse = await CarService.fetchAllCars(page, rowsPerPage);
+        const data: PaginatedCarResponse = clerk ? await carService.fetchAllAvailableCars(page, rowsPerPage): await CarService.fetchAllCars(page, rowsPerPage);
         setState((prevState) => ({
             ...prevState,
             cars: data.content,
