@@ -6,6 +6,7 @@ import {
     CreateRentalPictureDto, RentalCreateDto
 } from './rentalService.types';
 import { authFetch } from "../../util/FetchFunctions";
+import {Paginated} from "../user/UserService.types";
 
 class RentalService {
     private readonly BASE_URL = process.env.BASE_URL;
@@ -63,6 +64,34 @@ class RentalService {
         });
 
         return response.json;
+    }
+
+    /**
+     * Start a rental by its ID.
+     *
+     * @returns - A promise with the response containing the started rental data.
+     * @param status
+     */
+    async getRentals(status: string): Promise<Paginated<RentalDto>> {
+        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/current/${status}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.json;
+    }
+
+    async cancel(id: string): Promise<boolean> {
+        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/cancel/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.ok;
     }
 
     /**

@@ -18,4 +18,13 @@ public interface RentalRepository extends JpaRepository<Rental, String>, PagingA
     
     @Query("SELECT r FROM Rental r WHERE r.serviceLocation.id = :serviceLocationId")
     Page<Rental> findAllByServiceLocationId(@Param("serviceLocationId") String serviceLocaitonId, Pageable pageable);
+
+    @Query("SELECT r FROM Rental r WHERE r.clerk.id = :clerkId AND r.status = :status")
+    Page<Rental> findAllByClerkIdAndStatus(@Param("clerkId") String clerkId, @Param("status") RentalStatus status, Pageable pageable);
+
+    @Query("SELECT r FROM Rental r WHERE r.id = :id AND r.status = :status")
+    Rental findByIdAndStatus(@Param("id") String id, @Param("status") RentalStatus status);
+
+    @Query("SELECT r FROM Rental r WHERE r.status = :status")
+    Page<Rental> findAllByStatus(@Param("status") RentalStatus status, Pageable pageable);
 }

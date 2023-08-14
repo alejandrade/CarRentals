@@ -7,7 +7,7 @@ import CarTable from "../staff/CarTable";
 import {useErrorModal} from "../../contexts/ErrorModalContext";
 import CarRentalConfirmationForm from "./CarRentalConfirmationForm";
 import rentalService from "../../services/rentals/RentalService";
-import {RentalDto} from "../../services/rentals/rentalService.types";
+import {RentalActionDto, RentalDto} from "../../services/rentals/rentalService.types";
 import carService from "../../services/car/carService";
 import {CarResponseDto} from "../../services/car/carService.types";
 import userService from "../../services/user/UserService";
@@ -17,6 +17,7 @@ const CarConfirmation: React.FC<{ }>  = () => {
     const [userDemographics, setUserDemographics] = useState<UserDemographicsDto>();
     const [rentDto, setRentDto] = useState<RentalDto>();
     const [carDto, setCarDto] = useState<CarResponseDto>();
+    const [rentalActionDto, setRentalActionDto] = useState<RentalActionDto>();
 
     const navigate = useNavigate();
     const { showError, handleAPIError } = useErrorModal();
@@ -47,17 +48,28 @@ const CarConfirmation: React.FC<{ }>  = () => {
         navigate(`/dash/car/select/${phoneNumber}`)
     }
 
-    function pay() {
+    async function startRental() {
+        rentalActionDto && rentDto?.id && await rentalService.startRental(rentDto?.id, rentalActionDto)
+    }
 
+    function onChange(rentDto: Partial<RentalDto>){
+        if (rentDto) {
+            setRentalActionDto({
+                initialOdometerReading: rentDto.initialOdometerReading || 0,
+                version: rentDto.version || 0,
+                returnDatetime: rentDto?.returnDatetime,
+                endingOdometerReading: 0
+            });
+        }
     }
 
     return (
         <>
             <CustomToolbar>
                 <Button onClick={back} variant={"contained"} color={"secondary"}>Back</Button>
-                <Button onClick={pay} variant={"contained"} color={"primary"}>Pay</Button>
+                <Button onClick={startRental} variant={"contained"} color={"primary"}>Start Rental</Button>
             </CustomToolbar>
-            <CarRentalConfirmationForm user={userDemographics} rental={rentDto} car={carDto} />
+            <CarRentalConfirmationForm onChange={onChange} user={userDemographics} rental={rentDto} car={carDto} />
         </>
     );
 }

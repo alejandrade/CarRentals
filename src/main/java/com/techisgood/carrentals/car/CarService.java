@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.car;
 
+import com.techisgood.carrentals.rentals.RentalStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,8 @@ import com.techisgood.carrentals.user.UserRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,16 +54,16 @@ public class CarService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CarDto> findAllCars(Pageable pageable) {
+    public Page<CarDto> findAllAvailableCars(Pageable pageable) {
         Page<Car> cars = carRepository.findAll(pageable);
         return cars.map(CarDto::from);
     }
 
     @Transactional(readOnly = true)
-    public Page<CarDto> findAllCarsByLocation(Pageable pageable, UserDetails userDetails) {
+    public Page<CarDto> findAllAvailableCarsByLocation(Pageable pageable, UserDetails userDetails) {
         DbUser user = userRepository.findById(userDetails.getUsername()).orElseThrow();
         ServiceLocationClerk clerk = clerkRepository.findByUserId(user.getId()).orElseThrow();
-        Page<Car> cars = carRepository.findAllByLocationId(clerk.getServiceLocation().getId(), pageable);
+        Page<Car> cars = carRepository.findAllByLocationId(List.of(RentalStatus.CANCELED, RentalStatus.RETURNED), clerk.getServiceLocation().getId(), pageable);
         return cars.map(CarDto::from);
     }
 

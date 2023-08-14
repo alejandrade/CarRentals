@@ -1,11 +1,17 @@
 package com.techisgood.carrentals.rentals;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.techisgood.carrentals.model.Rental;
+import com.techisgood.carrentals.security.JwtTokenProvider;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +35,7 @@ public class RentalEndpoint {
     private final RentalService rentalService;
     private final RentalPictureService rentalPictureService;  // Inject the RentalPictureService
     private final RentalRepository rentalRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // POST endpoint to create a new rental
     @PostMapping
@@ -44,12 +51,26 @@ public class RentalEndpoint {
                 .orElseThrow();
     }
 
+    @GetMapping("/current/{status}")
+    public Page<RentalDto> getRentals(@PathVariable RentalStatus status, Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
+        return rentalRepository.findAllByClerkIdAndStatus(userIdFromJWT, status, pageable)
+                .map(RentalDto::from);
+    }
+
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<?> cancel(@PathVariable String id) {
+        rentalService.cancel(id);
+        return ResponseEntity.ok(Map.of("canceled", true));
+    }
+
     @PostMapping("/{rentalId}/start")
     public ResponseEntity<RentalDto> startRental(
             @PathVariable String rentalId,
             @RequestBody @Valid RentalActionDto rentalActionDto) {
 
-        RentalDto startedRental = rentalService.startRental(rentalActionDto.getOdometer(), rentalId, rentalActionDto.getVersion());
+        RentalDto startedRental = rentalService.startRental(rentalActionDto.getInitialOdometerReading(), rentalId, rentalActionDto.getVersion());
         return ResponseEntity.ok(startedRental);
     }
 
@@ -58,7 +79,7 @@ public class RentalEndpoint {
             @PathVariable String rentalId,
             @RequestBody @Valid RentalActionDto rentalActionDto) {
 
-        RentalDto endedRental = rentalService.endRental(rentalActionDto.getOdometer(), rentalId, rentalActionDto.getVersion());
+        RentalDto endedRental = rentalService.endRental(rentalActionDto.getEndingOdometerReading(), rentalId, rentalActionDto.getVersion());
         return ResponseEntity.ok(endedRental);
     }
 

@@ -86,7 +86,7 @@ export type UserWithDetailsDto = {
     serviceLocationIds: string[];
 };
 
-export interface Page<T> {
+export interface Paginated<T> {
     content: T[];
     pageable: {
         sort: {

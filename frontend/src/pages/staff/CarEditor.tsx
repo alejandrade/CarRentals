@@ -40,7 +40,7 @@ const CarEditor: React.FC = () => {
             <GenericModal onClose={() => {setCarFormModalOpen(false)}} open={carFormModalOpen}>
                 <CarForm id={carId ? carId : undefined} refreshTable={refreshTable} />
             </GenericModal>
-            <CarTable refresh={refresh} onSelected={onSelect} />
+            <CarTable clerk={false} refresh={refresh} onSelected={onSelect} />
         </div>
     );
 };
