@@ -35,6 +35,13 @@ public class RentalService {
 	private final ServiceLocationRepository serviceLocationRepository;
 
 	@Transactional
+	public Page<RentalDto> unpaid(Pageable pageable) {
+		ServiceLocation serviceLocation = serviceLocationService.currentUserLocation();
+		return rentalRepository.getAllUnpaidRentals(pageable, serviceLocation.getId())
+				.map(RentalDto::from);
+	}
+
+	@Transactional
 	public RentalDto startRental(BigDecimal odometer, String rentalId, Integer version) {
 		Rental byId = rentalRepository.findById(rentalId).orElseThrow();
 		byId.setStatus(RentalStatus.RENTED);
@@ -45,12 +52,14 @@ public class RentalService {
 	}
 
 	@Transactional
-	public RentalDto endRental(BigDecimal odometer, String rentalId, Integer version) {
+	public RentalDto endRental(String rentalId, RentalActionDto rentalActionDto) {
 		Rental byId = rentalRepository.findById(rentalId).orElseThrow();
 		byId.setStatus(RentalStatus.RETURNED);
-		byId.setEndingOdometerReading(odometer);
+		byId.setEndingOdometerReading(rentalActionDto.getEndingOdometerReading());
 		byId.setReturnDatetime(LocalDateTime.now());
-		byId.setVersion(version);
+		byId.setVersion(rentalActionDto.getVersion());
+		byId.setCleaningFee(rentalActionDto.getCleaningFee());
+		byId.setDamagedFee(rentalActionDto.getDamagedFee());
 		return RentalDto.from(rentalRepository.save(byId));
 	}
 

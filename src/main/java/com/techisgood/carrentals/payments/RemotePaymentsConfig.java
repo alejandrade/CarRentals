@@ -12,6 +12,6 @@ public class RemotePaymentsConfig {
 	
 	@PostConstruct
 	public void init() {
-		Stripe.apiKey = props.getSecretKeyTest();
+		Stripe.apiKey = props.getSecretKey();
 	}
 }

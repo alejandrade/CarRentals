@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 const ClerkDash: React.FC = () => {
     const navigate = useNavigate();
 
+    const [selectedReturnedId, setSelectedReturnedId] = useState<string | null>(null);
     const [selectedRentedId, setSelectedRentedId] = useState<string | null>(null); // Track selected row ID
     const [selectedReservedId, setSelectedReservedId] = useState<string | null>(null); // Track selected row ID
     const [reload, setReload] = useState(false);
@@ -26,10 +27,14 @@ const ClerkDash: React.FC = () => {
     }
 
     async function editRented() {
-
+        if (!selectedRentedId) {
+            return;
+        }
+        const rental = await rentalService.get(selectedRentedId);
+        navigate(`/dash/clerk/${rental.renterPhoneNumber}/cars/${rental.carId}/${rental.id}`)
     }
-    async function cancelRented() {
-
+    async function pay() {
+        setReload(!reload);
     }
 
     return <>
@@ -49,7 +54,12 @@ const ClerkDash: React.FC = () => {
                 </Box>
             </CustomToolbar>
             <RentalList reloadData={reload} onSelect={setSelectedRentedId} title={"Rented"} status={"RENTED"} />
-            {/*<RentalList title={"Returned"} status={"RETURNED"} />*/}
+            <CustomToolbar>
+                <Box>
+                    <Button onClick={pay} disabled={!selectedReturnedId} sx={{marginRight: "5px"}} variant={"contained"}>Pay</Button>
+                </Box>
+            </CustomToolbar>
+            <RentalList reloadData={reload} onSelect={setSelectedReturnedId}  title={"Returned"} status={"RETURNED"} />
         </Container>
     </>;
 }

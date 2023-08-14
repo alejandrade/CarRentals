@@ -71,9 +71,28 @@ class RentalService {
      *
      * @returns - A promise with the response containing the started rental data.
      * @param status
+     * @param page
+     * @param size
      */
-    async getRentals(status: string): Promise<Paginated<RentalDto>> {
-        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/current/${status}`, {
+    async getRentals(status: string, page: number = 0, size: number = 10): Promise<Paginated<RentalDto>> {
+        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/current/${status}?page=${page}&size=${size}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.json;
+    }
+
+    /**
+     * Start a rental by its ID.
+     *
+     * @returns - A promise with the response containing the started rental data.
+     * @param status
+     */
+    async getUnpaid(page: number = 0, size: number = 10): Promise<Paginated<RentalDto>> {
+        const response = await authFetch(`${this.BASE_URL}/clerk/v1/rentals/unpaid?page=${page}&size=${size}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

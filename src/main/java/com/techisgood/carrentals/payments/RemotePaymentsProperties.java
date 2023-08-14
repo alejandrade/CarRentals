@@ -10,9 +10,6 @@ public class RemotePaymentsProperties {
 	@Value("${stripe.secret-key}")
 	private String secretKey;
 	
-	@Value("${stripe.secret-key-test}")
-	private String secretKeyTest;
-	
 	@Value("${stripe.checkout-url-success}")
 	private String checkoutUrlSuccess;
 	

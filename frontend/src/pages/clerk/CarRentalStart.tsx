@@ -65,7 +65,6 @@ const CarRentalStart: React.FC = () => {
         var created = await clerkService.verifyAndCreate({code, phoneNumber});
         if (created.verified) {
             const userCreated = await userService.getClient(phoneNumber);
-            console.log("we created the user")
             setUser(userCreated);
             setLoading(false);
             setUserFound(true);

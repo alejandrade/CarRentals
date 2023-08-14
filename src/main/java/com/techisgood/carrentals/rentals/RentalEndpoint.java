@@ -78,11 +78,14 @@ public class RentalEndpoint {
     public ResponseEntity<RentalDto> endRental(
             @PathVariable String rentalId,
             @RequestBody @Valid RentalActionDto rentalActionDto) {
-
-        RentalDto endedRental = rentalService.endRental(rentalActionDto.getEndingOdometerReading(), rentalId, rentalActionDto.getVersion());
+        RentalDto endedRental = rentalService.endRental(rentalId, rentalActionDto);
         return ResponseEntity.ok(endedRental);
     }
 
+    @GetMapping("/unpaid")
+    public ResponseEntity<Page<RentalDto>> getUnpaid(Pageable pageable) {
+        return ResponseEntity.ok(rentalService.unpaid(pageable));
+    }
 
     // GET endpoint to retrieve all rentals
     @GetMapping

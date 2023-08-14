@@ -19,6 +19,9 @@ public class RentalDto {
     private LocalDateTime rentalDatetime;
     private LocalDateTime returnDatetime;
     private Integer version;
+    private Boolean paid;
+    private Boolean cleaningFee;
+    private Boolean damagedFee;
 
     // Audit properties
     private LocalDateTime createdAt;
@@ -47,6 +50,8 @@ public class RentalDto {
         dto.setRentalDatetime(rental.getRentalDatetime());
         dto.setReturnDatetime(rental.getReturnDatetime());
         dto.setVersion(rental.getVersion());
+        dto.setCleaningFee(rental.getCleaningFee());
+        dto.setDamagedFee(rental.getDamagedFee());
 
         // Setting audit properties
         dto.setCreatedAt(rental.getCreatedAt());

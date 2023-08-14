@@ -3,6 +3,8 @@
 export interface RentalActionDto {
     initialOdometerReading: number;
     endingOdometerReading: number;
+    cleaningFee: boolean,
+    damagedFee: boolean,
     returnDatetime?: Date; // You may want to use a string representation of the datetime
     version: number;
 }
@@ -17,6 +19,8 @@ export interface RentalDto {
     rentalDatetime: Date; // You may want to use a string representation of the datetime
     returnDatetime: Date; // You may want to use a string representation of the datetime
     version: number;
+    cleaningFee: boolean;
+    damagedFee: boolean;
 
     // Audit properties
     createdAt: string;

@@ -3,7 +3,6 @@ import {useNavigate, useParams} from "react-router-dom";
 import {UserDemographicsDto, UserDto} from "../../services/user/UserService.types";
 import CustomToolbar from "../../components/CustomToolbar";
 import {Button} from "@mui/material";
-import CarTable from "../staff/CarTable";
 import {useErrorModal} from "../../contexts/ErrorModalContext";
 import CarRentalConfirmationForm from "./CarRentalConfirmationForm";
 import rentalService from "../../services/rentals/RentalService";
@@ -51,6 +50,9 @@ const CarConfirmation: React.FC<{ }>  = () => {
     async function startRental() {
         rentalActionDto && rentDto?.id && await rentalService.startRental(rentDto?.id, rentalActionDto)
     }
+    async function endRental() {
+        rentalActionDto && rentDto?.id && await rentalService.endRental(rentDto?.id, rentalActionDto);
+    }
 
     function onChange(rentDto: Partial<RentalDto>){
         if (rentDto) {
@@ -58,7 +60,9 @@ const CarConfirmation: React.FC<{ }>  = () => {
                 initialOdometerReading: rentDto.initialOdometerReading || 0,
                 version: rentDto.version || 0,
                 returnDatetime: rentDto?.returnDatetime,
-                endingOdometerReading: 0
+                endingOdometerReading: rentDto.endingOdometerReading || 0,
+                cleaningFee: rentDto.cleaningFee || false,
+                damagedFee: rentDto.damagedFee || false
             });
         }
     }
@@ -67,7 +71,13 @@ const CarConfirmation: React.FC<{ }>  = () => {
         <>
             <CustomToolbar>
                 <Button onClick={back} variant={"contained"} color={"secondary"}>Back</Button>
-                <Button onClick={startRental} variant={"contained"} color={"primary"}>Start Rental</Button>
+                {rentDto?.status === "RESERVED" &&
+                    <Button onClick={startRental} variant={"contained"} color={"primary"}>Start Rental</Button>
+                }
+
+                {rentDto?.status === "RENTED" &&
+                    <Button onClick={endRental} variant={"contained"} color={"primary"}>End Rental</Button>
+                }
             </CustomToolbar>
             <CarRentalConfirmationForm onChange={onChange} user={userDemographics} rental={rentDto} car={carDto} />
         </>

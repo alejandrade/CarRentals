@@ -30,7 +30,7 @@ public class RemotePaymentsEndpoints {
 	private final RemotePaymentsProperties props;
 	
 	private final PaymentsService paymentsService;
-	
+
 	
 	@PostMapping(path = {"/stripe-webhook"})
     public ResponseEntity<?> stripeWebhook(@Valid @RequestBody String requestBody, @RequestHeader("Stripe-Signature") String sigHeader) {
@@ -57,57 +57,39 @@ public class RemotePaymentsEndpoints {
 		else {
 			return ResponseEntity.status(400).body("Deserialization failed, possibly due to api version mismatch.");
 		}
-		
-		switch(event.getType()) {
-		case "charge.succeeded":
-		{
-			Charge charge = (Charge)stripeObject;
-			String paymentIntentId = charge.getPaymentIntent();
-			//NOTE(justin): doesnt seem like we need this event.
-		}
-		break;
-		case "checkout.session.completed":
-		{
-			Session session = (Session)stripeObject;
-			String paymentIntentId = session.getPaymentIntent();
-			String internalInvoiceId = session.getMetadata().get("internalInvoiceId");
-			if (internalInvoiceId == null) {
-				log.info("STRIPE EVENT CREATED FROM OTHER SOURCE, NOT UPDATING INVOICE");
-				return ResponseEntity.ok("EVENT IGNORED");
+
+		switch (event.getType()) {
+			case "charge.succeeded" -> {
+				Charge charge = (Charge) stripeObject;
+				String paymentIntentId = charge.getPaymentIntent();
+				//NOTE(justin): doesnt seem like we need this event.
 			}
-			paymentsService.updateInvoiceSetRemotePaymentInfo(internalInvoiceId, paymentIntentId, null);
-		}
-		break;
-		case "payment_intent.created":
-		{
-			PaymentIntent paymentIntent = (PaymentIntent)stripeObject;
-			String paymentIntentId = paymentIntent.getId();
-			String internalInvoiceId = paymentIntent.getMetadata().get("internalInvoiceId");
-			if (internalInvoiceId == null) {
-				log.info("STRIPE EVENT CREATED FROM OTHER SOURCE, NOT UPDATING INVOICE");
-				return ResponseEntity.ok("EVENT IGNORED");
+			case "checkout.session.completed" -> {
+				Session session = (Session) stripeObject;
+				String paymentIntentId = session.getPaymentIntent();
+				String internalInvoiceId = session.getMetadata().get("internalInvoiceId");
+				if (internalInvoiceId == null) {
+					log.info("STRIPE EVENT CREATED FROM OTHER SOURCE, NOT UPDATING INVOICE");
+					return ResponseEntity.ok("EVENT IGNORED");
+				}
+				paymentsService.updateInvoiceSetRemotePaymentInfo(internalInvoiceId, paymentIntentId, null);
 			}
-			String paymentStatus = paymentIntent.getStatus();
-			//possible statuses include : (requires_payment_method, requires_confirmation, requires_action, processing, requires_capture, canceled, or succeeded)
-			//according to: https://stripe.com/docs/api/payment_intents/object
-			paymentsService.updateInvoiceSetRemotePaymentInfo(internalInvoiceId, paymentIntentId, paymentStatus);
-		}
-		break;
-		case "payment_intent.succeeded": 
-		{
-			PaymentIntent paymentIntent = (PaymentIntent)stripeObject;
-			String paymentIntentId = paymentIntent.getId();
-			String internalInvoiceId = paymentIntent.getMetadata().get("internalInvoiceId");
-			if (internalInvoiceId == null) {
-				log.info("STRIPE EVENT CREATED FROM OTHER SOURCE, NOT UPDATING INVOICE");
-				return ResponseEntity.ok("EVENT IGNORED");
+			case "payment_intent.created", "payment_intent.succeeded" -> {
+				PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
+				String paymentIntentId = paymentIntent.getId();
+				String internalInvoiceId = paymentIntent.getMetadata().get("internalInvoiceId");
+				if (internalInvoiceId == null) {
+					log.info("STRIPE EVENT CREATED FROM OTHER SOURCE, NOT UPDATING INVOICE");
+					return ResponseEntity.ok("EVENT IGNORED");
+				}
+				String paymentStatus = paymentIntent.getStatus();
+				//possible statuses include : (requires_payment_method, requires_confirmation, requires_action, processing, requires_capture, canceled, or succeeded)
+				//according to: https://stripe.com/docs/api/payment_intents/object
+				paymentsService.updateInvoiceSetRemotePaymentInfo(internalInvoiceId, paymentIntentId, paymentStatus);
 			}
-			String paymentStatus = paymentIntent.getStatus();
-			paymentsService.updateInvoiceSetRemotePaymentInfo(internalInvoiceId, paymentIntentId, paymentStatus);
-			
-		}
-		break;
-		default: return ResponseEntity.status(200).body("Unahndled event but sending 200 so that stripe knows the webhook endpoint is actually still working");
+			default -> {
+				return ResponseEntity.ok().body("Unahndled event but sending 200 so that stripe knows the webhook endpoint is actually still working");
+			}
 		}
 		
 		return ResponseEntity.ok("EVENT CONSUMED"); 

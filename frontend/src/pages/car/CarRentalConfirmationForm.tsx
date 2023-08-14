@@ -15,6 +15,7 @@ import {UserDemographicsDto} from "../../services/user/UserService.types";
 import {RentalDto} from "../../services/rentals/rentalService.types";
 import {CarCreationDto} from "../../services/car/carService.types";
 import ImageUpload from "../../components/ImageUpload";
+import CheckboxWithLabel from "../../components/CheckboxWithLabel";
 
 
 type ValidatedFieldsType = {
@@ -33,8 +34,10 @@ const CarRentalConfirmationForm: React.FC<{
     car: CarCreationDto | undefined;
     onChange: (rental: Partial<RentalDto>) => void;
 }> = ({ user, rental, car, onChange }) => {
-    const [odometer, setOdometer] = useState<number>(0);
+    const [odometer, setOdometer] = useState<number | string>(rental?.initialOdometerReading || '');
     const [returnDay, setReturnDay] = useState<string>('');
+    const [damagedFee, setDamagedFee] = useState(false);
+    const [cleaningFee, setCleaningFee] = useState(false);
     const [pictures, setPictures] = useState({
         front: null,
         left: null,
@@ -57,6 +60,7 @@ const CarRentalConfirmationForm: React.FC<{
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
+        console.log(rental);
         let newReturnDatetime;
 
         if (returnDay && isReturnDayValid(returnDay)) {
@@ -64,13 +68,16 @@ const CarRentalConfirmationForm: React.FC<{
         } else {
             newReturnDatetime = undefined;
         }
+        console.log(odometer);
 
         onChange({
-            ...rental,
-            initialOdometerReading: odometer,
+            initialOdometerReading: odometer as number,
+            endingOdometerReading: odometer as number,
+            damagedFee: damagedFee,
+            cleaningFee: cleaningFee,
             returnDatetime: newReturnDatetime
         });
-    }, [odometer, returnDay])
+    }, [odometer, returnDay, damagedFee, cleaningFee])
 
 
 
@@ -178,35 +185,45 @@ const CarRentalConfirmationForm: React.FC<{
                             }}
                         />
                     </Grid>
+                    {rental?.status === "RENTED" && <>
+                        <Grid item>
+                            <CheckboxWithLabel value={cleaningFee} onChange={setCleaningFee} label={"Cleaning Fee"}/>
+                        </Grid>
+                        <Grid item>
+                            <CheckboxWithLabel value={damagedFee} onChange={setDamagedFee} label={"Damage Fee"}/>
+                        </Grid>
+                    </>}
 
                     <Grid item>
-                        <TextField
-                            label="Return Day"
-                            variant="outlined"
-                            fullWidth
-                            type="datetime-local"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            value={returnDay}
-                            onChange={handleReturnDayChange}
-                            error={validatedFields.returnDay === false}
-                            helperText={validatedFields.returnDay === false && "Invalid return day."}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="Clear return day"
-                                            onClick={clearReturnDay}
-                                            onMouseDown={(e) => e.preventDefault()}
-                                            edge="end"
-                                        >
-                                            <Clear />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
+                        {rental?.status !== "RENTED" && <>
+                            <TextField
+                                label="Return Day"
+                                variant="outlined"
+                                fullWidth
+                                type="datetime-local"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                value={returnDay}
+                                onChange={handleReturnDayChange}
+                                error={validatedFields.returnDay === false}
+                                helperText={validatedFields.returnDay === false && "Invalid return day."}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="Clear return day"
+                                                onClick={clearReturnDay}
+                                                onMouseDown={(e) => e.preventDefault()}
+                                                edge="end"
+                                            >
+                                                <Clear />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            </>}
                     </Grid>
 
                     {/*{["front", "left", "back", "right", "odometer"].map((angle) => (*/}

@@ -65,4 +65,13 @@ public class Rental extends VersionedAuditable {
     @Column(name = "return_datetime")
     private LocalDateTime returnDatetime;
 
+    @Column(name = "paid", nullable = false)
+    private Boolean paid = false;
+
+    @Column(name = "cleaning_fee", nullable = false)
+    private Boolean cleaningFee = false;
+
+    @Column(name = "damaged_fee", nullable = false)
+    private Boolean damagedFee = false;
+
 }

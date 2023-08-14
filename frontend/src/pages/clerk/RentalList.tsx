@@ -36,7 +36,8 @@ function PaginatedTable({ title, status, onSelect, reloadData }: PaginatedTableP
 
     const loadRentalsByStatus = async (status: string, pageNumber: number) => {
         try {
-            const response: Paginated<RentalDto> = await rentalService.getRentals(status);
+            console.log(status);
+            const response: Paginated<RentalDto> = status === "RETURNED" ? await rentalService.getUnpaid(pageNumber) : await rentalService.getRentals(status, pageNumber);
             if (response.content) {
                 setRentals(response.content);
             }
