@@ -63,6 +63,7 @@ public class RemotePaymentsEndpoints {
 				Charge charge = (Charge) stripeObject;
 				String paymentIntentId = charge.getPaymentIntent();
 				//NOTE(justin): doesnt seem like we need this event.
+				break;
 			}
 			case "checkout.session.completed" -> {
 				Session session = (Session) stripeObject;
@@ -73,6 +74,7 @@ public class RemotePaymentsEndpoints {
 					return ResponseEntity.ok("EVENT IGNORED");
 				}
 				paymentsService.updateInvoiceSetRemotePaymentInfo(internalInvoiceId, paymentIntentId, null);
+				break;
 			}
 			case "payment_intent.created", "payment_intent.succeeded" -> {
 				PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
@@ -86,6 +88,7 @@ public class RemotePaymentsEndpoints {
 				//possible statuses include : (requires_payment_method, requires_confirmation, requires_action, processing, requires_capture, canceled, or succeeded)
 				//according to: https://stripe.com/docs/api/payment_intents/object
 				paymentsService.updateInvoiceSetRemotePaymentInfo(internalInvoiceId, paymentIntentId, paymentStatus);
+				break;
 			}
 			default -> {
 				return ResponseEntity.ok().body("Unahndled event but sending 200 so that stripe knows the webhook endpoint is actually still working");

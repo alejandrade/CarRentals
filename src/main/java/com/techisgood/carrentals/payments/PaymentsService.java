@@ -64,7 +64,14 @@ public class PaymentsService {
 	
 	
 	@Transactional
-	public PaymentsInvoice createInvoice(String rentalId, String payerId, Integer dayPrice, Integer days) throws IllegalArgumentException, StripeException {
+	public PaymentsInvoice createInvoice(
+			String rentalId, 
+			String payerId, 
+			Integer dayPrice, 
+			Integer days,
+			int cleaningFee,
+			int damageFee,
+			int otherFee) throws IllegalArgumentException, StripeException {
 		
 		Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
 		if (optionalRental .isEmpty()) {
@@ -76,11 +83,14 @@ public class PaymentsService {
 		}
 		
 		PaymentsInvoice pi = new  PaymentsInvoice();
-		Integer subTotal = dayPrice * days;
+		Integer subTotal = (dayPrice * days) + cleaningFee + damageFee + otherFee;
 		pi.setRentalId(rentalId);
 		pi.setPayerId(payerId);
 		pi.setDayPrice(dayPrice);
 		pi.setDays(days);
+		pi.setCleaningFee(cleaningFee);
+		pi.setDamageFee(damageFee);
+		pi.setOtherFee(otherFee);
 		
 		Rental rental = optionalRental.get();
 		
