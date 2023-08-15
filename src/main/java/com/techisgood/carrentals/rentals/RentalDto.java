@@ -1,5 +1,7 @@
 package com.techisgood.carrentals.rentals;
 
+import com.techisgood.carrentals.model.Car;
+import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.Rental;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ public class RentalDto {
     private String carId;  // Assuming you want to represent the car with its id
     private String clerkId; // Assuming you want to represent the clerk with its id
     private String renterPhoneNumber; // Assuming you want to represent the renter with its id
+    private String renterId;
     private RentalStatus status;
     private BigDecimal initialOdometerReading;
     private BigDecimal endingOdometerReading;
@@ -20,8 +23,9 @@ public class RentalDto {
     private LocalDateTime returnDatetime;
     private Integer version;
     private Boolean paid;
-    private Boolean cleaningFee;
-    private Boolean damagedFee;
+    private Integer cleaningFee;
+    private Integer damagedFee;
+    private Integer insuranceFee;
 
     // Audit properties
     private LocalDateTime createdAt;
@@ -33,15 +37,20 @@ public class RentalDto {
         RentalDto dto = new RentalDto();
         dto.setId(rental.getId());
 
-        if (rental.getCar() != null) {
-            dto.setCarId(rental.getCar().getId());
+        Car car = rental.getCar();
+        if (car != null) {
+            dto.setCarId(car.getId());
         }
-        if (rental.getClerk() != null) {
-            dto.setClerkId(rental.getClerk().getId());
+        DbUser clerk = rental.getClerk();
+        if (clerk != null) {
+            dto.setClerkId(clerk.getId());
         }
-        if (rental.getRenter() != null) {
-            dto.setRenterPhoneNumber(rental.getRenter().getPhoneNumber());
+        DbUser renter = rental.getRenter();
+        if (renter != null) {
+            dto.setRenterPhoneNumber(renter.getPhoneNumber());
+            dto.setRenterId(renter.getId());
         }
+
 
 
         dto.setStatus(rental.getStatus());
@@ -52,6 +61,7 @@ public class RentalDto {
         dto.setVersion(rental.getVersion());
         dto.setCleaningFee(rental.getCleaningFee());
         dto.setDamagedFee(rental.getDamagedFee());
+        dto.setInsuranceFee(rental.getInsuranceFee());
 
         // Setting audit properties
         dto.setCreatedAt(rental.getCreatedAt());

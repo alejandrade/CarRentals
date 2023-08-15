@@ -42,35 +42,22 @@ public class PaymentsEndpoints {
 		try {
 			
 			Rental rental = rentalRepository.findById(requestBody.getRentalId()).orElseThrow();
-			Long days = ChronoUnit.DAYS.between(rental.getRentalDatetime(), rental.getReturnDatetime());
-			Car car = rental.getCar();
-			
 			PaymentsInvoice invoice = paymentsService.createInvoice(
 					rental.getId(), 
-					rental.getClerk().getId(), 
-					(int)(car.getRentPrice().doubleValue() * 100),
-					days.intValue(),
-					requestBody.getCleaningFee(),
-					requestBody.getDamageFee(),
-					requestBody.getOtherFee());
+					rental.getClerk().getId(),
+					requestBody.getSubTotal(),
+					requestBody.getNote());
 			PaymentsInvoiceDto response = PaymentsInvoiceDto.from(invoice);
 			return ResponseEntity.ok().body(response);
 		} catch (StripeException e) {
 			throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
 		}
 	}
-	
-	@PostMapping("/invoices/createPayment/TestWithLoggedInUser")
-	public ResponseEntity<?> invoiceCreatePayment(@Valid @RequestBody PaymentsInvoiceCreatePaymentDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
-		requestBody.setUserId(auth.getUsername());
-		requestBody.setInvoiceId("2b4184e0-a178-4848-b90c-4d752149b502");
-		return invoiceCreatePayment(requestBody);
-	}
-	
+
 	@PostMapping("/invoices/createPayment")
-	public ResponseEntity<?> invoiceCreatePayment(@Valid @RequestBody PaymentsInvoiceCreatePaymentDto requestBody) throws RemoteServiceException {
+	public ResponseEntity<?> invoiceCreatePayment(@Valid @RequestBody PaymentsInvoiceCreatePaymentDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
 		try {
-			PaymentsCustomer customer = paymentsService.getCustomerByUserId(requestBody.getUserId());
+			PaymentsCustomer customer = paymentsService.getCustomerByUserId(auth.getUsername());
 			String paymentUrl = paymentsService.getUrlForPayment(requestBody.getInvoiceId(), customer.getCustomerId(), requestBody.getSuccessUrl(), requestBody.getCancelUrl());
 			requestBody.url = paymentUrl;
 			return ResponseEntity.ok().body(requestBody);

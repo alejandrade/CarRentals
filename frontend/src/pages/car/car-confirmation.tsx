@@ -48,10 +48,12 @@ const CarConfirmation: React.FC<{ }>  = () => {
     }
 
     async function startRental() {
-        rentalActionDto && rentDto?.id && await rentalService.startRental(rentDto?.id, rentalActionDto)
+        rentalActionDto && rentDto?.id && await rentalService.startRental(rentDto?.id, rentalActionDto);
+        backToDash();
     }
     async function endRental() {
         rentalActionDto && rentDto?.id && await rentalService.endRental(rentDto?.id, rentalActionDto);
+        backToDash();
     }
 
     function onChange(rentDto: Partial<RentalDto>){
@@ -61,18 +63,30 @@ const CarConfirmation: React.FC<{ }>  = () => {
                 version: rentDto.version || 0,
                 returnDatetime: rentDto?.returnDatetime,
                 endingOdometerReading: rentDto.endingOdometerReading || 0,
-                cleaningFee: rentDto.cleaningFee || false,
-                damagedFee: rentDto.damagedFee || false
+                cleaningFee: rentDto.cleaningFee || 0,
+                damagedFee: rentDto.damagedFee || 0,
+                insuranceFee: rentDto.insuranceFee || 0
             });
         }
+    }
+
+    async function cancel() {
+        rentDto?.id && await rentalService.cancel(rentDto.id);
+        backToDash();
+    }
+
+    function backToDash() {
+        navigate("/dash/clerk")
     }
 
     return (
         <>
             <CustomToolbar>
                 <Button onClick={back} variant={"contained"} color={"secondary"}>Back</Button>
-                {rentDto?.status === "RESERVED" &&
+                {rentDto?.status === "RESERVED" && <>
+                    <Button onClick={cancel} variant={"contained"} color={"error"} >Cancel</Button>
                     <Button onClick={startRental} variant={"contained"} color={"primary"}>Start Rental</Button>
+                </>
                 }
 
                 {rentDto?.status === "RENTED" &&

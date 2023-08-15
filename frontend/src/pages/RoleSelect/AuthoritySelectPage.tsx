@@ -76,6 +76,10 @@ const AuthoritySelectPage: React.FC = () => {
         return authorities.map(x => x.replace("ROLE_", "").toLowerCase());
     }
 
+    function triggerClick (path: string) {
+        navigate(`/dash/${path}`);
+    }
+
     return (
         <Grid container direction="column">
             <TabsContainer bgcolor="background.paper">
@@ -88,7 +92,7 @@ const AuthoritySelectPage: React.FC = () => {
                     textColor="primary"
                 >
                     {getAuthorities().map((role, index) => (
-                        <Tab key={index} label={role} />
+                        <Tab onClick={() => triggerClick(role)} key={index} label={role} />
                     ))}
                 </Tabs>
             </TabsContainer>

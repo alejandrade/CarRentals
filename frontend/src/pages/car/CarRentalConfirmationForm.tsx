@@ -36,8 +36,15 @@ const CarRentalConfirmationForm: React.FC<{
 }> = ({ user, rental, car, onChange }) => {
     const [odometer, setOdometer] = useState<number | string>(rental?.initialOdometerReading || '');
     const [returnDay, setReturnDay] = useState<string>('');
-    const [damagedFee, setDamagedFee] = useState(false);
-    const [cleaningFee, setCleaningFee] = useState(false);
+    const [damagedFee, setDamagedFee] = useState<string>('');
+    const [cleaningFee, setCleaningFee] = useState<string>('');
+    const [insuranceFee, setInsuranceFee] = useState<string>('');
+
+    const [damagedFeeCheck, setDamagedFeeCheck] = useState<boolean>(false);
+    const [cleaningFeeCheck, setCleaningFeeCheck] = useState<boolean>(false);
+    const [insuranceFeeCheck, setInsuranceFeeCheck] = useState<boolean>(false);
+    const [detailFeeCheck, setDetailFeeCheck] = useState<boolean>(false);
+
     const [pictures, setPictures] = useState({
         front: null,
         left: null,
@@ -60,7 +67,6 @@ const CarRentalConfirmationForm: React.FC<{
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
-        console.log(rental);
         let newReturnDatetime;
 
         if (returnDay && isReturnDayValid(returnDay)) {
@@ -68,13 +74,24 @@ const CarRentalConfirmationForm: React.FC<{
         } else {
             newReturnDatetime = undefined;
         }
-        console.log(odometer);
+
+
+        let cleaningFee;
+
+        if (detailFeeCheck) {
+            cleaningFee = 30000;
+        } else if (cleaningFeeCheck) {
+            cleaningFee = 3500;
+        } else {
+            cleaningFee = 0;
+        }
 
         onChange({
             initialOdometerReading: odometer as number,
             endingOdometerReading: odometer as number,
-            damagedFee: damagedFee,
-            cleaningFee: cleaningFee,
+            damagedFee: 0,
+            cleaningFee,
+            insuranceFee: insuranceFeeCheck ? Number(insuranceFee) : 0,
             returnDatetime: newReturnDatetime
         });
     }, [odometer, returnDay, damagedFee, cleaningFee])
@@ -187,10 +204,13 @@ const CarRentalConfirmationForm: React.FC<{
                     </Grid>
                     {rental?.status === "RENTED" && <>
                         <Grid item>
-                            <CheckboxWithLabel value={cleaningFee} onChange={setCleaningFee} label={"Cleaning Fee"}/>
+                            <CheckboxWithLabel value={cleaningFeeCheck}  onChange={setCleaningFeeCheck} label={"Cleaning Fee"}/>
                         </Grid>
                         <Grid item>
-                            <CheckboxWithLabel value={damagedFee} onChange={setDamagedFee} label={"Damage Fee"}/>
+                            <CheckboxWithLabel value={insuranceFeeCheck}  onChange={setInsuranceFeeCheck} label={"Insurance Fee (8$ per day)"}/>
+                        </Grid>
+                        <Grid item>
+                            <CheckboxWithLabel value={detailFeeCheck}  onChange={setDetailFeeCheck} label={"Detail Fee"}/>
                         </Grid>
                     </>}
 
@@ -204,6 +224,7 @@ const CarRentalConfirmationForm: React.FC<{
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
+                                disabled={true}
                                 value={returnDay}
                                 onChange={handleReturnDayChange}
                                 error={validatedFields.returnDay === false}

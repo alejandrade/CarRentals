@@ -13,6 +13,7 @@ public class RentalActionDto {
     private BigDecimal endingOdometerReading;
     private LocalDateTime returnDatetime;
     private Integer version;
-    private Boolean cleaningFee;
-    private Boolean damagedFee;
+    private Integer cleaningFee;
+    private Integer damagedFee;
+    private Integer insuranceFee;
 }

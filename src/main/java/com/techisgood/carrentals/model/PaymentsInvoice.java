@@ -46,21 +46,9 @@ public class PaymentsInvoice extends Auditable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "payer_id", insertable=false, updatable=false, nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_users_payer"))
 	private DbUser payer;
-	
-	@Column(name="day_price")
-	private Integer dayPrice;
 
-	@Column(name="days")
-	private Integer days;
-	
-	@Column(name="cleaning_fee")
-	private Integer cleaningFee;
-	
-	@Column(name="damage_fee")
-	private Integer damageFee;
-	
-	@Column(name="other_fee")
-	private Integer otherFee;
+	@Column(name = "note")
+	private String note;
 	
 	@Column(name="sub_total")
 	private Integer subTotal;

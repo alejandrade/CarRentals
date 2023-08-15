@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.rentals;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class RentalEndpoint {
     @PostMapping
     public ResponseEntity<RentalDto> createRental(@RequestBody @Valid RentalCreateDto dto) {
         Rental createdRental = rentalService.createRentalUsingDto(dto.getCarId(), dto);
+
         return ResponseEntity.ok(RentalDto.from(createdRental));
     }
 

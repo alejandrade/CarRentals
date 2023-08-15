@@ -11,11 +11,6 @@ public class PaymentsInvoiceDto {
 	private String id;
 	private String rentalId;
 	private String payerId;
-	private Integer dayPrice;
-	private Integer days;
-	private Integer cleaningFee = 0;
-	private Integer damageFee = 0;
-	private Integer otherFee = 0;
 	private Integer subTotal;
 	private Double taxRate; 
 	private Integer taxTotal;
@@ -39,8 +34,6 @@ public class PaymentsInvoiceDto {
     	result.id = invoice.getId();
     	result.rentalId = invoice.getRental().getId();
     	result.payerId = invoice.getPayer().getId();
-    	result.dayPrice = invoice.getDayPrice();
-    	result.days = invoice.getDays();
     	result.subTotal = invoice.getSubTotal();
     	result.taxRate = invoice.getTaxRate().doubleValue();
     	result.taxTotal = invoice.getTaxTotal();

@@ -1,5 +1,10 @@
 import { authFetch } from "../../util/FetchFunctions";
-import { InvoiceCreatePaymentDto, PaymentMethodSessionBeginDto } from "./PaymentsService.types";
+import {
+    createInvoiceDto,
+    InvoiceCreatePaymentDto,
+    PaymentMethodSessionBeginDto,
+    PaymentsInvoiceDto
+} from "./PaymentsService.types";
 
 class PaymentsService {
     private readonly BASE_URL = process.env.BASE_URL;
@@ -81,6 +86,24 @@ class PaymentsService {
 
         return response.json;
     }
+
+
+    async createInvoice(data: createInvoiceDto): Promise<PaymentsInvoiceDto> {
+        const response = await authFetch(`${this.BASE_URL}/payments/v1/invoices`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save insurance information');
+        }
+
+        return response.json;
+    }
+
 }
 
 export default new PaymentsService();

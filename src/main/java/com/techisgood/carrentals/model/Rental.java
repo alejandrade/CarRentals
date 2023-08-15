@@ -69,9 +69,12 @@ public class Rental extends VersionedAuditable {
     private Boolean paid = false;
 
     @Column(name = "cleaning_fee", nullable = false)
-    private Boolean cleaningFee = false;
+    private Integer cleaningFee = 0;
 
     @Column(name = "damaged_fee", nullable = false)
-    private Boolean damagedFee = false;
+    private Integer damagedFee = 0;
+
+    @Column(name = "insurance_fee", nullable = false)
+    private Integer insuranceFee = 0;
 
 }
