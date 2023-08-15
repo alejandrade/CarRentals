@@ -1,16 +1,15 @@
 package com.techisgood.carrentals.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.techisgood.carrentals.model.audit.Auditable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +24,8 @@ import lombok.Setter;
 @Table(name = "payments_invoice", catalog = "car_rentals")
 @Getter
 @Setter
-public class PaymentsInvoice {
+@EntityListeners(AuditingEntityListener.class)
+public class PaymentsInvoice extends Auditable {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -53,6 +53,15 @@ public class PaymentsInvoice {
 	@Column(name="days")
 	private Integer days;
 	
+	@Column(name="cleaning_fee")
+	private Integer cleaningFee;
+	
+	@Column(name="damage_fee")
+	private Integer damageFee;
+	
+	@Column(name="other_fee")
+	private Integer otherFee;
+	
 	@Column(name="sub_total")
 	private Integer subTotal;
 	
@@ -76,24 +85,6 @@ public class PaymentsInvoice {
 	@Column(name="external_payment_status", columnDefinition = "char(36)")
 	private String externalPaymentStatus;
 	
-	
-	@CreatedDate
-    @Column(name = "created_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-	
-
-    @CreatedBy
-    @Column(name = "created_by", columnDefinition = "char(36)")
-    private String createdBy;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
-    private LocalDateTime updatedAt;
-
-
-    @LastModifiedBy
-    @Column(name = "updated_by", columnDefinition = "char(36)")
-    private String updatedBy;
     
     @Column(name = "active", columnDefinition = "tinyint default 1")
 	private Byte active;

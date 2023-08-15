@@ -1,5 +1,7 @@
 package com.techisgood.carrentals.payments;
 
+import java.time.temporal.ChronoUnit;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,8 +17,11 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.techisgood.carrentals.exception.RemoteServiceException;
 import com.techisgood.carrentals.exception.RemoteServiceException.RemoteService;
+import com.techisgood.carrentals.model.Car;
 import com.techisgood.carrentals.model.PaymentsCustomer;
 import com.techisgood.carrentals.model.PaymentsInvoice;
+import com.techisgood.carrentals.model.Rental;
+import com.techisgood.carrentals.rentals.RentalRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +34,25 @@ public class PaymentsEndpoints {
 
 	private final RemotePaymentsService remotePaymentsService;
 	private final PaymentsService paymentsService;
+	private final RentalRepository rentalRepository;
+	
 	
 	@PostMapping("/invoices")
 	public ResponseEntity<?> createInvoice(@Valid @RequestBody PaymentsInvoiceCreateDto requestBody) throws RemoteServiceException {
 		try {
-			PaymentsInvoice invoice = paymentsService.createInvoice(requestBody.getRentalId(), requestBody.getPayerId(), requestBody.getDayPrice(), requestBody.getDays());
+			
+			Rental rental = rentalRepository.findById(requestBody.getRentalId()).orElseThrow();
+			Long days = ChronoUnit.DAYS.between(rental.getRentalDatetime(), rental.getReturnDatetime());
+			Car car = rental.getCar();
+			
+			PaymentsInvoice invoice = paymentsService.createInvoice(
+					rental.getId(), 
+					rental.getClerk().getId(), 
+					(int)(car.getRentPrice().doubleValue() * 100),
+					days.intValue(),
+					requestBody.getCleaningFee(),
+					requestBody.getDamageFee(),
+					requestBody.getOtherFee());
 			PaymentsInvoiceDto response = PaymentsInvoiceDto.from(invoice);
 			return ResponseEntity.ok().body(response);
 		} catch (StripeException e) {

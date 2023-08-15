@@ -13,6 +13,9 @@ public class PaymentsInvoiceDto {
 	private String payerId;
 	private Integer dayPrice;
 	private Integer days;
+	private Integer cleaningFee = 0;
+	private Integer damageFee = 0;
+	private Integer otherFee = 0;
 	private Integer subTotal;
 	private Double taxRate; 
 	private Integer taxTotal;
