@@ -44,7 +44,7 @@ const CarConfirmation: React.FC<{ }>  = () => {
     }
 
     function back() {
-        navigate(`/dash/car/select/${phoneNumber}`)
+        navigate(-1);
     }
 
     async function startRental() {

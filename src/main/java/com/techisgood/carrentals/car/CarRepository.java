@@ -20,7 +20,7 @@ public interface CarRepository extends PagingAndSortingRepository<Car, String>, 
     @Query("SELECT DISTINCT c FROM Car c " +
             "LEFT JOIN Rental r on r.car = c " +
             "WHERE (r.status IN :statuses OR r.id IS NULL) and c.serviceLocation.id = :locationId")
-    Page<Car> findAllByLocationId(@Param("statuses") List<RentalStatus> statuses, String locationId, Pageable pageable);
+    Page<Car> findAllByLocationId(@Param("statuses") List<RentalStatus> statuses, @Param("locationId") String locationId, Pageable pageable);
 
 
 }

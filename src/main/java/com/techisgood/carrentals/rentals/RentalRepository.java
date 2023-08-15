@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.rentals;
 
+import com.techisgood.carrentals.model.Car;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RentalRepository extends JpaRepository<Rental, String>, PagingAndSortingRepository<Rental, String> {
     List<Rental> findByCar_ShortId(String shortId);
@@ -31,4 +33,7 @@ public interface RentalRepository extends JpaRepository<Rental, String>, PagingA
 
     @Query("SELECT r FROM Rental r WHERE r.status = :status")
     Page<Rental> findAllByStatus(@Param("status") RentalStatus status, Pageable pageable);
+
+    @Query("SELECT r from Rental r where r.car.id = :carId AND r.status = com.techisgood.carrentals.rentals.RentalStatus.RESERVED")
+    Optional<Rental> findByCarId(@Param("carId") String carId);
 }

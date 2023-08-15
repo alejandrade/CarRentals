@@ -25,12 +25,11 @@ const CarSelect: React.FC<{ }>  = () => {
     }
 
     function back() {
-        navigate(`/dash/clerk/userCreate/${phoneNumber}`)
+        navigate(-1);
     }
 
     async function next() {
         if (carId && phoneNumber) {
-            console.log("happened here")
             var rental = await rentalService.createRental({
                 carId,
                 renterPhoneNumber: phoneNumber,

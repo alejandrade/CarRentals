@@ -2,6 +2,7 @@ package com.techisgood.carrentals.rentals;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import com.techisgood.carrentals.security.JwtTokenProvider;
 import com.techisgood.carrentals.service_location.ServiceLocationService;
@@ -65,6 +66,11 @@ public class RentalService {
 
 	@Transactional
 	public Rental createRentalUsingDto(String carId, RentalCreateDto dto) throws IllegalArgumentException {
+		Optional<Rental> byCarId = rentalRepository.findByCarId(carId);
+		if (byCarId.isPresent()){
+			return byCarId.get();
+		}
+
 		DbUser dbUser = userRepository.findByPhoneNumber(dto.getRenterPhoneNumber()).orElseThrow();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userIdFromJWT = jwtTokenProvider.getUserIdFromJWT(authentication.getCredentials().toString());
