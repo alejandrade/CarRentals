@@ -4,8 +4,6 @@ import java.time.temporal.ChronoUnit;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,12 +58,7 @@ public class PaymentsEndpoints {
 		}
 	}
 	
-	@PostMapping("/invoices/createPayment/TestWithLoggedInUser")
-	public ResponseEntity<?> invoiceCreatePayment(@Valid @RequestBody PaymentsInvoiceCreatePaymentDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
-		requestBody.setUserId(auth.getUsername());
-		requestBody.setInvoiceId("2b4184e0-a178-4848-b90c-4d752149b502");
-		return invoiceCreatePayment(requestBody);
-	}
+
 	
 	@PostMapping("/invoices/createPayment")
 	public ResponseEntity<?> invoiceCreatePayment(@Valid @RequestBody PaymentsInvoiceCreatePaymentDto requestBody) throws RemoteServiceException {
@@ -80,12 +73,6 @@ public class PaymentsEndpoints {
 	}
 	
 
-
-	@PostMapping("/paymentMethod/sessionBegin/TestWithLoggedInUser")
-	public ResponseEntity<?> createPaymentMethodSessionBegin(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody, @AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
-		requestBody.setUserId(auth.getUsername());
-		return createPaymentMethodSessionBegin(requestBody);
-	}
 	
 	@PostMapping("/paymentMethod/sessionBegin")
 	public ResponseEntity<?> createPaymentMethodSessionBegin(@Valid @RequestBody PaymentMethodSessionBeginDto requestBody) throws RemoteServiceException {
