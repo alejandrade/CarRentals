@@ -3,6 +3,8 @@ package com.techisgood.carrentals.payments;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import com.techisgood.carrentals.comms.twilio.TwilioService;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import com.stripe.exception.StripeException;
@@ -28,13 +30,38 @@ public class PaymentsService {
 	
 	private final RentalRepository rentalRepository;
 	private final UserRepository userRepository;
+	private final TwilioService twilioService;
 	
 	public PaymentsCustomer getCustomerByUserId(String userId) {
 		Optional<PaymentsCustomer> pc = paymentsCustomerRepository.findByUserId(userId);
 		return pc.orElse(null);
 	}
-	
-	
+
+	@SneakyThrows
+	public void billRenter(String rentalId, String paymentUrl) {
+		Rental rental = rentalRepository.findById(rentalId).orElseThrow();
+		DbUser renter = rental.getRenter();
+		StringBuilder builder = new StringBuilder();
+
+		Integer cleaningFee = rental.getCleaningFee();
+		Integer damagedFee = rental.getDamagedFee();
+		Integer insuranceFee = rental.getInsuranceFee();
+		Integer gasFee = rental.getGasFee();
+		builder.append("Thanks for Renting with us\n");
+		buildMessage(builder, cleaningFee, "Cleaning Fee");
+		buildMessage(builder, damagedFee, "Damage Fee");
+		buildMessage(builder, insuranceFee, "Insurance Fee");
+		buildMessage(builder, gasFee, "Gas Fee");
+		builder.append(paymentUrl);
+		twilioService.sendMessage(renter.getPhoneNumber(), builder.toString());
+	}
+
+	private void buildMessage(StringBuilder builder, Integer cleaningFee, String label) {
+		if (cleaningFee != null && cleaningFee > 0)
+			builder.append(label + ": " + cleaningFee + "\n");
+	}
+
+
 	@Transactional
 	public PaymentsCustomer createCustomer(DbUser user, String customerId) {
 		Optional<PaymentsCustomer> opc = paymentsCustomerRepository.findByUserId(user.getId());
@@ -69,7 +96,13 @@ public class PaymentsService {
 			String payerId, 
 			Integer subTotal,
 			String note) throws IllegalArgumentException, StripeException {
-		
+
+		//don't create invoice twice
+		Optional<PaymentsInvoice> byRentIdAndPayerId = paymentsInvoiceRepository.findByRentIdAndPayerId(rentalId, payerId);
+		if (byRentIdAndPayerId.isPresent()) {
+			return byRentIdAndPayerId.get();
+		}
+
 		Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
 		if (optionalRental .isEmpty()) {
 			throw new IllegalArgumentException("rental_id");

@@ -26,6 +26,7 @@ public class RentalDto {
     private Integer cleaningFee;
     private Integer damagedFee;
     private Integer insuranceFee;
+    private Integer gasFee;
 
     // Audit properties
     private LocalDateTime createdAt;
@@ -52,7 +53,7 @@ public class RentalDto {
         }
 
 
-
+        dto.setGasFee(rental.getGasFee());
         dto.setStatus(rental.getStatus());
         dto.setInitialOdometerReading(rental.getInitialOdometerReading());
         dto.setEndingOdometerReading(rental.getEndingOdometerReading());

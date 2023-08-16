@@ -9,6 +9,7 @@ import paymentsService from "../../services/payments/PaymentsService";
 import carService from "../../services/car/carService";
 import {PaymentsInvoiceDto} from "../../services/payments/PaymentsService.types";
 import userService from "../../services/user/UserService";
+import QRCodeModal from "../../components/QrCodeModal";
 
 const ClerkDash: React.FC = () => {
     const navigate = useNavigate();
@@ -17,6 +18,9 @@ const ClerkDash: React.FC = () => {
     const [selectedRentedId, setSelectedRentedId] = useState<string | null>(null); // Track selected row ID
     const [selectedReservedId, setSelectedReservedId] = useState<string | null>(null); // Track selected row ID
     const [reload, setReload] = useState(false);
+
+    const [qrCodeValue, setQrCodeValue] = useState('');
+    const [openQrCode, setOpenQrCode] = useState(false);
 
     useEffect(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
@@ -96,8 +100,12 @@ const ClerkDash: React.FC = () => {
             successUrl: location.href
         });
 
-        if (payment.url)
-            location.href = payment.url;
+        if (payment.url) {
+            setQrCodeValue(payment.url);
+            setOpenQrCode(true);
+            await paymentsService.billRenter(selectedReturnedId, payment.url);
+        }
+
     }
     async function createInvoice(payer: string, subTotal: number, note: string): Promise<PaymentsInvoiceDto> {
         if (!selectedReturnedId) {
@@ -135,9 +143,12 @@ const ClerkDash: React.FC = () => {
             <CustomToolbar>
                 <Box>
                     <Button onClick={createSelfInvoice} disabled={!selectedReturnedId} sx={{marginRight: "5px"}} variant={"contained"}>Pay Rental</Button>
+                    <Button onClick={chargeClientFees} disabled={!selectedReturnedId}
+                            sx={{marginRight: "5px"}} variant={"contained"}>Bill Renter</Button>
                 </Box>
             </CustomToolbar>
             <RentalList reloadData={reload} onSelect={setSelectedReturnedId}  title={"Returned"} status={"RETURNED"} />
+            <QRCodeModal handleClose={() => setOpenQrCode(false)} value={qrCodeValue} open={openQrCode} />
         </Container>
     </>;
 }

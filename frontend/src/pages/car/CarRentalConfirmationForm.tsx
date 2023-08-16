@@ -36,14 +36,12 @@ const CarRentalConfirmationForm: React.FC<{
 }> = ({ user, rental, car, onChange }) => {
     const [odometer, setOdometer] = useState<number | string>(rental?.initialOdometerReading || '');
     const [returnDay, setReturnDay] = useState<string>('');
-    const [damagedFee, setDamagedFee] = useState<string>('');
-    const [cleaningFee, setCleaningFee] = useState<string>('');
-    const [insuranceFee, setInsuranceFee] = useState<string>('');
 
-    const [damagedFeeCheck, setDamagedFeeCheck] = useState<boolean>(false);
-    const [cleaningFeeCheck, setCleaningFeeCheck] = useState<boolean>(false);
-    const [insuranceFeeCheck, setInsuranceFeeCheck] = useState<boolean>(false);
-    const [detailFeeCheck, setDetailFeeCheck] = useState<boolean>(false);
+    const [gasFeeChecked, setGasFeeChecked] = useState<boolean>(!!rental?.gasFee || false);
+    const [damagedFeeCheck, setDamagedFeeCheck] = useState<boolean>(!!rental?.damagedFee || false);
+    const [cleaningFeeCheck, setCleaningFeeCheck] = useState<boolean>(rental?.cleaningFee == 3500 || false);
+    const [insuranceFeeCheck, setInsuranceFeeCheck] = useState<boolean>(!!rental?.insuranceFee || false);
+    const [detailFeeCheck, setDetailFeeCheck] = useState<boolean>((rental?.cleaningFee && rental?.cleaningFee > 3500) || false);
 
     const [pictures, setPictures] = useState({
         front: null,
@@ -91,10 +89,11 @@ const CarRentalConfirmationForm: React.FC<{
             endingOdometerReading: odometer as number,
             damagedFee: 0,
             cleaningFee,
-            insuranceFee: insuranceFeeCheck ? Number(insuranceFee) : 0,
+            insuranceFee: insuranceFeeCheck ? Number(800) : 0,
+            gasFee: gasFeeChecked ? 5000 : 0,
             returnDatetime: newReturnDatetime
         });
-    }, [odometer, returnDay, damagedFee, cleaningFee])
+    }, [odometer, returnDay, damagedFeeCheck, cleaningFeeCheck, gasFeeChecked, detailFeeCheck])
 
 
 
@@ -211,6 +210,9 @@ const CarRentalConfirmationForm: React.FC<{
                         </Grid>
                         <Grid item>
                             <CheckboxWithLabel value={detailFeeCheck}  onChange={setDetailFeeCheck} label={"Detail Fee"}/>
+                        </Grid>
+                        <Grid item>
+                            <CheckboxWithLabel value={gasFeeChecked}  onChange={setGasFeeChecked} label={"Gas Fee"}/>
                         </Grid>
                     </>}
 

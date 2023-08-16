@@ -16,4 +16,5 @@ public class RentalActionDto {
     private Integer cleaningFee;
     private Integer damagedFee;
     private Integer insuranceFee;
+    private Integer gasFee;
 }

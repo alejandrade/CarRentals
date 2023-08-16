@@ -62,6 +62,7 @@ public class RentalService {
 		byId.setCleaningFee(rentalActionDto.getCleaningFee());
 		byId.setDamagedFee(rentalActionDto.getDamagedFee());
 		byId.setInsuranceFee(rentalActionDto.getInsuranceFee());
+		byId.setGasFee(rentalActionDto.getGasFee());
 		return RentalDto.from(rentalRepository.save(byId));
 	}
 

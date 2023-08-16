@@ -77,4 +77,7 @@ public class Rental extends VersionedAuditable {
     @Column(name = "insurance_fee", nullable = false)
     private Integer insuranceFee = 0;
 
+    @Column(name = "gas_fee", nullable = false)
+    private Integer gasFee;
+
 }

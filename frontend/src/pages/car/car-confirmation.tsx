@@ -65,7 +65,8 @@ const CarConfirmation: React.FC<{ }>  = () => {
                 endingOdometerReading: rentDto.endingOdometerReading || 0,
                 cleaningFee: rentDto.cleaningFee || 0,
                 damagedFee: rentDto.damagedFee || 0,
-                insuranceFee: rentDto.insuranceFee || 0
+                insuranceFee: rentDto.insuranceFee || 0,
+                gasFee: rentDto.gasFee || 0
             });
         }
     }

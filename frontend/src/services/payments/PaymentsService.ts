@@ -87,6 +87,18 @@ class PaymentsService {
         return response.json;
     }
 
+    async billRenter(rentalId: string, paymentUrl: string): Promise<boolean> {
+        const response = await authFetch(`${this.BASE_URL}/payments/v1/invoices/billRenter/${rentalId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({paymentUrl: paymentUrl})
+        });
+
+        return response.ok;
+    }
+
 
     async createInvoice(data: createInvoiceDto): Promise<PaymentsInvoiceDto> {
         const response = await authFetch(`${this.BASE_URL}/payments/v1/invoices`, {

@@ -6,6 +6,7 @@ export interface RentalActionDto {
     cleaningFee: number,
     damagedFee: number,
     insuranceFee: number,
+    gasFee: number;
     returnDatetime?: Date; // You may want to use a string representation of the datetime
     version: number;
 }
@@ -24,6 +25,7 @@ export interface RentalDto {
     cleaningFee: number;
     damagedFee: number;
     insuranceFee: number;
+    gasFee: number;
 
     // Audit properties
     createdAt: string;

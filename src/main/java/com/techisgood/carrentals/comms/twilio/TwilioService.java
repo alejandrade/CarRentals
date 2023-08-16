@@ -62,6 +62,21 @@ public class TwilioService {
         return new TwilioVerifyResponse(resp.isVerified(), "", 200);
     }
 
+    @SneakyThrows
+    public void sendMessage(String phoneNumber, String body) {
+//        if (properties.isDebug()) {
+//            return;
+//        }
+
+        boolean isPhoneNumber = UserNameValidator.isPhoneNumber(phoneNumber);
+
+        if (!isPhoneNumber) {
+            throw new IllegalArgumentException("invalid phoneNumber");
+        }
+
+        sendTextMessage(body, phoneNumber);
+    }
+
 
     @CircuitBreaker(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback" )
     @RateLimiter(name = "twilioStartVerificationApi", fallbackMethod = "checkVerificationCodeFallback"  )
@@ -127,6 +142,35 @@ public class TwilioService {
 
         TwilioVerificationCheckResponse resp = objectMapper.readValue(response.body(), TwilioVerificationCheckResponse.class);
         return new TwilioVerifyResponse(Objects.equals(resp.getStatus(), "approved"), "", 200);
+    }
+
+
+    private void sendTextMessage(String message, String phoneNumber) throws IOException, InterruptedException {
+        String encoededPhoneNumber = URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8);
+        String encoededBody = URLEncoder.encode(message, StandardCharsets.UTF_8);
+
+        // Build the authentication header using Base64 encoding
+        String auth = String.format("%s:%s", properties.getSid(), properties.getAuthToken());
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+
+        // Create the HTTP request
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(
+                        String.format(
+                                "https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", properties.getSid())
+                ))
+                .header("Authorization", "Basic " + encodedAuth)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .timeout(Duration.ofSeconds(2)) // Set the timeout to 2 seconds
+                .POST(HttpRequest.BodyPublishers.ofString(String.format("MessagingServiceSid=%s&To=%s&Body=%s",
+                        properties.getMessageService(), encoededPhoneNumber, encoededBody)))
+                .build();
+
+        // Send the request and parse the response
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() > 300) {
+            log.error(response.body());
+        }
     }
 
     //Circuit breaker pattern

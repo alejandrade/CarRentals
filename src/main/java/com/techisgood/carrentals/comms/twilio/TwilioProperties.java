@@ -14,6 +14,9 @@ public class TwilioProperties {
     @Value("${comms.twilio.service}")
     private String service;
 
+    @Value("${comms.twilio.message-service}")
+    private String messageService;
+
     @Value("${comms.twilio.debug}")
     private boolean debug;
 }
