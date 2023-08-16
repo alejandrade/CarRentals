@@ -42,16 +42,7 @@ public class PaymentsService {
 		Rental rental = rentalRepository.findById(rentalId).orElseThrow();
 		DbUser renter = rental.getRenter();
 		StringBuilder builder = new StringBuilder();
-
-		Integer cleaningFee = rental.getCleaningFee();
-		Integer damagedFee = rental.getDamagedFee();
-		Integer insuranceFee = rental.getInsuranceFee();
-		Integer gasFee = rental.getGasFee();
-		builder.append("Thanks for Renting with us\n");
-		buildMessage(builder, cleaningFee, "Cleaning Fee");
-		buildMessage(builder, damagedFee, "Damage Fee");
-		buildMessage(builder, insuranceFee, "Insurance Fee");
-		buildMessage(builder, gasFee, "Gas Fee");
+		builder.append("Thanks for Renting with us click link to pay your fees ");
 		builder.append(paymentUrl);
 		twilioService.sendMessage(renter.getPhoneNumber(), builder.toString());
 	}

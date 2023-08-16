@@ -24,7 +24,6 @@ const PhoneInputComponent: React.FC<Props> = ({ value, onChange, isValid,props, 
     }, [isValid]);
 
     const handlePhoneChange = (phone: string) => {
-        console.log("this happened")
         if (phone && !isValidPhoneNumber(phone)) {
             setError('Invalid phone number format.');
             onValidate && onValidate(false);
