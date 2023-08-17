@@ -75,7 +75,7 @@ const ClerkDash: React.FC = () => {
         const rental = await rentalService.get(selectedReturnedId);
         const car = await carService.getCarById(rental.carId);
         const subTotal = ((car.rentPrice || 0) * calculateDaysBetweenDates(rental.rentalDatetime, rental.returnDatetime))*100;
-        const invoice = await createInvoice(rental.clerkId, subTotal, "Clerk Paid");
+        const invoice = await createInvoice(rental.clerkId, subTotal, "Clerk Paid", "RENTAL");
         const payment = await paymentsService.invoiceCreatePayment({
             invoiceId: invoice.id,
             cancelUrl: location.href,
@@ -93,7 +93,9 @@ const ClerkDash: React.FC = () => {
         }
         const rental = await rentalService.get(selectedReturnedId);
         const insuranceFee = (rental.insuranceFee || 0) * calculateDaysBetweenDates(rental.rentalDatetime, rental.returnDatetime);
-        const invoice = await createInvoice(rental.renterId, insuranceFee + rental.cleaningFee, `Cleaning Fee: ${rental.cleaningFee} Insurance Fee: ${insuranceFee}`);
+        const invoice = await createInvoice(rental.renterId,
+            insuranceFee + rental.cleaningFee, `Cleaning Fee: ${rental.cleaningFee} Insurance Fee: ${insuranceFee}`,
+            "FEE");
         const payment = await paymentsService.invoiceCreatePayment({
             invoiceId: invoice.id,
             cancelUrl: location.href,
@@ -107,7 +109,7 @@ const ClerkDash: React.FC = () => {
         }
 
     }
-    async function createInvoice(payer: string, subTotal: number, note: string): Promise<PaymentsInvoiceDto> {
+    async function createInvoice(payer: string, subTotal: number, note: string, type: string): Promise<PaymentsInvoiceDto> {
         if (!selectedReturnedId) {
             throw new Error("need to select returned car");
         }
@@ -117,7 +119,8 @@ const ClerkDash: React.FC = () => {
             rentalId: rental.id,
             subTotal,
             note,
-            payerId: payer
+            payerId: payer,
+            invoiceType: type
         });
 
         return invoice;

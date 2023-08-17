@@ -2,21 +2,13 @@ package com.techisgood.carrentals.model;
 
 import java.math.BigDecimal;
 
+import com.techisgood.carrentals.rentals.RentalPictureAngle;
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.techisgood.carrentals.model.audit.Auditable;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,7 +57,10 @@ public class PaymentsInvoice extends Auditable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "paid_by_id", insertable=false, updatable=false, nullable = false, foreignKey = @ForeignKey(name = "fk_payments_invoice_paid_by_id"))
 	private DbUser paidBy;
-	
+
+	@Column(length = 50, name = "invoice_type")
+	@Enumerated(EnumType.STRING)
+	private InvoiceType invoiceType;
 
 	@Column(name="external_payment_id", columnDefinition = "char(36)")
 	private String externalPaymentId;

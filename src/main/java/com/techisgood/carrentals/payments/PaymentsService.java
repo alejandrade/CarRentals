@@ -1,19 +1,17 @@
 package com.techisgood.carrentals.payments;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import com.techisgood.carrentals.comms.twilio.TwilioService;
+import com.techisgood.carrentals.model.*;
 import lombok.SneakyThrows;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
-import com.techisgood.carrentals.model.DbUser;
-import com.techisgood.carrentals.model.PaymentsCustomer;
-import com.techisgood.carrentals.model.PaymentsInvoice;
-import com.techisgood.carrentals.model.Rental;
-import com.techisgood.carrentals.model.ServiceLocation;
 import com.techisgood.carrentals.rentals.RentalRepository;
 import com.techisgood.carrentals.user.UserRepository;
 
@@ -79,17 +77,23 @@ public class PaymentsService {
 		}
 		return null;
 	}
-	
+
+	public List<PaymentsInvoice> getInvoiceBySession(UserDetails auth) {
+		String userId = auth.getUsername();
+		return paymentsInvoiceRepository.activeInvoiceByPayerId(userId);
+	}
 	
 	@Transactional
 	public PaymentsInvoice createInvoice(
-			String rentalId, 
-			String payerId, 
+			String rentalId,
+			String payerId,
 			Integer subTotal,
-			String note) throws IllegalArgumentException, StripeException {
+			String note,
+			InvoiceType type) throws IllegalArgumentException, StripeException {
 
 		//don't create invoice twice
-		Optional<PaymentsInvoice> byRentIdAndPayerId = paymentsInvoiceRepository.findByRentIdAndPayerId(rentalId, payerId);
+		Optional<PaymentsInvoice> byRentIdAndPayerId = paymentsInvoiceRepository
+				.findByRentIdAndPayerId(rentalId, payerId, type);
 		if (byRentIdAndPayerId.isPresent()) {
 			return byRentIdAndPayerId.get();
 		}
@@ -107,6 +111,7 @@ public class PaymentsService {
 		pi.setRentalId(rentalId);
 		pi.setPayerId(payerId);
 		pi.setNote(note);
+		pi.setInvoiceType(type);
 		
 		Rental rental = optionalRental.get();
 		

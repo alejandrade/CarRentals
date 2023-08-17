@@ -17,6 +17,7 @@ export interface createInvoiceDto {
 	note: string;
 	subTotal: number;
 	payerId: string;
+	invoiceType: string;
 }
 
 export interface PaymentsInvoiceDto {

@@ -2,6 +2,7 @@ package com.techisgood.carrentals.payments;
 
 import java.time.LocalDateTime;
 
+import com.techisgood.carrentals.model.InvoiceType;
 import com.techisgood.carrentals.model.PaymentsInvoice;
 
 import lombok.Data;
@@ -18,6 +19,7 @@ public class PaymentsInvoiceDto {
 	private String paidBy;
 	private String externalPaymentId;
 	private String externalPaymentStatus;
+	private InvoiceType invoiceType;
 	
 	// Audit properties
     private LocalDateTime createdAt;
@@ -38,6 +40,7 @@ public class PaymentsInvoiceDto {
     	result.taxRate = invoice.getTaxRate().doubleValue();
     	result.taxTotal = invoice.getTaxTotal();
     	result.total = invoice.getTotal();
+		result.invoiceType = invoice.getInvoiceType();
     	if (invoice.getPaidBy() != null) {
     		result.paidBy = invoice.getPaidBy().getId();
     	}

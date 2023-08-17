@@ -99,6 +99,14 @@ class PaymentsService {
         return response.ok;
     }
 
+    async currentInvoices(): Promise<PaymentsInvoiceDto[]> {
+        const response = await authFetch(`${this.BASE_URL}/payments/v1/invoices/current`);
+        if (!response.ok) {
+            throw new Error('Failed to get payments invoices');
+        }
+        return response.json;
+    }
+
 
     async createInvoice(data: createInvoiceDto): Promise<PaymentsInvoiceDto> {
         const response = await authFetch(`${this.BASE_URL}/payments/v1/invoices`, {

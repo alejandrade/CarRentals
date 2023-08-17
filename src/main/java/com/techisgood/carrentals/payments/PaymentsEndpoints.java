@@ -1,6 +1,7 @@
 package com.techisgood.carrentals.payments;
 
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,12 +44,20 @@ public class PaymentsEndpoints {
 					rental.getId(),
 					requestBody.getPayerId(),
 					requestBody.getSubTotal(),
-					requestBody.getNote());
+					requestBody.getNote(),
+					requestBody.getInvoiceType());
 			PaymentsInvoiceDto response = PaymentsInvoiceDto.from(invoice);
 			return ResponseEntity.ok().body(response);
 		} catch (StripeException e) {
 			throw new RemoteServiceException(RemoteService.STRIPE, e.getMessage());
 		}
+	}
+
+	@GetMapping("/invoices/current")
+	@PreAuthorize("hasAuthority('ROLE_USER')")
+	public ResponseEntity<?> getMyInvoices(@AuthenticationPrincipal UserDetails auth) throws RemoteServiceException {
+		List<PaymentsInvoiceDto> paymentsInvoiceDtos = paymentsService.getInvoiceBySession(auth).stream().map(PaymentsInvoiceDto::from).toList();
+		return ResponseEntity.ok(paymentsInvoiceDtos);
 	}
 
 	@PostMapping("/invoices/createPayment")

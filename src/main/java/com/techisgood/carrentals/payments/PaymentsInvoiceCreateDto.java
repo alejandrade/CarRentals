@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.payments;
 
+import com.techisgood.carrentals.model.InvoiceType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -19,4 +20,7 @@ public class PaymentsInvoiceCreateDto {
 
 	@NotNull(message = "note must contain value")
 	private String note;
+
+	@NotNull(message = "invoice type needed")
+	private InvoiceType invoiceType;
 }
