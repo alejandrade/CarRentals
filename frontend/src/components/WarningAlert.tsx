@@ -2,7 +2,6 @@ import React from 'react';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface WarningAlertProps {
