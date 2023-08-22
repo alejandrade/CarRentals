@@ -16,4 +16,4 @@ phases:
 
   post_build:
     commands:
-      - aws s3 sync dist/ s3://dev.icdn.app/
+      - aws s3 sync dist/ s3://okcrentals-dev/
