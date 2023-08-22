@@ -67,7 +67,7 @@ node {
 }
 
 bootBuildImage {
-    imageName = "527582357168.dkr.ecr.us-east-2.amazonaws.com/carrentals:${version}"
+    imageName = "830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals:${version}"
 }
 
 task npmBuild(type: NpmTask, dependsOn: 'npmInstall') {

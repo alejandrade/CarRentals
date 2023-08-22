@@ -22,8 +22,6 @@ const CarRentalStart: React.FC = () => {
 
     const navigate = useNavigate();
     const { showError, handleAPIError } = useErrorModal();
-
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);

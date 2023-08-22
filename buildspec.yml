@@ -12,17 +12,17 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 527582357168.dkr.ecr.us-east-2.amazonaws.com
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 830433532063.dkr.ecr.us-east-2.amazonaws.com
 
   build:
     commands:
       - echo "Building the Docker image..."
-      - ./gradlew bootBuildImage --imageName=527582357168.dkr.ecr.us-east-2.amazonaws.com/carrentals:${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - ./gradlew bootBuildImage --imageName=830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals:${CODEBUILD_RESOLVED_SOURCE_VERSION}
 
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
-      - docker push 527582357168.dkr.ecr.us-east-2.amazonaws.com/carrentals:${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - docker push 830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals:${CODEBUILD_RESOLVED_SOURCE_VERSION}
 
 artifacts:
   files:
