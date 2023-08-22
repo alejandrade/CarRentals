@@ -45,4 +45,4 @@ src/main/resources/static
 .DS_Store
 stripe.exe
 
-**/application-dev.yaml
+**/application-*.yaml

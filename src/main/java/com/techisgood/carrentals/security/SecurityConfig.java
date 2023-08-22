@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/payments/**").hasAnyAuthority(UserAuthority.ROLE_USER.name(), UserAuthority.ROLE_ADMIN.name())
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/remote-payments/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated() // ensuring all other routes require authentication
                 )
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,7 +58,7 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "http://192.168.86.30:3000");
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "http://192.168.86.30:3000", "");
             }
         };
     }
@@ -83,6 +84,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(HttpMethod.OPTIONS, "/**")
                 .requestMatchers("/error")
+                .requestMatchers("/actuator/**")
                 .requestMatchers("/auth/**");
     }
 
