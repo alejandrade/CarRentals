@@ -11,15 +11,15 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableCaching
+//@EnableCaching
 public class CacheConfig implements CachingConfigurer {
 
-    private final RedisConnectionFactory redisConnectionFactory;
-
-    @Bean
-    @Override
-    public CacheManager cacheManager() {
-        return RedisCacheManager.builder(redisConnectionFactory).build();
-    }
+//    private final RedisConnectionFactory redisConnectionFactory;
+//
+//    @Bean
+//    @Override
+//    public CacheManager cacheManager() {
+//        return RedisCacheManager.builder(redisConnectionFactory).build();
+//    }
 }
 
