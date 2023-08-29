@@ -50,15 +50,15 @@ const StepOneComponent: React.FC<StepOneProps> = ({ username, remember, setUsern
     return (
         <Container maxWidth="sm" style={{ height: 300 }}>
             <Typography variant="caption" gutterBottom>
-                Choose to login with either phone number or email.
+                Login with phone number.
             </Typography>
 
-            <Box display="flex" justifyContent="center" mb={2}>
-                <RadioGroup row value={inputType} onChange={handleInputTypeChange}>
-                    <FormControlLabel value="phone" control={<Radio />} label="Phone Number" />
-                    <FormControlLabel value="email" control={<Radio />} label="Email" />
-                </RadioGroup>
-            </Box>
+            {/*<Box display="flex" justifyContent="center" mb={2}>*/}
+            {/*    <RadioGroup row value={inputType} onChange={handleInputTypeChange}>*/}
+            {/*        <FormControlLabel value="phone" control={<Radio />} label="Phone Number" />*/}
+            {/*        <FormControlLabel value="email" control={<Radio />} label="Email" />*/}
+            {/*    </RadioGroup>*/}
+            {/*</Box>*/}
 
             {inputType === 'phone' ? (
                 <PhoneInputComponent
@@ -72,19 +72,19 @@ const StepOneComponent: React.FC<StepOneProps> = ({ username, remember, setUsern
                 />
             )}
 
-            <Box mt={2}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={remember}
-                            onChange={(e) => setRemember(e.target.checked)}
-                            name="remember"
-                            color="primary"
-                        />
-                    }
-                    label="Remember me"
-                />
-            </Box>
+            {/*<Box mt={2}>*/}
+            {/*    <FormControlLabel*/}
+            {/*        control={*/}
+            {/*            <Checkbox*/}
+            {/*                checked={remember}*/}
+            {/*                onChange={(e) => setRemember(e.target.checked)}*/}
+            {/*                name="remember"*/}
+            {/*                color="primary"*/}
+            {/*            />*/}
+            {/*        }*/}
+            {/*        label="Remember me"*/}
+            {/*    />*/}
+            {/*</Box>*/}
 
             <Box mt={2}>
                 <LoadingButton
