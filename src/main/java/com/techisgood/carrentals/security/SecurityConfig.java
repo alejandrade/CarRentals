@@ -58,7 +58,7 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "http://192.168.86.30:3000", "");
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com");
             }
         };
     }
@@ -66,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfiguration() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://192.168.86.30:3000"));  // <-- you might want to adjust this to allow any origin or specific ones
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com"));  // <-- you might want to adjust this to allow any origin or specific ones
         configuration.applyPermitDefaultValues();
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("GET");
