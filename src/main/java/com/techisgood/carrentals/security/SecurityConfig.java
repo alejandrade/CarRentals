@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String[] CORS_URLS = {"http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com", "https://app.arc.rent"};
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
     @Bean
@@ -58,7 +59,7 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com");
+                registry.addMapping("/**").allowedOrigins(CORS_URLS);
             }
         };
     }
@@ -66,7 +67,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfiguration() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com"));  // <-- you might want to adjust this to allow any origin or specific ones
+        configuration.setAllowedOrigins(Arrays.asList(CORS_URLS));
         configuration.applyPermitDefaultValues();
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("GET");
