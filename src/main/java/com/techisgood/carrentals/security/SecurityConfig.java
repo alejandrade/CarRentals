@@ -29,7 +29,9 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] CORS_URLS = {"http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com", "https://app.arc.rent"};
+    private static final String[] CORS_URLS =
+            {"http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com",
+                    "https://app.arc.rent"};
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
     @Bean
