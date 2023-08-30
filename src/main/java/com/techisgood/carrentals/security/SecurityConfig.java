@@ -71,7 +71,6 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Allow localhost with any port
-        configuration.addAllowedOriginPattern("http://localhost:[0-9]*");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("https://app.arc.rent");
         configuration.addAllowedOrigin("https://autorentalsusa.com");
