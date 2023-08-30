@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] CORS_URLS =
-            {"*"};
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
     @Bean
@@ -51,29 +50,27 @@ public class SecurityConfig {
                 )
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(CorsConfigurer::disable)
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class); // adding JWT filter
         return http.build();
     }
 
 
-    @Bean
-    public CorsConfigurationSource corsConfiguration() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(CORS_URLS));
-        configuration.applyPermitDefaultValues();
-        configuration.setAllowCredentials(true);
-        configuration.addAllowedMethod("GET");
-        configuration.addAllowedMethod("PATCH");
-        configuration.addAllowedMethod("POST");
-        configuration.addAllowedMethod("OPTIONS");
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
-        configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("*"));  // Allow all origins
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // Allow all methods
+    configuration.setAllowedHeaders(Arrays.asList("*"));  // Allow all headers
+    configuration.setAllowCredentials(true);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration); // Apply the CORS configuration on all paths
+    return source;
+}
 
-    @Bean
+
+
+@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(HttpMethod.OPTIONS, "/**")
                 .requestMatchers("/error")
