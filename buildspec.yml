@@ -18,7 +18,9 @@ phases:
   build:
     commands:
       - echo "Building the Docker image..."
-      - ./gradlew bootBuildImage
+      - ./gradlew bootBuildImage --imageName=830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals:${MY_VERSION}
+      - ./gradlew bootBuildImage --imageName=830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals:latest
+
 
   post_build:
     commands:
