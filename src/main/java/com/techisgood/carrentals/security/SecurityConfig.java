@@ -30,8 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String[] CORS_URLS =
-            {"http://localhost:3000", "http://192.168.86.30:3000", "https://autorentalsusa.com",
-                    "https://app.arc.rent"};
+            {"*"};
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
     @Bean
@@ -56,15 +55,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(CORS_URLS);
-            }
-        };
-    }
 
     @Bean
     public CorsConfigurationSource corsConfiguration() {
