@@ -130,7 +130,7 @@ public class TwilioService {
                 .header("Authorization", "Basic " + encodedAuth)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .timeout(Duration.ofSeconds(2)) // Set the timeout to 2 seconds
-                .POST(HttpRequest.BodyPublishers.ofString(String.format("Code=%s&To=%s", verificationCode, encodedUsername)))
+                .POST(HttpRequest.BodyPublishers.ofString(String.format("Code=%s&To=%s", verificationCode.trim(), encodedUsername)))
                 .build();
 
         // Send the request and parse the response

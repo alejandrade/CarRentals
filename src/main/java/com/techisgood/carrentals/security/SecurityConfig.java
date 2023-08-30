@@ -76,7 +76,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("https://autorentalsusa.com");
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // Allow all methods
-        configuration.setAllowedHeaders(Arrays.asList("*"));  // Allow all headers
+        configuration.setAllowedHeaders(List.of("*"));  // Allow all headers
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Apply the CORS configuration on all paths
