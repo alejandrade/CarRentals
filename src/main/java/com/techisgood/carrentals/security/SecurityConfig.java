@@ -1,6 +1,7 @@
 package com.techisgood.carrentals.security;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,44 +60,28 @@ public class SecurityConfig {
                 .cors(x -> {
                     x.configurationSource(corsConfigurationSource());
                 })
-                .headers(x -> {
-
-                    x.crossOriginResourcePolicy( y -> {
-                        y.policy(CrossOriginResourcePolicyHeaderWriter.CrossOriginResourcePolicy.CROSS_ORIGIN);
-                    });
-                    x.crossOriginOpenerPolicy( y -> {
-                        y.policy(CrossOriginOpenerPolicyHeaderWriter.CrossOriginOpenerPolicy.UNSAFE_NONE);
-                    });
-                    x.crossOriginEmbedderPolicy( y -> {
-                        y.policy(CrossOriginEmbedderPolicyHeaderWriter.CrossOriginEmbedderPolicy.UNSAFE_NONE);
-                    });
-                })
                 .requestCache(RequestCacheConfigurer::disable)
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class); // adding JWT filter
         return http.build();
     }
 
 
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("*"));  // Allow all origins
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // Allow all methods
-    configuration.setAllowedHeaders(Arrays.asList("*"));  // Allow all headers
-    configuration.setAllowCredentials(true);
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration); // Apply the CORS configuration on all paths
-    return source;
-}
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
+        // Allow localhost with any port
+        configuration.addAllowedOriginPattern("http://localhost:[0-9]*");
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("https://app.arc.rent");
+        configuration.addAllowedOrigin("https://autorentalsusa.com");
 
-
-@Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(HttpMethod.OPTIONS, "/**")
-                .requestMatchers("/error")
-                .requestMatchers("/actuator/**")
-                .requestMatchers("/auth/**");
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // Allow all methods
+        configuration.setAllowedHeaders(Arrays.asList("*"));  // Allow all headers
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Apply the CORS configuration on all paths
+        return source;
     }
 
 }
