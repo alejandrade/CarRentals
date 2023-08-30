@@ -8,6 +8,7 @@ plugins {
 
 group = 'com.techisgood'
 version = '0.0.1-SNAPSHOT'
+def envVersion = System.getenv('MY_VERSION') ?: '0.0.1-SNAPSHOT' // fallback if the env variable is not set
 
 java {
     sourceCompatibility = '17'
@@ -69,7 +70,7 @@ node {
 
 bootBuildImage {
     imageName = "830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals"
-    tags = [version, "latest"]
+    tags = [envVersion, "latest"]
 }
 
 task npmBuild(type: NpmTask, dependsOn: 'npmInstall') {
