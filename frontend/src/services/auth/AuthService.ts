@@ -26,6 +26,7 @@ class AuthService {
         if (response.status === 200) {
             return true;
         } else {
+            console.log((await response.json()))
             return false;
         }
 
@@ -39,6 +40,10 @@ class AuthService {
             },
             body: JSON.stringify(data),
         });
+
+        if (response.status != 200) {
+            console.log("Auth is broken", (await response.json()));
+        }
 
         return response.json();
     }

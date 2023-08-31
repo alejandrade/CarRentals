@@ -3,6 +3,7 @@ package com.techisgood.carrentals.user;
 import static com.techisgood.carrentals.security.SecurityUtils.isAdminClerkOrSameUser;
 
 import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,11 @@ public class UserEndpoints {
 	private final CreateUserLicenseService createUserLicenseService;
 	private final UserService userService;
 	private final UserRepository userRepository;
+
+	@GetMapping("/authtest")
+	public ResponseEntity<?> authTest() {
+		return ResponseEntity.ok(Map.of("key", false));
+	}
 
 	@PostMapping("/admin/{userId}")
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")

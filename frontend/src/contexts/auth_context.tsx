@@ -1,4 +1,5 @@
 import React, {createContext, useContext, useState, ReactNode, useEffect} from "react";
+import userService from "../services/user/UserService";
 
 interface AuthContextType {
     token: string | null;
@@ -24,7 +25,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setAuthorities( auths.split(","));
         }
 
-    }, [])
+        if (token) {
+            init();
+        }
+
+    }, []);
+
+    async function init() {
+        const authTest = await userService.authTest();
+        if (!authTest) {
+            logout();
+        }
+    }
 
     const login = (newToken: string, authorities: string[]) => {
         setToken(newToken);

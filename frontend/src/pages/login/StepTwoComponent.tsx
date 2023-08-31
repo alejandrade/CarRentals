@@ -26,7 +26,7 @@ const StepTwoComponent: React.FC<StepTwoProps> = ({
             phoneNumber: username.replace(/\s+/g, ''),
             code: validationNumber
         });
-        if (!validated.verified) {  // Simulated validation for example purposes
+        if (!validated?.verified) {  // Simulated validation for example purposes
             setErrorMessage("Code Doesn't seem to match");
         } else {
             setErrorMessage(null);

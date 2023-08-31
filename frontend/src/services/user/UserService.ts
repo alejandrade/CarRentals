@@ -129,6 +129,11 @@ class UserService {
         return response.json;
     }
 
+    async authTest(): Promise<boolean> {
+        const resp = await authFetch(`${this.BASE_URL}/users/v1/user/authtest`);
+        return resp.ok;
+    }
+
 
     async getLoggedInUser(): Promise<UserDto> {
         const response = await authFetch(`${this.BASE_URL}/users/v1/user/current`);
