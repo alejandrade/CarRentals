@@ -35,6 +35,7 @@ const StepOneComponent: React.FC<StepOneProps> = ({ username, remember, setUsern
 
     const handleNext = async () => {
         if (isValidInput()) {
+            setLoading(true);
             const auth =  await AuthService.startVerification({
                 phoneNumber: username.replace(/\s+/g, ''),
                 channel: "SMS"
@@ -44,6 +45,8 @@ const StepOneComponent: React.FC<StepOneProps> = ({ username, remember, setUsern
             } else {
                 console.log("error")
             }
+            setLoading(false);
+
         }
     };
 

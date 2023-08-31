@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Box, Button, Typography, Alert } from '@mui/material';
 import AuthService from "../../services/auth/AuthService";
 import {useAuth} from "../../contexts/auth_context";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 type StepTwoProps = {
     username: string;
@@ -20,8 +21,10 @@ const StepTwoComponent: React.FC<StepTwoProps> = ({
                                                   }) => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const {login} = useAuth();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleLogin =  async () => {
+        setLoading(true);
         const validated = await AuthService.verify({
             phoneNumber: username.replace(/\s+/g, ''),
             code: validationNumber
@@ -33,6 +36,7 @@ const StepTwoComponent: React.FC<StepTwoProps> = ({
             login(validated.token, validated.authorities);
             onLogin();
         }
+        setLoading(false);
     }
 
     return (
@@ -60,9 +64,9 @@ const StepTwoComponent: React.FC<StepTwoProps> = ({
                 <Button variant="outlined" color="secondary" onClick={onBack}>
                     Back
                 </Button>
-                <Button variant="contained" color="primary" onClick={handleLogin}>
+                <LoadingButton loading={loading} variant="contained" color="primary" onClick={handleLogin}>
                     Login
-                </Button>
+                </LoadingButton>
             </Box>
         </div>
     );
