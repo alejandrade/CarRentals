@@ -19,8 +19,6 @@ public class TwilioProperties {
     private String authToken;
     private String sid;
     private String service;
-
-    @Value("${comms.twilio.message-service}")
     private String messageService;
 
     @Value("${comms.twilio.debug}")
@@ -37,5 +35,6 @@ public class TwilioProperties {
         authToken = jsonNode.get("TWILIO_AUTH_TOKEN").asText();
         sid = jsonNode.get("TWILIO_SID").asText();
         service = jsonNode.get("TWILIO_SERVICE").asText();
+        messageService = jsonNode.get("TWILIO_MESSAGING").asText();
     }
 }

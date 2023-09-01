@@ -46,3 +46,5 @@ src/main/resources/static
 stripe.exe
 
 **/application-*.yaml
+
+*.log
