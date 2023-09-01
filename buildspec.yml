@@ -26,11 +26,9 @@ post_build:
     - echo "Pushing Docker image to ECR..."
     - docker push 830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals:${MY_VERSION}
     - docker push 830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals:latest
-    - echo "Starting trigger for jenkins"
+    - echo "Starting trigger for jenkins..."
     - AUTH_TOKEN=$(aws secretsmanager get-secret-value --secret-id jenkins-build --query SecretString --output text | jq -r .jenkins)
-    - >-
-      curl -v --location --request POST 'http://ec2-52-15-219-182.us-east-2.compute.amazonaws.com:8080/job/ARC/build?token=t4est'
-      --header "Authorization: Basic $AUTH_TOKEN"
+    - curl -v --location --request POST 'http://ec2-52-15-219-182.us-east-2.compute.amazonaws.com:8080/job/ARC/build?token=t4est' --header "Authorization: Basic $AUTH_TOKEN"
 
 
 artifacts:
