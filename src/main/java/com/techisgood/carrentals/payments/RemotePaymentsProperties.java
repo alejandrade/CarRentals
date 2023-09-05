@@ -18,12 +18,6 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRespon
 @RequiredArgsConstructor
 public class RemotePaymentsProperties {
 	private String secretKey;
-	
-	@Value("${stripe.checkout-url-success}")
-	private String checkoutUrlSuccess;
-	
-	@Value("${stripe.checkout-url-cancel}")
-	private String checkoutUrlCancel;
 
 	private String webhookSecret;
 
