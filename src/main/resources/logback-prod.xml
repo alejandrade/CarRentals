@@ -3,7 +3,7 @@
 
     <!-- Define the log file location with a datetime timestamp -->
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/var/log/carrental/application-%d{yyyy-MM-dd_HH:mm:ss}.log</file>
+        <file>/log/application-%d{yyyy-MM-dd_HH:mm:ss}.log</file>
 
         <!-- Log rotation settings with datetime timestamp -->
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
