@@ -19,16 +19,6 @@ const EditUserModal: React.FC<Param> = ({userId, onSave}) => {
     const [editedUserDto, setEditedUserDto] = useState<UserDto>();
     const { showError, handleAPIError } = useErrorModal();
 
-    useEffect(() => {
-        init();
-    }, []);
-
-    async function init() {
-        const user = await userService.getUser(userId).catch(handleAPIError);
-        console.log(user);
-        if (user)
-        setEditedUserDto(user);
-    }
 
     const handleOpen = () => {
         setOpen(true);

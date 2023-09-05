@@ -68,6 +68,24 @@ class ServiceLocationService {
     }
 
     /**
+     * Fetch a single service location by its clerk
+     *
+     * @param id - The ID of the clerk
+     * @returns - A promise with the response containing the service location data.
+     */
+    async getServiceLocationByUserId(id: string): Promise<ServiceLocationDto> {
+        const url = `${this.BASE_URL}/staff/v1/serviceLocations/user/${id}`;
+
+        const response = await authFetch(url);
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch service location by ID');
+        }
+
+        return response.json;
+    }
+
+    /**
      * Save or create a new service location.
      *
      * @param dto - The ServiceLocationDto data.

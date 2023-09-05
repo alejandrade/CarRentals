@@ -59,5 +59,10 @@ public class ServiceLocationEndpoints {
 	public ServiceLocationDto getServiceLocationBy(@PathVariable String id) {
 		return serviceLocationRepository.findById(id).map(ServiceLocationDto::from).orElseThrow();
 	}
+
+	@GetMapping("/user/{id}")
+	public ServiceLocationDto getServiceLocationByUser(@PathVariable String id) {
+		return serviceLocationRepository.byClerkId(id).map(ServiceLocationDto::from).orElseThrow();
+	}
 	
 }

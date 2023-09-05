@@ -63,7 +63,7 @@ public class UserDto {
         userDto.setCredentialsNonExpired(dbUser.getCredentialsNonExpired());
         userDto.setAccountNonLocked(dbUser.getAccountNonLocked());
         userDto.setVersion(dbUser.getVersion());
-
+        
         if (dbUser.getAuthorities() != null) {
             userDto.setAuthorities(dbUser.getAuthorities().stream()
                     .map(Authority::getAuthority)

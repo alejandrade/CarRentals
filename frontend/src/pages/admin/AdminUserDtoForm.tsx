@@ -39,28 +39,35 @@ const UserDtoForm: React.FC<UserDtoProps> = ({ dto, onSave }) => {
     const [errors, setErrors] = useState<FormErrors>({});
     const [loading, setLoading] = useState<boolean>(false);
     const { showError, handleAPIError } = useErrorModal();
+    const [formLoading, setFormLoading] = useState<boolean>(false);
 
     useEffect(()=> {
         init();
     }, [])
 
     async function init() {
+        setFormLoading(true);
         setLoading(true);
         if (!dto?.id) {
             throw new Error("illegal state");
         }
         const user = await userService.getUser(dto?.id).catch(handleAPIError);
         if (user) {
+            const location = await serviceLocationService.getServiceLocationByUserId(user.id).catch(handleAPIError)
+
+            console.log(user)
             setFormData({
                 id: user.id,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
-                serviceLocation: user.serviceLocation,
+                serviceLocation: location || undefined,
+                serviceLocationId: location?.id || undefined,
                 authorities: user.authorities,
                 enabled: user.enabled
             })
         }
         setLoading(false);
+        setFormLoading(false);
     }
 
     useEffect(() => {
@@ -114,34 +121,35 @@ const UserDtoForm: React.FC<UserDtoProps> = ({ dto, onSave }) => {
         }
     };
 
-    return (
-        <Container>
-            <form onSubmit={handleSubmit}>
-                <Grid container direction="column" spacing={3}>
-                    <Grid item>
-                        <TextField
-                            fullWidth
-                            label="Email"
-                            value={formData.email || ''}
-                            onChange={handleChange('email')}
-                            error={!!errors.email}
-                            helperText={errors.email}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <PhoneInputComponent value={formData.phoneNumber || ''}
-                                             onChange={(val) => {
-                                                 setFormData({
-                                                     ...formData,
-                                                     phoneNumber: val
-                                                 });
-                                             }}
-                        />
+    return (<>
+        {!formLoading &&
+    <Container>
+        <form onSubmit={handleSubmit}>
+            <Grid container direction="column" spacing={3}>
+                <Grid item>
+                    <TextField
+                        fullWidth
+                        label="Email"
+                        value={formData.email || ''}
+                        onChange={handleChange('email')}
+                        error={!!errors.email}
+                        helperText={errors.email}
+                    />
+                </Grid>
+                <Grid item>
+                    <PhoneInputComponent value={formData.phoneNumber || ''}
+                                         onChange={(val) => {
+                                             setFormData({
+                                                 ...formData,
+                                                 phoneNumber: val
+                                             });
+                                         }}
+                    />
 
-                    </Grid>
+                </Grid>
 
-                    <Grid item>
-                        <ServiceLocationTypeahead
+                <Grid item>
+                    <ServiceLocationTypeahead
                         value={formData.serviceLocation}
                         onChange={(selectedServiceLocation) => {
                             setFormData({
@@ -152,36 +160,37 @@ const UserDtoForm: React.FC<UserDtoProps> = ({ dto, onSave }) => {
                         }}
                         error={!!errors.serviceLocations}
                         helperText={errors.serviceLocations}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <UserRoleDropdown value={formData.authorities|| []}
-                                          onChange={handleSelectChange('authorities')}
-                                          error={!!errors.authorities}
-                                          helperText={errors.authorities}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={formData.enabled || false}
-                                    onChange={handleCheckboxChange('enabled')}
-                                    color="primary"
-                                />
-                            }
-                            label="Enabled"
-                        />
-                        {errors.enabled && <FormHelperText error>{errors.enabled}</FormHelperText>}
-                    </Grid>
-                    <Grid item>
-                        <LoadingButton loading={loading} fullWidth type="submit" variant="contained" color="primary">
-                            Save
-                        </LoadingButton>
-                    </Grid>
+                    />
                 </Grid>
-            </form>
-        </Container>
+                <Grid item>
+                    <UserRoleDropdown value={formData.authorities || []}
+                                      onChange={handleSelectChange('authorities')}
+                                      error={!!errors.authorities}
+                                      helperText={errors.authorities}
+                    />
+                </Grid>
+                <Grid item>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={formData.enabled || false}
+                                onChange={handleCheckboxChange('enabled')}
+                                color="primary"
+                            />
+                        }
+                        label="Enabled"
+                    />
+                    {errors.enabled && <FormHelperText error>{errors.enabled}</FormHelperText>}
+                </Grid>
+                <Grid item>
+                    <LoadingButton loading={loading} fullWidth type="submit" variant="contained" color="primary">
+                        Save
+                    </LoadingButton>
+                </Grid>
+            </Grid>
+        </form>
+    </Container>
+}</>
     );
 };
 

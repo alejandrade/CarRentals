@@ -33,8 +33,11 @@ const ServiceLocationTypeahead: React.FC<Props> = ({
     );
 
     useEffect(() => {
+        console.log(value);
+
         const fetchServiceLocations = async () => {
             try {
+                console.log(value);
                 const response = await serviceLocationService.getAllServiceLocation();
                 // Map ServiceLocationDto to ViewObject for display
                 const viewObjects = response.map((location) => ({
@@ -53,7 +56,7 @@ const ServiceLocationTypeahead: React.FC<Props> = ({
         };
 
         fetchServiceLocations();
-    }, [value]);
+    }, []);
 
     return (
         <Autocomplete
@@ -63,7 +66,7 @@ const ServiceLocationTypeahead: React.FC<Props> = ({
             value={selectedViewValue}
             onChange={(event, newValue) => {
                 // Map the selected choice back to ServiceLocationDto
-                const selectedDto: ServiceLocationDto | undefined = newValue?.id !== "" ? realOptions.find(x => x.id === selectedDto?.id) : undefined;
+                const selectedDto: ServiceLocationDto | undefined = newValue?.id !== "" ? realOptions.find(x => x.id === newValue?.id) : undefined;
                 setSelectedViewValue(newValue || placeholderOption);
                 if (onChange) {
                     onChange(selectedDto);
