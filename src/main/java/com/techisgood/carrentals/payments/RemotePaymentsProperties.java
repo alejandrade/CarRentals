@@ -31,7 +31,6 @@ public class RemotePaymentsProperties {
 	private final ObjectMapper objectMapper;
 
 	@PostConstruct
-	@Profile("prod")
 	public void init() throws JsonProcessingException {
 		GetSecretValueRequest apiSecretsArc = GetSecretValueRequest.builder().secretId("API_SECRETS_ARC").build();
 		GetSecretValueResponse secretValue = secretsManagerClient.getSecretValue(apiSecretsArc);
@@ -40,13 +39,13 @@ public class RemotePaymentsProperties {
 		webhookSecret = jsonNode.get("STRIPE_WEBHOOK_SECRET").asText();
 	}
 
-	@PostConstruct
-	@Profile("dev")
-	public void initForDev() throws JsonProcessingException {
-		GetSecretValueRequest apiSecretsArc = GetSecretValueRequest.builder().secretId("DEV_API_SECRETS_ARC").build();
-		GetSecretValueResponse secretValue = secretsManagerClient.getSecretValue(apiSecretsArc);
-		JsonNode jsonNode = objectMapper.readValue(secretValue.secretString(), JsonNode.class);
-		secretKey = jsonNode.get("STRIPE_SECRET_KEY").asText();
-		webhookSecret = "dev";
-	}
+//	@PostConstruct
+//	@Profile("dev")
+//	public void initForDev() throws JsonProcessingException {
+//		GetSecretValueRequest apiSecretsArc = GetSecretValueRequest.builder().secretId("DEV_API_SECRETS_ARC").build();
+//		GetSecretValueResponse secretValue = secretsManagerClient.getSecretValue(apiSecretsArc);
+//		JsonNode jsonNode = objectMapper.readValue(secretValue.secretString(), JsonNode.class);
+//		secretKey = jsonNode.get("STRIPE_SECRET_KEY").asText();
+//		webhookSecret = "dev";
+//	}
 }
