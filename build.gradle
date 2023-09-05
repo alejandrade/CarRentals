@@ -72,23 +72,6 @@ node {
 bootBuildImage {
     imageName = "830433532063.dkr.ecr.us-east-2.amazonaws.com/carrentals"
     tags = [envVersion, "latest"]
-
-    // Define the custom Dockerfile
-    dockerfile {
-        from 'amazoncorretto:17.0.8-al2-native-jdk'
-        // Create the /log directory in the root of the image
-        run 'mkdir -p /log'
-        run 'chmod 755 /log'
-
-        // Copy your application JAR or files
-        copy 'build/libs/your-application.jar', '/app.jar'
-
-        // Set the working directory
-        workDir '/'
-
-        // Define the command to run your application
-        cmd 'java', '-jar', '/app.jar'
-    }
 }
 
 task npmBuild(type: NpmTask, dependsOn: 'npmInstall') {

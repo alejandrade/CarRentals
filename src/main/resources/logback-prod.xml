@@ -1,30 +1,30 @@
-<configuration>
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+<!--<configuration>-->
+<!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
 
-    <!-- Define the log file location with a datetime timestamp -->
-    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/log/application-%d{yyyy-MM-dd_HH:mm:ss}.log</file>
+<!--    &lt;!&ndash; Define the log file location with a datetime timestamp &ndash;&gt;-->
+<!--    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>/log/application-%d{yyyy-MM-dd_HH:mm:ss}.log</file>-->
 
-        <!-- Log rotation settings with datetime timestamp -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>/var/log/carrental/application-%d{yyyy-MM-dd_HH:mm:ss}.%i.log.zip</fileNamePattern>
-            <minIndex>1</minIndex> <!-- Keep at least 1 archived log file -->
-            <maxIndex>5</maxIndex> <!-- Keep up to 10 archived log files -->
-        </rollingPolicy>
+<!--        &lt;!&ndash; Log rotation settings with datetime timestamp &ndash;&gt;-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
+<!--            <fileNamePattern>/var/log/carrental/application-%d{yyyy-MM-dd_HH:mm:ss}.%i.log.zip</fileNamePattern>-->
+<!--            <minIndex>1</minIndex> &lt;!&ndash; Keep at least 1 archived log file &ndash;&gt;-->
+<!--            <maxIndex>5</maxIndex> &lt;!&ndash; Keep up to 10 archived log files &ndash;&gt;-->
+<!--        </rollingPolicy>-->
 
-        <!-- Log file size-based triggering policy -->
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10MB</maxFileSize> <!-- Maximum file size for rotation -->
-        </triggeringPolicy>
+<!--        &lt;!&ndash; Log file size-based triggering policy &ndash;&gt;-->
+<!--        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+<!--            <maxFileSize>10MB</maxFileSize> &lt;!&ndash; Maximum file size for rotation &ndash;&gt;-->
+<!--        </triggeringPolicy>-->
 
-        <!-- Use PatternLayoutEncoder to customize log entry format -->
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+<!--        &lt;!&ndash; Use PatternLayoutEncoder to customize log entry format &ndash;&gt;-->
+<!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
 
-    <!-- Configure the root logger level and reference the appender -->
-    <root level="INFO">
-        <appender-ref ref="ROLLING_FILE"/>
-    </root>
-</configuration>
+<!--    &lt;!&ndash; Configure the root logger level and reference the appender &ndash;&gt;-->
+<!--    <root level="INFO">-->
+<!--        <appender-ref ref="ROLLING_FILE"/>-->
+<!--    </root>-->
+<!--</configuration>-->
