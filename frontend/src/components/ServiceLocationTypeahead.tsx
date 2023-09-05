@@ -11,55 +11,62 @@ interface Props {
     helperText?: string;
 }
 
+// Define a view object for display
+interface ViewObject {
+    id: string;
+    label: string;
+}
+
+const placeholderOption: ViewObject = {
+    id: "",
+    label: "Select Location",
+};
+
 const ServiceLocationTypeahead: React.FC<Props> = ({
                                                        value, onChange, error, helperText
                                                    }) => {
-    const [options, setOptions] = useState<ServiceLocationDto[]>([]);
-    // Set the initial value for defaultValue based on multiple prop
-    const [selectedValue, setSelectedValue] = useState<ServiceLocationDto | undefined>();
+    const [options, setOptions] = useState<ViewObject[]>([]);
+    const [realOptions, setRealOptions] = useState<ServiceLocationDto[]>([]);
+
+    const [selectedViewValue, setSelectedViewValue] = useState<ViewObject>(
+        placeholderOption
+    );
 
     useEffect(() => {
         const fetchServiceLocations = async () => {
             try {
                 const response = await serviceLocationService.getAllServiceLocation();
-                setOptions(response);
-                let ids: string[] = [];
-
-                if (Array.isArray(value)) {
-                    // @ts-ignore
-                    ids = value.map(x => x.id).filter(x => x !== undefined);
-                } else {
-                    if (value?.id) {
-                        ids = [value.id];
-                    }
-                }
-
-                if (ids.length === 0) {
-                    return;
-                }
-
-                let serviceLocationDto = response.find(loc => ids.includes(loc.id));
-                setSelectedValue(serviceLocationDto);
-
-
+                // Map ServiceLocationDto to ViewObject for display
+                const viewObjects = response.map((location) => ({
+                    id: location.id,
+                    label: location.name,
+                }));
+                setOptions(viewObjects);
+                setRealOptions(response);
+                // Map the selected value back to ServiceLocationDto
+                const serviceLocationDto = viewObjects.find((loc) => loc.id === value?.id);
+                if (serviceLocationDto)
+                    setSelectedViewValue(serviceLocationDto)
             } catch (error) {
                 console.error("Failed to fetch service locations:", error);
             }
         };
 
         fetchServiceLocations();
-    }, [value]);  // adding value as a dependency so that the effect re-runs when value changes
+    }, [value]);
 
     return (
         <Autocomplete
             id="service-locations"
             options={options}
-            getOptionLabel={(option: ServiceLocationDto) => option.name}
-            value={selectedValue}
+            getOptionLabel={(option: ViewObject) => option.label}
+            value={selectedViewValue}
             onChange={(event, newValue) => {
-                setSelectedValue(newValue || undefined);
+                // Map the selected choice back to ServiceLocationDto
+                const selectedDto: ServiceLocationDto | undefined = newValue?.id !== "" ? realOptions.find(x => x.id === selectedDto?.id) : undefined;
+                setSelectedViewValue(newValue || placeholderOption);
                 if (onChange) {
-                    onChange(newValue || undefined);
+                    onChange(selectedDto);
                 }
             }}
             renderInput={(params) => (

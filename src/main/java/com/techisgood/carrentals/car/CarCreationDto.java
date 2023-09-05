@@ -17,6 +17,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CarCreationDto {
 
+    private String id;
+
     @NotBlank(message = "Make is required")
     @Size(max = 255, message = "Make should not exceed 255 characters")
     private String make;

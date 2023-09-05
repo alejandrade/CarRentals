@@ -32,7 +32,7 @@ public class CarService {
     @Transactional
     public Car createOrUpdateCar(@Valid CarCreationDto carCreationDto) {
         // Check if a car with the given VIN exists
-        Car car = carRepository.findByVin(carCreationDto.getVin()).orElse(new Car());
+        Car car = carCreationDto.getId() != null ? carRepository.findById(carCreationDto.getId()).orElseThrow() : new Car();
         ServiceLocation serviceLocation = serviceLocationRepository.findById(carCreationDto.getServiceLocationId()).orElseThrow();
 
         car.setMake(carCreationDto.getMake());

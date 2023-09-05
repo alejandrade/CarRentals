@@ -1,6 +1,7 @@
 // carService.types.ts
 
 export interface CarCreationDto {
+    id?: string;
     make?: string;
     model?: string;
     year?: number;

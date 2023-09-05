@@ -13,7 +13,7 @@ type Param = {
     userId: string,
     onSave: () => void
 }
-const EditUserModal: React.FC<Param> = ({userId}) => {
+const EditUserModal: React.FC<Param> = ({userId, onSave}) => {
     const [open, setOpen] = useState(false);
     const [textValue, setTextValue] = useState("");
     const [editedUserDto, setEditedUserDto] = useState<UserDto>();
@@ -43,6 +43,7 @@ const EditUserModal: React.FC<Param> = ({userId}) => {
         // Do something with the text value (e.g., submit to the server)
         console.log("Submitted value:", textValue);
         await userService.modifyUser(data.id, data).catch(handleAPIError);
+        onSave();
         handleClose();
     };
 

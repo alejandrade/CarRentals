@@ -14,9 +14,10 @@ import { ServiceLocationDto } from "../../services/service_location/ServiceLocat
 interface CarFormProps {
     id?: string;
     refreshTable: () => void;
+    onSave: () => void;
 }
 
-const CarForm: React.FC<CarFormProps> = ({ id, refreshTable }) => {
+const CarForm: React.FC<CarFormProps> = ({ id, refreshTable, onSave }) => {
     const errorModalContext = useContext(ErrorModalContext);
     const [loading, setLoading] = useState<boolean>(!!id);
     const [formData, setFormData] = useState<CarCreationDto>({
@@ -36,6 +37,7 @@ const CarForm: React.FC<CarFormProps> = ({ id, refreshTable }) => {
     useEffect(() => {
         const loadCarData = async () => {
             try {
+                setLoading(true);
                 const car = await CarService.getCarById(id!);
                 if (car) {
                     setFormData(car);
@@ -54,9 +56,12 @@ const CarForm: React.FC<CarFormProps> = ({ id, refreshTable }) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
         const response = await CarService.createOrUpdateCar(formData).catch(errorModalContext.handleAPIError);
         if (response && response.id) {
             refreshTable();
+            setLoading(false);
+            onSave();
             console.log('Operation successful:', response);
         } else {
             console.error('Error in operation:', response);

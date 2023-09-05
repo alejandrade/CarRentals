@@ -7,7 +7,7 @@ import {
     Button,
     useMediaQuery,
     useTheme,
-    Box
+    Box, Dialog, DialogContent
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CarTable from "./CarTable";
@@ -37,9 +37,11 @@ const CarEditor: React.FC = () => {
                     {carId ? "Edit" : "Create" }
                 </Button>
             </CustomToolbar>
-            <GenericModal onClose={() => {setCarFormModalOpen(false)}} open={carFormModalOpen}>
-                <CarForm id={carId ? carId : undefined} refreshTable={refreshTable} />
-            </GenericModal>
+            <Dialog open={carFormModalOpen} onClose={() => {setCarFormModalOpen(false)}}>
+                <DialogContent>
+                    <CarForm onSave={() => setCarFormModalOpen(false)} id={carId ? carId : undefined} refreshTable={refreshTable} />
+                </DialogContent>
+            </Dialog>
             <CarTable clerk={false} refresh={refresh} onSelected={onSelect} />
         </div>
     );

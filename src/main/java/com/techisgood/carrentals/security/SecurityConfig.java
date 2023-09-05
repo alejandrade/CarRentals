@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/payments/**").hasAnyAuthority(UserAuthority.ROLE_USER.name(), UserAuthority.ROLE_ADMIN.name())
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/remote-payments/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated() // ensuring all other routes require authentication
                 )
