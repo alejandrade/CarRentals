@@ -39,6 +39,7 @@ const ContactInformationForm: React.FC<ContactInformationProps> = ({ phoneNumber
     };
 
     const handleSubmit = async () => {
+        setLoading(true);
         if (isValidInput()) {
             const isEmail = isPhoneDisabled;
 
@@ -46,6 +47,7 @@ const ContactInformationForm: React.FC<ContactInformationProps> = ({ phoneNumber
 
             user && onSave(user.email, user.phoneNumber);
         }
+        setLoading(false);
     };
 
     return (

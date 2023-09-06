@@ -63,7 +63,7 @@ public class CarService {
     public Page<CarDto> findAllAvailableCarsByLocation(Pageable pageable, UserDetails userDetails) {
         DbUser user = userRepository.findById(userDetails.getUsername()).orElseThrow();
         ServiceLocationClerk clerk = clerkRepository.findByUserId(user.getId()).orElseThrow();
-        Page<Car> cars = carRepository.findAllByLocationId(List.of(RentalStatus.CANCELED, RentalStatus.RETURNED), clerk.getServiceLocation().getId(), pageable);
+        Page<Car> cars = carRepository.findAllByLocationId(clerk.getServiceLocation().getId(), pageable);
         return cars.map(CarDto::from);
     }
 

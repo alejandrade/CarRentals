@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.techisgood.carrentals.car.CatStatus;
 import com.techisgood.carrentals.security.JwtTokenProvider;
 import com.techisgood.carrentals.service_location.ServiceLocationService;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,9 @@ public class RentalService {
 	@Transactional
 	public RentalDto startRental(BigDecimal odometer, String rentalId, Integer version) {
 		Rental byId = rentalRepository.findById(rentalId).orElseThrow();
+		Car car = byId.getCar();
+		car.setStatus(CatStatus.RENTED);
+		carRepository.save(car);
 		byId.setStatus(RentalStatus.RENTED);
 		byId.setInitialOdometerReading(odometer);
 		byId.setRentalDatetime(LocalDateTime.now());
@@ -55,6 +59,9 @@ public class RentalService {
 	@Transactional
 	public RentalDto endRental(String rentalId, RentalActionDto rentalActionDto) {
 		Rental byId = rentalRepository.findById(rentalId).orElseThrow();
+		Car car = byId.getCar();
+		car.setStatus(CatStatus.ACTIVE);
+		carRepository.save(car);
 		byId.setStatus(RentalStatus.RETURNED);
 		byId.setEndingOdometerReading(rentalActionDto.getEndingOdometerReading());
 		byId.setReturnDatetime(LocalDateTime.now());
@@ -106,6 +113,8 @@ public class RentalService {
 		rental.setServiceLocation(serviceLocation);
 		rental.setRentalDatetime(rentalDateTime);
 		rental.setStatus(status);
+		car.setStatus(CatStatus.RESERVED);
+		carRepository.save(car);
 		return rentalRepository.save(rental);
 	}
 
@@ -134,6 +143,9 @@ public class RentalService {
 	public void cancel(String id) {
 		Rental byIdAndStatus = rentalRepository.findByIdAndStatus(id, RentalStatus.RESERVED);
 		byIdAndStatus.setStatus(RentalStatus.CANCELED);
+		Car car = byIdAndStatus.getCar();
+		car.setStatus(CatStatus.ACTIVE);
+		carRepository.save(car);
 		rentalRepository.save(byIdAndStatus);
 	}
 }

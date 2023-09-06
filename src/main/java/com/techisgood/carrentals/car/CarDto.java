@@ -20,7 +20,7 @@ public class CarDto {
     private BigDecimal price;
     private Boolean availability;
     private String licensePlate;
-    private String status;
+    private CatStatus status;
     private Integer version;
     private String serviceLocationId;
 

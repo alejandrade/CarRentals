@@ -100,10 +100,10 @@ const InsuranceForm: React.FC<ContactInformationProps> = ({dto, onSave, userId})
             await userService.uploadInsuranceImage(userId, userInsuranceDto.id, "FRONT", frontImage).catch(handleAPIError);
             await userService.uploadInsuranceImage(userId, userInsuranceDto.id, "BACK", backImage).catch(handleAPIError);
         }
-        setLoading(false);
         if (userInsuranceDto) {
             onSave(formData as UserInsuranceDto);
         }
+        setLoading(false);
     };
 
     return (

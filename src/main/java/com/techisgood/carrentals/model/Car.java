@@ -3,20 +3,13 @@ package com.techisgood.carrentals.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.techisgood.carrentals.car.CatStatus;
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.techisgood.carrentals.model.audit.VersionedAuditable;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -64,7 +57,8 @@ public class Car extends VersionedAuditable {
     private String licensePlate;
 
     @Column(nullable = false, length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private CatStatus status;
 
     @Column(name = "short_id", length = 8, insertable = false, updatable = false) // Added generated column mapping
     private String shortId;

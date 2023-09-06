@@ -153,8 +153,8 @@ const UserDemographicsForm: React.FC<param> = ({ dto, userId, onSave }) => {
             formData.userId = userId;
             await userService.createUserDemographics(formData as UserDemographicsDto);
             onSave(formData as UserDemographicsDto);
-            setLoading(false);
         }
+        setLoading(false);
     };
 
     return (

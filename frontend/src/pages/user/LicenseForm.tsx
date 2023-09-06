@@ -69,7 +69,6 @@ const LicenseForm: React.FC<Props> = ({dto, onSave, userId}) => {
         e.preventDefault();
         setLoading(true);
         formData.userId = userId;
-        console.log("is this happening?");
         const userLicenseDto = await userService.saveLicense(formData as UserLicenseDto).catch(handleAPIError);
         if (userLicenseDto && frontImage && backImage) {
             await userService.uploadLicenseImage(userId, userLicenseDto.id, "FRONT", frontImage).catch(handleAPIError);

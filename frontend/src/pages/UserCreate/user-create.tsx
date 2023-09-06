@@ -5,11 +5,13 @@ import {UserDto} from "../../services/user/UserService.types";
 import CustomToolbar from "../../components/CustomToolbar";
 import UserEdit from "../user/UserEdit";
 import {Button} from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const UserCreate: React.FC<{ }>  = () => {
     const { phoneNumber } = useParams();
     const [user, setUser] = useState<UserDto | undefined>();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         init();
@@ -26,17 +28,23 @@ const UserCreate: React.FC<{ }>  = () => {
         navigate(`/dash/clerk`)
     }
 
-    function next() {
-        if (user?.userInsurances && user.userDemographics && user.userLicenses) {
-            return navigate(`/dash/car/select/${phoneNumber}`);
+    async function next() {
+        setLoading(true);
+        if (phoneNumber) {
+            const client = await userService.getClient(phoneNumber.replace(/\s+/g, ''));
+            if (client?.userInsurances && client.userDemographics && client.userLicenses) {
+                return navigate(`/dash/car/select/${phoneNumber}`);
+            }
         }
+
+        setLoading(false);
     }
 
     return (
         <>{user && <>
             <CustomToolbar>
                 <Button onClick={back} variant={"contained"} color={"secondary"}>Back</Button>
-                <Button onClick={next} variant={"contained"}>Next</Button>
+                <LoadingButton loading={loading} onClick={next} variant={"contained"}>Next</LoadingButton>
             </CustomToolbar>
             <UserEdit dto={user}/>
         </>
