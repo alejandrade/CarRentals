@@ -17,8 +17,7 @@ public interface CarRepository extends PagingAndSortingRepository<Car, String>, 
     Optional<Car> findByVin(String vin);
     Optional<Car> findByShortId(String shortId);
 
-    @Query("SELECT DISTINCT c FROM Car c " +
-            "LEFT JOIN Rental r on r.car = c " +
+    @Query("SELECT c FROM Car c " +
             "WHERE (c.status = 'ACTIVE') and c.serviceLocation.id = :locationId")
     Page<Car> findAllByLocationId(@Param("locationId") String locationId, Pageable pageable);
 
