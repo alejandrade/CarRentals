@@ -201,12 +201,12 @@ const CarRentalConfirmationForm: React.FC<{
                             }}
                         />
                     </Grid>
+
+
+
                     {rental?.status === "RENTED" && <>
                         <Grid item>
                             <CheckboxWithLabel value={cleaningFeeCheck}  onChange={setCleaningFeeCheck} label={"Cleaning Fee"}/>
-                        </Grid>
-                        <Grid item>
-                            <CheckboxWithLabel value={insuranceFeeCheck}  onChange={setInsuranceFeeCheck} label={"Insurance Fee (8$ per day)"}/>
                         </Grid>
                         <Grid item>
                             <CheckboxWithLabel value={detailFeeCheck}  onChange={setDetailFeeCheck} label={"Detail Fee"}/>
@@ -248,6 +248,12 @@ const CarRentalConfirmationForm: React.FC<{
                             />
                             </>}
                     </Grid>
+
+                    {rental?.status === "RESERVED" && <>
+                        <Grid item>
+                            <CheckboxWithLabel value={insuranceFeeCheck}  onChange={setInsuranceFeeCheck} label={"Insurance Fee (8$ per day)"}/>
+                        </Grid>
+                    </>}
 
                     {/*{["front", "left", "back", "right", "odometer"].map((angle) => (*/}
                     {/*    <Grid item key={angle}>*/}

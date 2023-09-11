@@ -72,7 +72,7 @@ public class RentalEndpoint {
             @PathVariable String rentalId,
             @RequestBody @Valid RentalActionDto rentalActionDto) {
 
-        RentalDto startedRental = rentalService.startRental(rentalActionDto.getInitialOdometerReading(), rentalId, rentalActionDto.getVersion());
+        RentalDto startedRental = rentalService.startRental(rentalActionDto.getInitialOdometerReading(), rentalId, rentalActionDto.getVersion(), rentalActionDto.getInsuranceFee());
         return ResponseEntity.ok(startedRental);
     }
 

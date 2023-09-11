@@ -44,7 +44,7 @@ public class RentalService {
 	}
 
 	@Transactional
-	public RentalDto startRental(BigDecimal odometer, String rentalId, Integer version) {
+	public RentalDto startRental(BigDecimal odometer, String rentalId, Integer version, Integer insuranceFee) {
 		Rental byId = rentalRepository.findById(rentalId).orElseThrow();
 		Car car = byId.getCar();
 		car.setStatus(CatStatus.RENTED);
@@ -52,6 +52,7 @@ public class RentalService {
 		byId.setStatus(RentalStatus.RENTED);
 		byId.setInitialOdometerReading(odometer);
 		byId.setRentalDatetime(LocalDateTime.now());
+		byId.setInsuranceFee(insuranceFee);
 		byId.setVersion(version);
 		return RentalDto.from(rentalRepository.save(byId));
 	}
