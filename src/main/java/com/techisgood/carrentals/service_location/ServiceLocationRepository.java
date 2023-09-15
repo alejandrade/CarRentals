@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import com.techisgood.carrentals.model.ServiceLocation;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ServiceLocationRepository extends JpaRepository<ServiceLocation, String>, PagingAndSortingRepository<ServiceLocation, String> {
 	@Query("SELECT s FROM ServiceLocation s WHERE s.id = :id")
@@ -21,5 +23,8 @@ public interface ServiceLocationRepository extends JpaRepository<ServiceLocation
 
 	@Query("SELECT s FROM ServiceLocation s join ServiceLocationClerk c on c.serviceLocation = s where c.user.id = :clerkId")
 	Optional<ServiceLocation> byClerkId(String clerkId);
+
+	@Query("SELECT s FROM ServiceLocation s WHERE s.id IN :locationIds")
+	List<ServiceLocation> findAllByIds(Set<String> locationIds);
 
 }

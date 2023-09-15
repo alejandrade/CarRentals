@@ -1,11 +1,16 @@
 package com.techisgood.carrentals.payments;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.techisgood.carrentals.comms.twilio.TwilioService;
 import com.techisgood.carrentals.model.*;
+import com.techisgood.carrentals.service_location.ServiceLocationRepository;
+import com.techisgood.carrentals.service_location_clerk.ServiceLocationClerkRepository;
 import lombok.SneakyThrows;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -25,7 +30,8 @@ public class PaymentsService {
 	private final RemotePaymentsService remotePaymentsService;
 	private final PaymentsCustomerRepository paymentsCustomerRepository;
 	private final PaymentsInvoiceRepository paymentsInvoiceRepository;
-	
+	private final ServiceLocationClerkRepository serviceLocationClerkRepository;
+	private final ServiceLocationRepository serviceLocationRepository;
 	private final RentalRepository rentalRepository;
 	private final UserRepository userRepository;
 	private final TwilioService twilioService;
@@ -175,6 +181,12 @@ public class PaymentsService {
 		result = session.getUrl();
 		
 		return result;
+	}
+
+	@Transactional
+	public List<PaymentStatementsRow> createStatement(Date startDate) {
+		List<CustomPaymentLocationDTO> customPaymentsWithLocationData = paymentsInvoiceRepository.findCustomPaymentsWithLocationData(startDate);
+        return customPaymentsWithLocationData.stream().map(x -> PaymentStatementsRow.from(x.getPayment(), x.getLocationName())).toList();
 	}
 	
 	

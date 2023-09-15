@@ -1,6 +1,5 @@
 package com.techisgood.carrentals.car;
 
-import com.techisgood.carrentals.rentals.RentalStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,13 +11,11 @@ import com.techisgood.carrentals.model.DbUser;
 import com.techisgood.carrentals.model.ServiceLocation;
 import com.techisgood.carrentals.model.ServiceLocationClerk;
 import com.techisgood.carrentals.service_location.ServiceLocationRepository;
-import com.techisgood.carrentals.service_location_clerk.ClerkRepository;
+import com.techisgood.carrentals.service_location_clerk.ServiceLocationClerkRepository;
 import com.techisgood.carrentals.user.UserRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class CarService {
 
     private final CarRepository carRepository;
     private final ServiceLocationRepository serviceLocationRepository;
-    private final ClerkRepository clerkRepository;
+    private final ServiceLocationClerkRepository serviceLocationClerkRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -62,7 +59,7 @@ public class CarService {
     @Transactional(readOnly = true)
     public Page<CarDto> findAllAvailableCarsByLocation(Pageable pageable, UserDetails userDetails) {
         DbUser user = userRepository.findById(userDetails.getUsername()).orElseThrow();
-        ServiceLocationClerk clerk = clerkRepository.findByUserId(user.getId()).orElseThrow();
+        ServiceLocationClerk clerk = serviceLocationClerkRepository.findByUserId(user.getId()).orElseThrow();
         Page<Car> cars = carRepository.findAllByLocationId(clerk.getServiceLocation().getId(), pageable);
         return cars.map(CarDto::from);
     }

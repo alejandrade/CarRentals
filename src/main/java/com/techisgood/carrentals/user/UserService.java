@@ -8,11 +8,10 @@ import com.techisgood.carrentals.authorities.UserAuthority;
 import com.techisgood.carrentals.model.ServiceLocation;
 import com.techisgood.carrentals.model.ServiceLocationClerk;
 import com.techisgood.carrentals.service_location.ServiceLocationRepository;
-import com.techisgood.carrentals.service_location_clerk.ClerkRepository;
+import com.techisgood.carrentals.service_location_clerk.ServiceLocationClerkRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserWithDetailsDtoConverter converter;
-    private final ClerkRepository clerkRepository;
+    private final ServiceLocationClerkRepository serviceLocationClerkRepository;
     private final ServiceLocationRepository serviceLocationRepository;
 
     public UserDto getUser(String userId) {
@@ -69,12 +68,12 @@ public class UserService {
         }
 
         if (dbUser.getAuthorities().stream().map(Authority::getAuthority).anyMatch(x-> x.equals(UserAuthority.ROLE_CLERK.name()))){
-            ServiceLocationClerk clerk = clerkRepository.findByUserId(dbUser.getId()).orElse(new ServiceLocationClerk());
+            ServiceLocationClerk clerk = serviceLocationClerkRepository.findByUserId(dbUser.getId()).orElse(new ServiceLocationClerk());
             ServiceLocation serviceLocation = serviceLocationRepository.findById(modifiedUserDto.getServiceLocationId()).orElseThrow();
             clerk.setServiceLocation(serviceLocation);
             clerk.setUser(dbUser);
             clerk.setStatus("ACTIVE");
-            clerkRepository.save(clerk);
+            serviceLocationClerkRepository.save(clerk);
         }
 
 

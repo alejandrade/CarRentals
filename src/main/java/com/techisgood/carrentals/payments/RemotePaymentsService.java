@@ -30,8 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RemotePaymentsService {
 
-	
-	
 	public Customer createCustomer(DbUserDemographics userInfo) throws StripeException {
 		CustomerCreateParams params = CustomerCreateParams.builder()
 				.setName(userInfo.getFullNameFormatted())
