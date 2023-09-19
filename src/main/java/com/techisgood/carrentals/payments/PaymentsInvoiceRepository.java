@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.techisgood.carrentals.model.PaymentsInvoice;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,7 @@ public interface PaymentsInvoiceRepository extends JpaRepository<PaymentsInvoice
     List<PaymentsInvoice> findInvoicesCreatedAfter(Date startDate);
 
     // Add the custom query here
-    @Query("SELECT p, sl.name AS location_name FROM PaymentsInvoice p JOIN ServiceLocationClerk slc ON p.paidBy.id = slc.user.id JOIN ServiceLocation sl ON slc.location.id = sl.id WHERE p.createdAt >= :startDate")
-    List<CustomPaymentLocationDTO> findCustomPaymentsWithLocationData(Date startDate);
+    @Query("SELECT p, sl.name AS location_name FROM PaymentsInvoice p JOIN ServiceLocationClerk slc ON p.paidBy.id = slc.user.id JOIN ServiceLocation sl ON slc.serviceLocation.id = sl.id WHERE p.createdAt >= :startDate")
+    List<CustomPaymentLocationDTO> findCustomPaymentsWithLocationData(LocalDateTime startDate);
 
 }

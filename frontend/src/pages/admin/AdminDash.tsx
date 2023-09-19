@@ -4,6 +4,7 @@ import {Box, Container, Paper, useMediaQuery, useTheme} from "@mui/material";
 import UserDetailsTable from "./UserDetailsTable";
 import LocationsTable from "./LocationsTable";
 import CarEditor from "../staff/CarEditor";
+import AccountingCard from "./AccountingCard";
 
 const AdminDash: React.FC = () => {
     const theme = useTheme();
@@ -15,6 +16,9 @@ const AdminDash: React.FC = () => {
 
     return (
         <Box>
+            <Container component={Paper} sx = {{mb: 3, p: 3}}>
+                <AccountingCard/>
+            </Container>
             <Container component={Paper} sx={{ mb: 3, p: 3 }}>  {/* Add spacing and padding for aesthetic appeal */}
                 <UserDetailsTable/>
             </Container>

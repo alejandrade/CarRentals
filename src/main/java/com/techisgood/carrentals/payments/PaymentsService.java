@@ -1,6 +1,9 @@
 package com.techisgood.carrentals.payments;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -185,7 +188,8 @@ public class PaymentsService {
 
 	@Transactional
 	public List<PaymentStatementsRow> createStatement(Date startDate) {
-		List<CustomPaymentLocationDTO> customPaymentsWithLocationData = paymentsInvoiceRepository.findCustomPaymentsWithLocationData(startDate);
+		LocalDateTime localDateTime = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		List<CustomPaymentLocationDTO> customPaymentsWithLocationData = paymentsInvoiceRepository.findCustomPaymentsWithLocationData(localDateTime);
         return customPaymentsWithLocationData.stream().map(x -> PaymentStatementsRow.from(x.getPayment(), x.getLocationName())).toList();
 	}
 	

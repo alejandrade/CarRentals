@@ -1,6 +1,7 @@
 package com.techisgood.carrentals.payments;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -25,19 +24,16 @@ public class AdminPaymentsEndpoints {
     private final PaymentsService paymentsService;
 
     @GetMapping("/statement")
-    public ResponseEntity<byte[]> exportCsv(@RequestParam Date startDate) {
+    public ResponseEntity<byte[]> exportCsv(@RequestParam  @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate) {
             List<PaymentStatementsRow> data = paymentsService.createStatement(startDate);
             String csvContent = generateCSVContent(data);
-            // Generate the CSV content as a string
-            // Convert the CSV content to bytes
             byte[] csvBytes = csvContent.getBytes();
-
-            // Set the response headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "statement.csv");
-            headers.setContentLength(csvBytes.length); // Set the content length
-
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        headers.setContentDispositionFormData("attachment", """
+                    statement-%s.csv""".formatted(isoFormat.format(startDate)));
+            headers.setContentLength(csvBytes.length);
             return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
