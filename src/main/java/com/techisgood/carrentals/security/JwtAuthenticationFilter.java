@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String path = request.getRequestURI();
-            if ("/".equals(path) || path.startsWith("/auth/")) {
+            if ("/".equals(path) || path.startsWith("/auth/") || path.startsWith("/remote-payments")) {
                 getContext().setAuthentication(new AnonymousAuthenticationToken("anonymousUser", "anonymousUser",
                         List.of(new SimpleGrantedAuthority(ROLE_ANON.name()))));
                 filterChain.doFilter(request, response);
