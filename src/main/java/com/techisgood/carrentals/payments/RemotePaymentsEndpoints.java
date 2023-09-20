@@ -1,5 +1,6 @@
 package com.techisgood.carrentals.payments;
 
+import com.stripe.Stripe;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,7 +56,7 @@ public class RemotePaymentsEndpoints {
 			stripeObject = dataObjectDeserializer.getObject().get();
 		}
 		else {
-			return ResponseEntity.status(400).body("Deserialization failed, possibly due to api version mismatch.");
+			return ResponseEntity.status(400).body("Deserialization failed, possibly due to api version mismatch. got " + event.getApiVersion() + " expected " + Stripe.API_VERSION);
 		}
 
 		switch (event.getType()) {
